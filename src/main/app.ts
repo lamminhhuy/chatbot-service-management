@@ -11,7 +11,8 @@ import promptRouter from "@/modules/prompt/routes/promptRoutes";
 import chatRouter from "@/modules/chatbot/routes/chatRoutes";
 import { mongoDBInstance } from "@/database/MongoDB";
 import { initializeDatabase } from "@/database/PostgresDB";
-
+import { pingServer } from "@/shared/utils/ping";
+import * as cron from 'node-cron';
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -38,4 +39,12 @@ app.use(`/api/v1/prompt`, promptRouter);
 
 app.use(errorHandler);
 
+
+function getRandomPingTime() {
+  const minutes = 3;
+  const cronTime = `*/${minutes} * * * *`;
+
+  return cronTime;
+}
+const querySnapshot = cron.schedule(getRandomPingTime(), pingServer);
 export { app, logger };
