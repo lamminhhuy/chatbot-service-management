@@ -1,7 +1,5 @@
-import { IChatbotAPI } from "@/application/chatbot/interfaces/IChatBotAPI";
-import { Author } from "@/domain/entities/Author";
-import { Message } from "@/domain/entities/Message";
-import { Role } from "@/domain/enums/Role";
+
+import { IChatbotAPI } from "@/modules/chatbot/interfaces/IChatBotApi";
 import {
   BadRequestResponseError,
   ErrorsResponse,
@@ -13,6 +11,9 @@ import {
   GenerateContentResult,
   Content,
 } from "@google/generative-ai";
+import { Message } from "../entites/Message";
+import { Author } from "../entites/Author";
+import { Role } from "../enums/Role";
 
 export class GoogleGeminiAPI implements IChatbotAPI {
   private genAI: GoogleGenerativeAI;
