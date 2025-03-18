@@ -1,4 +1,5 @@
-const https = require('https');
+import { IncomingMessage } from 'http';
+import  https from 'https';
 
 export function pingServer() {
   const options = {
@@ -8,8 +9,8 @@ export function pingServer() {
     method: 'GET'
   };
 
-  const req = https.request(options, (res: Response) => {
-    console.log(`Server pinged. Status code: ${res.status}`);
+  const req = https.request(options, (res: IncomingMessage) => {
+    console.log(`Server pinged. Status code: ${res.statusCode}`);
   });
 
   req.on('error', (error: any) => {
