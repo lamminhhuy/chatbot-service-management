@@ -1,22 +1,22 @@
 import { env } from "@/configs/envConfig";
-import { createClient, RedisClientType } from "redis";
+import Redis from "ioredis";
 
 class RedisClient {
-  private static instance: RedisClientType;
+  private static instance: Redis;
 
   private constructor() {}
 
-  public static getInstance(): RedisClientType {
+  public static getInstance(): Redis {
     if (!this.instance) {
-      this.instance = createClient({
-        url: env.REDIS_URL,
-        pingInterval: 3000,
+      this.instance = new Redis(env.REDIS_URL, {
+        reconnectOnError: (err) => {
+          console.error("Redis error:", err);
+          return true; 
+        },
       });
 
       this.instance.on("connect", () => console.log("Redis connected"));
       this.instance.on("error", (err) => console.error("Redis error:", err));
-
-      this.instance.connect().catch(console.error);
     }
 
     return this.instance;
