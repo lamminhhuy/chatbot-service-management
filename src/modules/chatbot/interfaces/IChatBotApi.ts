@@ -1,7 +1,8 @@
 import { Message } from "@/shared/entites/Message";
+import { ChatCompletionMessageParam } from "openai/resources/chat";
 
 
 export interface IChatbotAPI {
-  generateResponse(userInput: string, messages: Message[]): Promise<Message>;
+  generateResponse(messages: ChatCompletionMessageParam[]): Promise<string>;
   generateEmbedding(text: string): Promise<number[]>;
 }

@@ -3,7 +3,7 @@ import  https from 'https';
 
 export function pingServer() {
   const options = {
-    hostname: 'https://chatbot-gpt-mkqi.onrender.com',
+    hostname: 'chatbot-gpt-mkqi.onrender.com',
     port: 443,
     path: '/',
     method: 'GET'

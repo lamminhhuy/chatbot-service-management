@@ -4,31 +4,38 @@ import { VectorService } from "../../qAVector/services/VectorService";
 import { IChatbotAPI } from "@/modules/chatbot/interfaces/IChatBotApi";
 import { ISessionStore } from "@/shared/interfaces/repositories/ISessionStore";
 import { Session } from "@/shared/entites/Session";
-import { Message } from "@/shared/entites/Message";
 import { Author } from "@/shared/entites/Author";
+import { MessageOpenAIAdapter } from "../helpers/MessageOpenAIAdapter";
+import { ChatRole } from "../enums/ChatRole";
+import { Message } from "../models/MessageModel";
+import { SessionMessage } from "../types/SessionMessage";
+import { IMessageAdapter } from "../interfaces/IMessageAdapter";
 
 export class ChatbotService {
+
   constructor(
     private chatbotAPI: IChatbotAPI,
     private sessionStore: ISessionStore,
-    private vectorService: VectorService
+    private vectorService: VectorService,
+    private messageAdapter:IMessageAdapter
   ) {}
 
   async handleUserQuery(sessionId: string, content: string) {
 
     const session = await this.getOrCreateSession(sessionId);
-    const relevantInfo = await this.retrieveRelevantInformation(content)
+    // const relevantInfo = await this.retrieveRelevantInformation(content)
 
-    const augmentedQuery = relevantInfo
-    ? `You are an expert AI. I have the following information: ${relevantInfo}.\n Question: ${content}.\n 
-    Please provide a concise and accurate answer based on the information above.`
-    : content;
+    // const augmentedQuery = relevantInfo
+    // ? `You are an expert AI. I have the following information: ${relevantInfo}.\n Question: ${content}.\n 
+    // Please provide a concise and accurate answer based on the information above.`
+    // : content;
 
-    const userMessage = this.createMessage(augmentedQuery, Role.User);
+    const userMessage = this.createSessionMessage(content, ChatRole.User);
     session.addMessage(userMessage);
 
-    const responseMessage = await this.chatbotAPI.generateResponse(userMessage.content, session.messages);
-    session.addMessage(responseMessage);
+    const responseMessage = await this.chatbotAPI.generateResponse(session.messages.map((message) => this.messageAdapter.toOpenAi(message)));
+   
+    session.addMessage({role: ChatRole.Assistant, content:responseMessage });
 
     await this.sessionStore.saveSession(session.id, session);
 
@@ -40,8 +47,8 @@ export class ChatbotService {
     return existingSession ?? new Session();
   }
 
-  private createMessage(content: string, role: Role): Message {
-    return new Message(new Author(role, null, null), content);
+  private createSessionMessage(content: string, role: ChatRole): SessionMessage {
+    return {content,role};
   }
 
   private async retrieveRelevantInformation(content: string): Promise<string | null> {

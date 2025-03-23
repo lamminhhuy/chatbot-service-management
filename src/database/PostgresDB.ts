@@ -2,7 +2,7 @@
 import { DataSource } from 'typeorm';
 import { env } from '@/configs/envConfig';
 import { User } from '@/modules/user/models/UserModel';
-import { UserRole } from '@/modules/user/models/UserRoleModel';
+import { Role } from '@/modules/user/models/RoleModel';
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: env.POSTGRES_HOST,
@@ -10,10 +10,10 @@ export const AppDataSource = new DataSource({
     username: env.POSTGRES_USER,
     password: env.POSTGRES_PASSWORD,
     database: env.POSTGRES_DB,
-    entities: [User,UserRole],
+    entities: [User,Role],
     synchronize: true, 
     logging: env.NODE_ENV === 'dev',
-    migrations: ['src/database/migrations/*.ts'],
+    migrations: ['src/database/migration/*.ts'],
     poolSize: env.POSTGRES_MAX_POOL_SIZE || 10,
     ssl: true
 });

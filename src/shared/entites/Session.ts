@@ -1,16 +1,15 @@
-import { Author } from "./Author";
-import { Message } from "./Message";
+import { Message } from "@/modules/chatbot/models/MessageModel";
+import { SessionMessage } from "@/modules/chatbot/types/SessionMessage";
 export class Session {
   id: string;
-  messages: Message[];
-  private static readonly CONTEXT_MESSAGE_COUNT = 3;
+  messages:SessionMessage[];
 
   constructor(id?: string) {
     this.id = id || crypto.randomUUID();
     this.messages = [];
   }
 
-  addMessage(message: Message) {
+  addMessage(message:SessionMessage) {
     this.messages.push(message);
   }
 }

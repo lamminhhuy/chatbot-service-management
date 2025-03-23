@@ -32,7 +32,7 @@ export const env = cleanEnv(process.env, {
   REDIS_URL: str({
     default: "redis://localhost:6379", 
   }),
-  GOOGLE_GEMINI_API_KEY: str(),
+  OPENAI_API_KEY: str(),
   HOST: host({
     default: "localhost"
   }),
@@ -48,4 +48,10 @@ export const env = cleanEnv(process.env, {
   COMMON_RATE_LIMIT_WINDOW_MS: num({
     default: 1000,
   }),
+  EMAIL_USER: str({
+    default: 'admin@gmail.com'
+  }),
+  EMAIL_PASSWORD: str({
+    default: '12345798'
+  })
 });
