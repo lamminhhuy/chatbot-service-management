@@ -1,20 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es6", 
-    "module": "ES2022",
+    "target": "ESNext",
+    "module": "es2022",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
     "strictPropertyInitialization": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true, 
     "moduleResolution": "Node",
     "outDir": "dist",
     "importsNotUsedAsValues": "remove",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "types": ["vitest/globals"]
   },

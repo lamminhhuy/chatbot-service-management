@@ -7,10 +7,11 @@
   "license": "MIT",
   "main": "index.ts",
   "private": true,
+    "type": "module",
   "scripts": {
     "dev": "tsx watch --clear-screen=false src/main/index.ts | pino-pretty",
-  "build": "tsc -p tsconfig.json",
-  "start": "node build/main/index.js",
+    "build": "tsup",
+    "start": "node dist/main/index.cjs",
     "clean": "rimraf dist coverage",
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
@@ -95,10 +96,14 @@
       "biome check --apply --no-errors-on-unmatched"
     ]
   },
+ 
+  "resolutions": {
+    "rollup": "4.24.0"
+  },
   "tsup": {
     "target": "esnext",
     "format": [
-      "js"
+      "cjs"
     ],
     "entry": [
       "src",
@@ -108,9 +113,5 @@
     "splitting": false,
     "sourcemap": true,
     "clean": true
-  },
-  "resolutions": {
-    "rollup": "4.24.0"
-  },
-  "type": "module"
+  }
 }
