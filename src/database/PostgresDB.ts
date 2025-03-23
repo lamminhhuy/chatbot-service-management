@@ -1,8 +1,6 @@
 // src/database/index.ts
 import { DataSource } from 'typeorm';
 import { env } from '@/configs/envConfig';
-import { User } from '@/modules/user/models/UserModel';
-import { Role } from '@/modules/user/models/RoleModel';
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: env.POSTGRES_HOST,
