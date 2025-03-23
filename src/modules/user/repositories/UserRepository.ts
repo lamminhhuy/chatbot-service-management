@@ -1,15 +1,18 @@
-import { getRepository, Repository } from "typeorm";
-import { IUserRepository } from "@/shared/interfaces/repositories/IUserRepository";
-import { User } from "@/shared/entites/User";
+import { Repository, DataSource } from "typeorm";
+import { User } from "../models/UserModel";
+import { AppDataSource } from "@/database/PostgresDB";
+import { IUserRepository } from "../interfaces/IUserRepository";
 
-export class UserRepository implements IUserRepository {
-    private repository: Repository<User>;
-  
-    constructor() {
-      this.repository = getRepository(User);
-    }
-    createUser(user: User): Promise<User> {
-      return this.repository.save(user);
-    }
- 
+
+export class UserRepository extends Repository<User> implements IUserRepository {
+  private repository: Repository<User>;
+
+  constructor() {
+    super(User, AppDataSource.manager); 
   }
+
+  async findByEmail(email: string): Promise<User | null> {
+    return this.repository.findOneBy({ email });
+  }
+
+}

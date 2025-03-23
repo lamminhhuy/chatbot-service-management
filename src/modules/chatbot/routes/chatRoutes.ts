@@ -1,4 +1,3 @@
-import { GoogleGeminiAPI } from "@/external/services/GoogleGeminiApi";
 import { Request, Response, Router } from "express";
 import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
 import { env } from "@/configs/envConfig";

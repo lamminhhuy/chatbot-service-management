@@ -1,8 +1,8 @@
-enum RoleCode {
-    ADMIN = 'admin',
-    USER = 'user',
-    MANAGER = 'manager',
+export enum RoleCode {
+    ADMIN = 'ADMIN',
+    USER = 'USER',
+    MANAGER = 'MANAGER',
     BASIC_USER = 'BASIC_USER',
     ADVANCED_USER = 'ADVANCED_USER',
-    PRO_USER = 'PRO_USER'
+    PRO_USER = 'PROFESSIONAL_USER'
 }

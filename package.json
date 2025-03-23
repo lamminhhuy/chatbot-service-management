@@ -9,8 +9,8 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch --clear-screen=false src/main/index.ts | pino-pretty",
-  "build:tsc": "tsc -p tsconfig.json",
-  "start:tsc": "node build/main/index.js",
+  "build": "tsc -p tsconfig.json",
+  "start": "node build/main/index.js",
     "clean": "rimraf dist coverage",
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
@@ -112,5 +112,5 @@
   "resolutions": {
     "rollup": "4.24.0"
   },
-  "type": "module"
+  "type": "commonjs"
 }

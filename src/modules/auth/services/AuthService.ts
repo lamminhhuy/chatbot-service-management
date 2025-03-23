@@ -1,42 +1,54 @@
 
-import { IUserRepository } from '@/shared/interfaces/repositories/IUserRepository';
-import { IAuthStrategy } from '../interfaces/IAuthStrategy';
-import { IJwtService } from '../interfaces/IJwtService';
-import { User } from '@/shared/entites/User';
+import { UserService } from '@/modules/user/services/UserService';
+import { IEmailService } from '@/shared/interfaces/services/IEmailService';
+import { BadRequestResponseError } from '@/shared/response/errors.response';
+import { IOTPStorage } from '@/shared/services/RedisOTPStorage';
+import { generateOTP } from '@/shared/utils/generateOTP';
+import { RegisterRequestDTO } from '../dtos/RegisterRequest.dto';
+import { User } from '@/modules/user/models/UserModel';
+import { CreateUserDto } from '@/shared/dtos/User';
 
-export class AuthService {
-  constructor(
-    private authStrategy: IAuthStrategy,
-    private jwtService: IJwtService,
-    private userRepository: IUserRepository 
-  ) {}
 
-  async loginWithGoogle(code: string): Promise<{ accessToken: string; refreshToken: string }> {
-    const googleUser = await this.authStrategy.authenticate(code);
 
-    let user = await this.userRepository.findByGoogleId(googleUser.googleId);
-    if (!user) {
-      user = new User();
-      user.googleId = googleUser.googleId;
-      user.email = googleUser.email;
-      user.avatarUrl = googleUser.avatarUrl;
-      user.fullName = googleUser.email.split('@')[0];
-      user.status = 'active';
-      user.emailVerified = true;
-      user = await this.userRepository.createUser(user);
-    }
+export class AuthService   {
+  private userService: UserService;
+  private emailService: IEmailService;
+  private otpStorage: IOTPStorage;
 
-    const accessToken = this.jwtService.generateAccessToken(user);
-    const refreshToken = this.jwtService.generateRefreshToken(user);
-
-    user.jwtRefreshTokenExpiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-    await this.userRepository.updateUser(user);
-
-    await this.saveUserSession(user.id, accessToken, refreshToken);
-
-    return { accessToken, refreshToken };
+  constructor(emailService: IEmailService, otpStorage: IOTPStorage,userService: UserService) {
+    this.userService = userService;
+    this.emailService = emailService;
+    this.otpStorage = otpStorage;
   }
 
-  private async saveUserSession(userId: number, accessToken: string, refreshToken: string) {
+  async requestOTP(email: string): Promise<void> {
+    const existingUser = await this.userService.findByEmail(email);
+    if (existingUser) {
+      throw new BadRequestResponseError('Email already existed!');
+    }
+    const otp = generateOTP();
+    await this.otpStorage.setOTP(email, otp, 10000);
+    await this.emailService.sendOTP(email, otp);
+    
+  }
+
+  async verifyOTP(email: string, otp: string): Promise<void> {
+    const storedOTP = await this.otpStorage.getOTP(email);
+    if (!storedOTP || storedOTP !== otp) {
+      throw new BadRequestResponseError('OTP is not valid or expired!');
+    }
+    // await this.otpStorage.deleteOTP(email);
+  }
+
+  async registerUser(data: CreateUserDto): Promise<User> {
+    const user = await this.userService.createUser(data);
+    return user;
+  }
+
+  async verifyOTPAndRegister(
+  {email, otp,username,password,phoneNumber}: RegisterRequestDTO
+  ): Promise<User> {
+    await this.verifyOTP(email, otp);
+    return this.registerUser({email,username,password,phoneNumber});
   }
 }
