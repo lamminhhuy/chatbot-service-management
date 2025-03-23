@@ -98,7 +98,7 @@
   "tsup": {
     "target": "esnext",
     "format": [
-      "cjs"
+      "js"
     ],
     "entry": [
       "src",
@@ -112,5 +112,5 @@
   "resolutions": {
     "rollup": "4.24.0"
   },
-  "type": "commonjs"
+  "type": "module"
 }
