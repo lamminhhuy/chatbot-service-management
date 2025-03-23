@@ -1,13 +1,11 @@
 {
   "compilerOptions": {
-"target": "ES2020", 
-    "module": "CommonJS",
-
+    "target": "es6", 
+    "module": "commonjs",
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
     },
-    
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
