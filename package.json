@@ -9,8 +9,8 @@
   "private": true,
   "scripts": {
     "dev": "tsx watch --clear-screen=false src/main/index.ts | pino-pretty",
-    "build": "tsup",
-    "start": "node dist/main/index.cjs",
+  "build:tsc": "tsc -p tsconfig.json",
+  "start:tsc": "node build/main/index.js",
     "clean": "rimraf dist coverage",
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
@@ -20,7 +20,7 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "tsx ./node_modules/typeorm/cli.js migration:generate -d ./src/database/PostgresDB.ts ./src/database/migration",
     "migration:create": "cd ./src/database/migration && typeorm-ts-node-commonjs migration:create",
-    "migration:run": "tsx ./node_modules/typeorm/cli.js migration:run -d ./src/database/PostgresDB.ts",
+    "migration:run": "npx tsx ./node_modules/typeorm/cli.js migration:run -d ./src/database/PostgresDB.ts",
     "migration:revert": "tsx ./node_modules/typeorm/cli.js migration:revert -d ./src/database/PostgresDB.ts"
   },
   "dependencies": {
