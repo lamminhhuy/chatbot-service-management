@@ -12,4 +12,4 @@ RUN yarn build
 
 EXPOSE 5001
 
-CMD ["node", "dist/main/index.cjs"]
+CMD ["node", "dist/main/index.js"]
