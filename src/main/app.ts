@@ -16,7 +16,7 @@ import { redisInstance } from "@/database/redisClient";
 import promptRouter from "@/modules/prompt/routes/promptRoutes";
 import { userRouter } from "@/modules/user/routes/UserRoute";
 import { authRouter } from "@/modules/auth/routes/AuthRouter";
-import { setUpContainers } from "@/container";
+// import { setUpContainers } from "@/container";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -39,7 +39,7 @@ initializeDatabase()
 mongoDBInstance;
 redisInstance;
 
-setUpContainers()
+// setUpContainers()
 
 app.get('/', (req,res)=> {
   return res.status(200).send('server pinged!')
