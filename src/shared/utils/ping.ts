@@ -5,7 +5,7 @@ export function pingServer() {
   const options = {
     hostname: 'chatbot-gpt-mkqi.onrender.com',
     port: 443,
-    path: '/',
+    path: '/ping',
     method: 'GET'
   };
 
