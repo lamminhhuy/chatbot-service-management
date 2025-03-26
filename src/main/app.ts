@@ -16,6 +16,7 @@ import { redisInstance } from "@/database/redisClient";
 import promptRouter from "@/modules/prompt/routes/promptRoutes";
 import { userRouter } from "@/modules/user/routes/UserRoute";
 import { authRouter } from "@/modules/auth/routes/AuthRouter";
+import { setUpContainers } from "@/container";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -38,12 +39,19 @@ initializeDatabase()
 mongoDBInstance;
 redisInstance;
 
+setUpContainers()
+
+app.use('/', (req,res)=> {
+  return res.status(200).send('server pinged!')
+})
+
 app.use(`/api/v1/chat`, chatRouter);
 app.use(`/api/v1/prompt`, promptRouter);
 app.use(`/api/v1/user`, userRouter);
 app.use(`/api/v1/auth`, authRouter);
-
 app.use(errorHandler);
+
+
 
 function getRandomPingTime() {
   const minutes = 3;
