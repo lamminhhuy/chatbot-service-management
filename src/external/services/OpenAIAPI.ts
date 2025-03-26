@@ -30,7 +30,7 @@ export class OpenAIAPI implements IChatbotAPI {
 
     try {
       const completion = await this.openai.chat.completions.create({
-        model: "gpt-4.5-preview-2025-02-27",
+        model: "gpt-4o",
         messages: messages,
         temperature: 0.7,
       });
