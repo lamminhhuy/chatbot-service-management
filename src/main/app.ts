@@ -41,7 +41,7 @@ redisInstance;
 
 setUpContainers()
 
-app.use('/', (req,res)=> {
+app.get('/', (req,res)=> {
   return res.status(200).send('server pinged!')
 })
 
