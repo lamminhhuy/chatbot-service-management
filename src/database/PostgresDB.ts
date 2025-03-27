@@ -1,6 +1,9 @@
 // src/database/index.ts
 import { DataSource } from 'typeorm';
 import { env } from '@/configs/envConfig';
+import { Role } from '@/modules/role/models/RoleModel';
+import { User } from '@/modules/user/models/UserModel';
+import { UserSession } from '@/modules/user/models/UserSessionModel';
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: env.POSTGRES_HOST,
@@ -8,7 +11,7 @@ export const AppDataSource = new DataSource({
     username: env.POSTGRES_USER,
     password: env.POSTGRES_PASSWORD,
     database: env.POSTGRES_DB,
-    entities: [],
+    entities: [Role, User, UserSession],
     synchronize: true, 
     logging: env.NODE_ENV === 'dev',
     migrations: ['src/database/migration/*.js'],

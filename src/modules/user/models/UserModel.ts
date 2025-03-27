@@ -1,5 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, JoinTable } from 'typeorm';
-import { Role } from './RoleModel';
+
+import { UserSession } from './UserSessionModel';
+import { Role } from '../../role/models/RoleModel';
 @Entity('users')
 @Index('idx_email', ['email'])
 @Index('idx_google_id', ['googleId'])
@@ -52,11 +54,15 @@ export class User {
   @Column({ type: 'timestamp', nullable: true })
   jwtRefreshTokenExpiresAt: Date | null;
 
-  @ManyToMany(() => Role, (role) => role.users, { cascade: true })
+  @ManyToMany(() => Role, (role) => role.users, { cascade: true, eager:true })
   @JoinTable({
     name: 'user_roles',
     joinColumn: { name: 'userId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'roleId', referencedColumnName: 'id' },
-  })
+
+  },)
   roles: Role[];
+  
+  @OneToMany(()=> UserSession, (session)=> session.user )
+  sessions: UserSession[]
 }
