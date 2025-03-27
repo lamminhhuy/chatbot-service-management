@@ -1,7 +1,12 @@
-import { registerRequestDTO } from "@/modules/auth/dtos/RegisterRequest.dto";
+import {  RegisterRequestDTOSchema } from "@/modules/auth/dtos/RegisterRequest.dto";
 import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
-import { Router } from "express";
+import { Request, Router } from "express";
+import { container } from "tsyringe";
+import { UserController } from "../controllers/UserController";
+import asyncHandler from "@/shared/utils/asyncHandler";
 
 export const userRouter = Router()
 
-userRouter.post('/register', validateRequest(registerRequestDTO))
+const userController = container.resolve(UserController)
+
+userRouter.get('/profile/:id',asyncHandler(userController.getProfile.bind(userController)))

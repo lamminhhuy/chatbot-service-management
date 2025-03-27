@@ -1,6 +1,6 @@
-export class CreateUserDto {
+export class ICreateUser {
     email: string;
     username: string;
     password: string;
-    phoneNumber: string
+    phoneNumber?: string
   }

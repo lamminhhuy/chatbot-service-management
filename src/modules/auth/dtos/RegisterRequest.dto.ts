@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const  registerRequestDTO = z.object({
+export const  RegisterRequestDTOSchema = z.object({
     otp: z.string(),
     email: z.string().email("invalid email").nonempty("email is required"),
     password: z.string().nonempty("password is required").min(8, "password must be at least 8 characters"),
@@ -9,4 +9,4 @@ export const  registerRequestDTO = z.object({
 });
 
 
-export type RegisterRequestDTO = z.infer<typeof registerRequestDTO>;
+export type RegisterRequestDTO = z.infer<typeof RegisterRequestDTOSchema>;

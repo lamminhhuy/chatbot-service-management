@@ -1,10 +1,8 @@
-import { Repository, DataSource } from "typeorm";
-import { User } from "../models/UserModel";
+import { Repository } from "typeorm";
 import { AppDataSource } from "@/database/PostgresDB";
-import { IUserRepository } from "../interfaces/IUserRepository";
 import { Role } from "../models/RoleModel";
-import { IRoleRepository } from "../interfaces/IRoleRepository";
-import { RoleCode } from "../enums/Role";
+import { IRoleRepository } from "../../user/interfaces/IRoleRepository";
+import { RoleCode } from "../../user/enums/Role";
 
 export class RoleRepository extends Repository<Role> implements IRoleRepository  {
   constructor() {

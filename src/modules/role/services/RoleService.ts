@@ -1,7 +1,7 @@
 
 import { Role } from '@/modules/role/models/RoleModel';
-import { RoleCode } from '../enums/Role';
-import { IRoleRepository } from '../interfaces/IRoleRepository';
+import { RoleCode } from '@/modules/user/enums/Role';
+import { IRoleRepository } from '@/modules/user/interfaces/IRoleRepository';
 import { inject, injectable } from 'tsyringe';
 @injectable()
 export class RoleService {
