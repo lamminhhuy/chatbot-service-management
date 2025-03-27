@@ -8,6 +8,9 @@ export const env = cleanEnv(process.env, {
     default: "dev",
     choices: ["dev", "pro", "test"],
   }),
+  REFRESH_TOKEN_MAX_AGE: num({
+default: 30 * 24 * 60 * 60 * 1000
+  }),
   POSTGRES_USER: str({
     default: 'postgres'
   }),
