@@ -1,7 +1,10 @@
 import { env } from '@/configs/envConfig'
 import nodemailer from 'nodemailer'
+import { IEmailService } from '../interfaces/services/IEmailService';
+import { injectable } from 'tsyringe';
 
-export class EmailService {
+@injectable()
+export class EmailService implements IEmailService {
     private transporter
     constructor (){
 

@@ -1,29 +1,29 @@
-import { RedisClientType } from "redis";
+import Redis from "ioredis";
 import { redisInstance } from "../../database/redisClient";
 
-export interface IOTPStorage {
+export interface IOTPService {
   setOTP(email: string, otp: string, ttl: number): Promise<void>;
   getOTP(email: string): Promise<string | null>;
   deleteOTP(email: string): Promise<void>;
 }
 
-export class RedisOTPStorage implements IOTPStorage {
-  private redisClient: RedisClientType;
+export class RedisOTPService implements IOTPService {
+  private redisClient: Redis;
 
   constructor() {
-    this.redisClient = redisInstance as unknown as RedisClientType;
+    this.redisClient = redisInstance as unknown as Redis;
    
   }
 
-  static async create(): Promise<RedisOTPStorage> {
+  static async create(): Promise<RedisOTPService> {
     const redisClient = await redisInstance;
-    const storage = new RedisOTPStorage();
+    const storage = new RedisOTPService();
     storage.redisClient = redisClient;
     return storage;
   }
 
   async setOTP(email: string, otp: string, ttl: number): Promise<void> {
-    await this.redisClient.setEx(email, ttl, otp);
+    await this.redisClient.setex(email, ttl, otp);
   }
 
   async getOTP(email: string): Promise<string | null> {
