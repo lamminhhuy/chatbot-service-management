@@ -45,7 +45,7 @@ export class AuthFailureResponseError extends ErrorsResponse {
 
 export class NotFoundResponseError extends ErrorsResponse {
   constructor(
-    message = ReasonStatusCode.NOT_FOUND,
+    message = ReasonStatusCode.NOT_FOUND as string,
     statusCode = StatusCode.NOT_FOUND
   ) {
     super(message, statusCode);
