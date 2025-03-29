@@ -11,7 +11,7 @@ import { mongoDBInstance } from "@/database/MongoDB";
 import { initializeDatabase } from "@/database/PostgresDB";
 import { pingServer } from "@/shared/utils/ping";
 import * as cron from "node-cron";
-import { redisInstance } from "@/database/redisClient";
+import RedisClient, { redisInstance } from "@/database/redisClient";
 import "reflect-metadata";
 import { setUpContainers } from "@/container";
 import { authenticateTokenMiddleware } from "@/modules/auth/utils/authenticateToken.middleware";
@@ -37,7 +37,7 @@ app.use(rateLimiter);
 async function initializeApp() {
   await initializeDatabase(); 
   await mongoDBInstance.connect(); 
-   redisInstance; 
+  await RedisClient.getInstance(); 
   setUpContainers(); 
 
   const chatRouter = (await import("@/modules/chatbot/routes/chatRoutes")).default;

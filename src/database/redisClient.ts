@@ -2,21 +2,30 @@ import { env } from "@/configs/envConfig";
 import Redis from "ioredis";
 
 class RedisClient {
-  private static instance: Redis;
-
+  private static instance: Redis | null = null;
+  
   private constructor() {}
 
-  public static getInstance(): Redis {
+  public static async getInstance(): Promise<Redis> {
     if (!this.instance) {
       this.instance = new Redis(env.REDIS_URL, {
         reconnectOnError: (err) => {
           console.error("Redis error:", err);
-          return true; 
+          return true;
         },
       });
 
-      this.instance.on("connect", () => console.log("Redis connected"));
-      this.instance.on("error", (err) => console.error("Redis error:", err));
+      return new Promise((resolve, reject) => {
+        this.instance!.on("connect", () => {
+          console.log("Redis connected");
+          resolve(this.instance!);
+        });
+
+        this.instance!.on("error", (err) => {
+          console.error("Redis connection error:", err);
+          reject(err);
+        });
+      });
     }
 
     return this.instance;
@@ -24,5 +33,4 @@ class RedisClient {
 }
 
 export default RedisClient;
-
-export const redisInstance = RedisClient.getInstance();
+export const redisInstance = await RedisClient.getInstance();
