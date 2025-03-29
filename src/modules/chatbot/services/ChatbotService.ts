@@ -20,7 +20,6 @@ export class ChatbotService {
     private vectorService: VectorService,
     private messageAdapter:IMessageAdapter
   ) {
-    this.sessionStore = new RedisSessionStore(redisInstance);
   }
 
   async handleUserQuery(sessionId: string, content: string) {
