@@ -9,14 +9,16 @@ import { ChatbotService } from "../services/ChatbotService";
 import { RedisSessionStore } from "@/shared/repositories/RedisSessionStore";
 import { ChatController } from "../controllers/ChatbotController";
 import {  chatRequestSchema } from "../validators/ChatValidator";
-import { OpenAIAPI } from "@/external/services/OpenAIAPI";
-import { MessageOpenAIAdapter } from "../helpers/MessageOpenAIAdapter";
+import { OpenAIAPI } from "@/infrastructure/ai/OpenAIAPI";
+import { OpenAIMessageAdapter } from "../helpers/OpenAIMessageAdapter";
+import { WebSearchService } from "@/infrastructure/search/WebSearchService";
 
 const chatRouter = Router();
 const sessionStore = new RedisSessionStore(redisInstance);
-const chatbotAPI = new OpenAIAPI(env.OPENAI_API_KEY);
+const webSearchService = new WebSearchService(env.SERP_API_KEY);
+const chatbotAPI = new OpenAIAPI(env.OPENAI_API_KEY, env.OPENAI_ASSISTANT_ID, webSearchService);
 const vectorRepository = new VectorRepositoryImpl()
-const messageAdapter = new MessageOpenAIAdapter()
+const messageAdapter = new OpenAIMessageAdapter()
 const vectorService = new VectorService(vectorRepository,chatbotAPI)
 const chatbotService = new ChatbotService(chatbotAPI, sessionStore,vectorService,messageAdapter);
 const chatController = new ChatController(chatbotService);

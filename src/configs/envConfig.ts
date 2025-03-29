@@ -56,5 +56,11 @@ default: 30 * 24 * 60 * 60 * 1000
   }),
   EMAIL_PASSWORD: str({
     default: '12345798'
+  }),
+  SERP_API_KEY: str({
+    default: 'serp_api_key'
+  }),
+  OPENAI_ASSISTANT_ID: str({
+    default: 'openai_assistant_id'
   })
 });

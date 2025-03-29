@@ -5,7 +5,7 @@ import { IMessageAdapter } from "../interfaces/IMessageAdapter";
 
 
 
-export class MessageOpenAIAdapter implements IMessageAdapter {
+export class OpenAIMessageAdapter implements IMessageAdapter {
    public toOpenAi (message: Message | SessionMessage ):ChatCompletionMessageParam {
     return {
         role: message.role as any,

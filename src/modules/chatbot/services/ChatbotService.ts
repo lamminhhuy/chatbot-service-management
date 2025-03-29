@@ -5,7 +5,6 @@ import { IChatbotAPI } from "@/modules/chatbot/interfaces/IChatBotApi";
 import { ISessionStore } from "@/shared/interfaces/repositories/ISessionStore";
 import { Session } from "@/shared/entites/Session";
 import { Author } from "@/shared/entites/Author";
-import { MessageOpenAIAdapter } from "../helpers/MessageOpenAIAdapter";
 import { ChatRole } from "../enums/ChatRole";
 import { Message } from "../models/MessageModel";
 import { SessionMessage } from "../types/SessionMessage";
