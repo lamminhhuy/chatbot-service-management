@@ -55,7 +55,7 @@ export class AuthService   {
       throw new BadRequestResponseError('Email already existed!');
     }
     const otp = generateOTP();
-    await this.otpStorage.setOTP(email, otp, 1000000);
+    await this.otpStorage.setOTP(email, otp, 300000);
     await this.emailService.sendOTP(email, otp);
     
   }
