@@ -1,6 +1,6 @@
 import { env } from '@/configs/envConfig'
+import { IEmailService } from '@/infrastructure/email/interfaces/IEmailService';
 import nodemailer from 'nodemailer'
-import { IEmailService } from '../interfaces/services/IEmailService';
 import { injectable } from 'tsyringe';
 
 @injectable()

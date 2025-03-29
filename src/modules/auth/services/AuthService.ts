@@ -1,6 +1,6 @@
 
 import { UserService } from '@/modules/user/services/UserService';
-import { IEmailService } from '@/shared/interfaces/services/IEmailService';
+import { IEmailService } from '@/infrastructure/email/interfaces/IEmailService';
 import { BadRequestResponseError } from '@/shared/response/errors.response';
 import { generateOTP } from '@/shared/utils/generateOTP';
 import { RegisterRequestDTO } from '../dtos/RegisterRequest.dto';
@@ -9,7 +9,7 @@ import { IJwtService } from '../interfaces/IJwtService';
 import { ICreateUser } from '@/modules/user/interfaces/ICreateUser';
 import { RegisterResponseDTO } from '../dtos/RegisterReponse.dto';
 import { inject, injectable } from 'tsyringe';
-import { IOTPService } from '@/shared/services/RedisOTPService';
+import { IOTPService } from '@/infrastructure/otp/RedisOTPService';
 import { LoginResponseDTO } from '../dtos/LoginResponse.dto';
 import bcrypt from 'bcrypt';
 import { LoginReqDTO } from '../dtos/LoginRequest.dto';
