@@ -6,12 +6,12 @@ import asyncHandler from "@/shared/utils/asyncHandler";
 import { VectorRepositoryImpl } from "@/modules/qAVector/repositories/VectorRepository";
 import { VectorService } from "@/modules/qAVector/services/VectorService";
 import { ChatbotService } from "../services/ChatbotService";
-import { RedisSessionStore } from "@/shared/repositories/RedisSessionStore";
 import { ChatController } from "../controllers/ChatbotController";
 import {  chatRequestSchema } from "../validators/ChatValidator";
 import { OpenAIAPI } from "@/infrastructure/ai/OpenAIAPI";
 import { OpenAIMessageAdapter } from "../helpers/OpenAIMessageAdapter";
 import { WebSearchService } from "@/infrastructure/search/WebSearchService";
+import { RedisSessionStore } from "@/infrastructure/session/RedisSessionStore";
 
 const chatRouter = Router();
 const sessionStore = new RedisSessionStore(redisInstance);

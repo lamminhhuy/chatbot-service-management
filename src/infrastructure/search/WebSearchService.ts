@@ -15,6 +15,7 @@ export class WebSearchService  {
     }
     }
     
+
     private getConfig(query: string){
         let data = JSON.stringify({
             "q": query

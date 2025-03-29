@@ -9,6 +9,8 @@ import { ChatRole } from "../enums/ChatRole";
 import { Message } from "../models/MessageModel";
 import { SessionMessage } from "../types/SessionMessage";
 import { IMessageAdapter } from "../interfaces/IMessageAdapter";
+import { RedisSessionStore } from "@/infrastructure/session/RedisSessionStore";
+import { redisInstance } from "@/database/redisClient";
 
 export class ChatbotService {
 
@@ -17,7 +19,9 @@ export class ChatbotService {
     private sessionStore: ISessionStore,
     private vectorService: VectorService,
     private messageAdapter:IMessageAdapter
-  ) {}
+  ) {
+    this.sessionStore = new RedisSessionStore(redisInstance);
+  }
 
   async handleUserQuery(sessionId: string, content: string) {
 

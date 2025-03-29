@@ -2,7 +2,6 @@
 import { Session } from "@/shared/entites/Session";
 import { ISessionStore } from "@/shared/interfaces/repositories/ISessionStore";
 import Redis from "ioredis";
-import { RedisClientType } from "redis";
 export class RedisSessionStore implements ISessionStore {
   private client;
   constructor(client: Redis) {

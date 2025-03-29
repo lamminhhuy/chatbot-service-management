@@ -9,7 +9,7 @@ import { ChatCompletionMessageParam } from "openai/resources/chat";
 import { IWebSearchService } from "./interfaces/IWebSearchService";
 
 export class OpenAIAPI implements IChatbotAPI {
-  private openai: OpenAI;
+private openai: OpenAI;
   private assistantId?: string;
   private webSearchService: IWebSearchService
 
@@ -61,7 +61,8 @@ export class OpenAIAPI implements IChatbotAPI {
       let webSearchResults = "";
 
       if (lastMessage.role === "user") {
-        webSearchResults = await this.webSearchService.search(lastMessage.content[0].toString());
+   
+        webSearchResults = await this.webSearchService.search(lastMessage.content as string);
 
         if(webSearchResults)
         {
