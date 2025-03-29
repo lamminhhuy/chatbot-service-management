@@ -1,11 +1,12 @@
 import { Message } from "@/modules/chatbot/models/MessageModel";
 import { SessionMessage } from "@/modules/chatbot/types/SessionMessage";
+import { randomUUID } from "node:crypto";
 export class Session {
   id: string;
   messages:SessionMessage[];
 
   constructor(id?: string) {
-    this.id = id || crypto.randomUUID();
+    this.id = id || randomUUID();
     this.messages = [];
   }
 
