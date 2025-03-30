@@ -9,11 +9,11 @@ const isHttpsEnv = ["pro","test"].includes(env.NODE_ENV)
 let credentials = {};
 if (isHttpsEnv) {
   const privateKey = fs.readFileSync(
-    "/etc/letsencrypt/live/api.logisticchatbot.com/privkey.pem",
+    "/etc/letsencrypt/live/logisticchatbot.froggle.fun/privkey.pem",
     "utf8"
   );
   const certificate = fs.readFileSync(
-    "/etc/letsencrypt/live/api.logisticchatbot.com/fullchain.pem",
+    "/etc/letsencrypt/live/logisticchatbot.froggle.fun/fullchain.pem",
     "utf8"
   );
   credentials = { key: privateKey, cert: certificate };
