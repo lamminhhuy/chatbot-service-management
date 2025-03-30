@@ -6,10 +6,10 @@ import { RegisterRequestDTO, RegisterRequestDTOSchema } from '../dtos/RegisterRe
 import { inject, injectable, singleton } from 'tsyringe';
 import { LoginReqDTO } from '../dtos/LoginRequest.dto';
 import { env } from '@/configs/envConfig';
-import { getRefreshTokenCookieOptions } from '../utils/getRefreshTokenCookieOptions';
 import { RegisterResponseDTOSchema } from '../dtos/RegisterReponse.dto';
 import { UserResponseDTOSchema } from '@/modules/user/dtos/UserResponse.dto';
 import { LoginResDTOSchema } from '../dtos/LoginResponse.dto';
+import { getCookieOptions } from '@/shared/utils/getCookieOptions';
 
 @singleton()
 export class AuthController {
@@ -18,7 +18,7 @@ export class AuthController {
   async login(req: Request<{},{},LoginReqDTO>, res: Response): Promise<void> {
     const loginResult = await this.authService.login(req.body);
     const { user, accessToken, refreshToken } = loginResult;
-    res.cookie('refreshToken', refreshToken, getRefreshTokenCookieOptions(env.REFRESH_TOKEN_MAX_AGE));
+    res.cookie('refreshToken', refreshToken, getCookieOptions(env.REFRESH_TOKEN_MAX_AGE));
 
     new SuccessResponse({
       message: 'User logged in successfully!',
@@ -36,7 +36,7 @@ export class AuthController {
 
   async verifyOTP(req: Request<{}, {}, RegisterRequestDTO>, res: Response): Promise<void> {
     const { user, accessToken, refreshToken } = await this.authService.verifyOTPAndRegister( req.body);
-    res.cookie('refreshToken', refreshToken,getRefreshTokenCookieOptions(env.REFRESH_TOKEN_MAX_AGE));
+    res.cookie('refreshToken', refreshToken,getCookieOptions(env.REFRESH_TOKEN_MAX_AGE));
 
     new SuccessResponse({
       message: 'User registered successfully!',
@@ -47,7 +47,7 @@ export class AuthController {
   async handleRefreshToken(req: Request, res: Response): Promise<void> {
     const { refreshToken } = req.cookies;
     const {accessToken, refreshToken: newRefreshToken} = await this.authService.handleRefreshToken(refreshToken);
-    res.cookie('refreshToken', newRefreshToken, getRefreshTokenCookieOptions(env.REFRESH_TOKEN_MAX_AGE));
+    res.cookie('refreshToken', newRefreshToken, getCookieOptions(env.REFRESH_TOKEN_MAX_AGE));
 
     new SuccessResponse({
       message: 'Access token refreshed successfully! ',

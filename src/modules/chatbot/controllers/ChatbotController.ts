@@ -2,6 +2,8 @@ import { SuccessResponse } from "@/shared/response/success.response";
 import { Request, Response } from "express";
 import { ChatbotService } from "../services/ChatbotService";
 import { IChatRequest } from "../dtos/ChatDTOs";
+import { getCookieOptions } from "@/shared/utils/getCookieOptions";
+import { env } from "@/configs/envConfig";
 
 export class ChatController {
   constructor(private chatBotService: ChatbotService) {}
@@ -12,12 +14,7 @@ export class ChatController {
     const result = await this.chatBotService.handleUserQuery(sessionId, content);
 
     if (result.sessionId) {
-      res.cookie("sessionId", result.sessionId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "strict",
-        maxAge: 24 * 60 * 60 * 1000,
-      });
+      res.cookie("sessionId", result.sessionId,getCookieOptions(env.COOKIE_MAX_AGE));
     }
 
     new SuccessResponse({
