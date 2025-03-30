@@ -27,7 +27,7 @@ export class JwtService implements IJwtService {
     try {
       return jwt.verify(token, this.accessTokenSecret);
     } catch (error) {
-      return jwt.verify(token, this.refreshTokenSecret);
+      return  jwt.verify(token, this.refreshTokenSecret);
     }
   }
   generateTokenPair(user: User): { accessToken: string; refreshToken: string } {

@@ -16,3 +16,5 @@ authRouter.post('/request-otp', validateRequest(RequestOtpDTOSchema),asyncHandle
 authRouter.post('/login', validateRequest(LoginRequestDTOSchema),asyncHandler(authController.login.bind(authController)))
 
 authRouter.post('/verify-otp', validateRequest(RegisterRequestDTOSchema),asyncHandler(authController.verifyOTP.bind(authController)))
+
+authRouter.post('/refresh',asyncHandler(authController.handleRefreshToken.bind(authController)))

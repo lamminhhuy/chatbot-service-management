@@ -11,7 +11,7 @@ export class UserSession {
     @Column({ type: 'bigint', name: 'user_id', nullable: false })
     userId: number;
 
-    @ManyToOne(() => User, (user) => user.sessions, { onDelete: 'CASCADE' })
+    @ManyToOne(() => User, (user) => user.sessions, { onDelete: 'CASCADE', eager:true })
     @JoinColumn({ name: 'user_id' }) 
     user: User;
 
