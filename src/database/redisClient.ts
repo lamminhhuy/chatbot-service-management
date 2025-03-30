@@ -16,6 +16,9 @@ class RedisClient {
       },
     });
 
+    redis.on("close", () => {
+      console.log("Redis disconnected!");
+    });
     redis.on("connect", () => {
       console.log("Redis connected");
     });
