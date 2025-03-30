@@ -62,10 +62,10 @@ async function initializeApp() {
 
   app.use("/api/v1/user", userRouter);
 
-  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-    console.error("Lỗi xảy ra:", err);
-    res.status(500).json({ message: "Internal Server Error", error: err.message });
-  });
+  // app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  //   console.error("Lỗi xảy ra:", err);
+  //   res.status(500).json({ message: "Internal Server Error", error: err.message });
+  // });
   
 app.use(errorHandler);
 }
