@@ -4,10 +4,10 @@ import https from "https";
 import http from "http"; 
 import fs from "fs";
 
-const isProduction = env.NODE_ENV === "pro" || "test";
+const isHttpsEnv = ["pro","test"].includes(env.NODE_ENV)
 
 let credentials = {};
-if (isProduction) {
+if (isHttpsEnv) {
   const privateKey = fs.readFileSync(
     "../../etc/letsencrypt/live/api.logisticchatbot.com/privkey.pem",
     "utf8"
@@ -20,7 +20,7 @@ if (isProduction) {
 }
 
 let server;
-if (isProduction) {
+if (isHttpsEnv) {
   server = https.createServer(credentials, app);
   server.listen(443, () => {
     logger.info("HTTPS Server running on port 443");
