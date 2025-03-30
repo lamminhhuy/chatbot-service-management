@@ -9,7 +9,12 @@ export class RedisSessionStore implements ISessionStore {
   }
 
   async saveSession(sessionId: string, session: Session): Promise<void> {
-    await this.client.set(sessionId, JSON.stringify(session));
+    try {
+      await this.client.set(sessionId, JSON.stringify(session));
+    } catch (error) {
+      console.error("Error saving session to Redis:", error);
+      throw error;
+    }
   }
 
   async getSession(sessionId: string): Promise<Session | null> {
