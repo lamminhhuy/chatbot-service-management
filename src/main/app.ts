@@ -33,17 +33,16 @@ const allowedOrigins = new Set([
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      if (allowedOrigins.has(origin as string)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: "*",
     credentials: true,
   }))
 
-app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: false,
+    })
+  );
+  
 app.use(rateLimiter);
 
 async function initializeApp() {
