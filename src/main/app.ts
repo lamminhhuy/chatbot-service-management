@@ -61,6 +61,10 @@ async function initializeApp() {
   app.use(asyncHandler(authenticateTokenMiddleware));
 
   app.use("/api/v1/user", userRouter);
+  app.use((err, req, res, next) => {
+    console.error("Lỗi xảy ra:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message });
+  });
   
 app.use(errorHandler);
 }
