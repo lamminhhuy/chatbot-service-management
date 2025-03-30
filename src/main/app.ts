@@ -20,6 +20,17 @@ import asyncHandler from "@/shared/utils/asyncHandler";
 const logger = pino({ name: "server start" });
 const app: Express = express();
 
+
+
+app.use(
+  cors({
+    origin: "*",
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
+  }))
+
+
 // Middleware setup
 app.use(cookieParser());
 app.use(morgan("dev"));
@@ -36,12 +47,6 @@ app.use(express.urlencoded({ extended: true }));
 //     contentSecurityPolicy: false,
 //   })
 // );
-
-app.use(
-  cors({
-    origin: "*",
-    credentials: true,
-  }))
 
 
 
