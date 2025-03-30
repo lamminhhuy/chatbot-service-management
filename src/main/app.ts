@@ -25,20 +25,24 @@ app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const allowedOrigins = ["http://localhost:3000", "https://localhost:3000","https://chatbotwidget-phi.vercel.app"];
+
+const allowedOrigins = new Set([
+  "http://localhost:3000",
+  "https://chatbotwidget-phi.vercel.app",
+]);
 
 app.use(
   cors({
     origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (allowedOrigins.has(origin as string)) {
         callback(null, true);
       } else {
         callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
-  })
-);
+  }))
+
 app.use(helmet());
 app.use(rateLimiter);
 
