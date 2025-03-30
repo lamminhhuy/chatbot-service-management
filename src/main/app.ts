@@ -26,10 +26,16 @@ app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const allowedOrigins = new Set([
-  "http://localhost:3000",
-  "https://chatbotwidget-phi.vercel.app",
-]);
+// const allowedOrigins = new Set([
+//   "http://localhost:3000",
+//   "https://chatbotwidget-phi.vercel.app",
+// ]);
+
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: false,
+//   })
+// );
 
 app.use(
   cors({
@@ -37,12 +43,8 @@ app.use(
     credentials: true,
   }))
 
-  app.use(
-    helmet({
-      contentSecurityPolicy: false,
-    })
-  );
-  
+
+
 app.use(rateLimiter);
 
 async function initializeApp() {
