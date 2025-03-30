@@ -6,50 +6,36 @@ import { pino } from "pino";
 import { errorHandler } from "@/shared/middlewares/error/errorHanlder";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
-import { env } from "@/configs/envConfig";
 import { mongoDBInstance } from "@/database/MongoDB";
 import { initializeDatabase } from "@/database/PostgresDB";
 import { pingServer } from "@/shared/utils/ping";
 import * as cron from "node-cron";
-import RedisClient, { redisInstance } from "@/database/redisClient";
+import RedisClient from "@/database/redisClient";
 import "reflect-metadata";
 import { setUpContainers } from "@/container";
-import { authenticateTokenMiddleware } from "@/modules/auth/utils/authenticateToken.middleware";
 import asyncHandler from "@/shared/utils/asyncHandler";
+import { env } from "@/configs/envConfig";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
-
-
-
-app.use(
-  cors({
-    origin: "*",
-    methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
-    credentials: true,
-  }))
-
-
+const allowedOrigins = env.CORS_ORIGIN?.split(",") || [];
 // Middleware setup
 app.use(cookieParser());
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-// const allowedOrigins = new Set([
-//   "http://localhost:3000",
-//   "https://chatbotwidget-phi.vercel.app",
-// ]);
-
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: false,
-//   })
-// );
-
-
-
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }},
+    credentials: true,
+  })
+);
+app.use(helmet());
 app.use(rateLimiter);
 
 async function initializeApp() {
