@@ -1,6 +1,6 @@
 import rateLimiter from "@/shared/middlewares/rateLimiter";
 import cors from "cors";
-import express, { type Express } from "express";
+import express, { NextFunction, Request, Response, type Express } from "express";
 import helmet from "helmet";
 import { pino } from "pino";
 import { errorHandler } from "@/shared/middlewares/error/errorHanlder";
@@ -15,6 +15,12 @@ import "reflect-metadata";
 import { setUpContainers } from "@/container";
 import asyncHandler from "@/shared/utils/asyncHandler";
 import { env } from "@/configs/envConfig";
+import https from 'https';
+import fs from 'fs'
+
+const privateKey = fs.readFileSync('../../etc/letsencrypt/live/api.logisticchatbot.com/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('../../etc/letsencrypt/live/api.logisticchatbot.com/fullchain.pem', 'utf8');
+const credentials = { key: privateKey, cert: certificate };
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -61,19 +67,14 @@ async function initializeApp() {
   app.use(asyncHandler(authenticateTokenMiddleware));
 
   app.use("/api/v1/user", userRouter);
-  app.use((err, req, res, next) => {
+
+  app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     console.error("Lỗi xảy ra:", err);
     res.status(500).json({ message: "Internal Server Error", error: err.message });
   });
   
 app.use(errorHandler);
 }
-
-function getRandomPingTime() {
-  const minutes = 3;
-  return `*/${minutes} * * * *`;
-}
-const querySnapshot = cron.schedule(getRandomPingTime(), pingServer);
 
 initializeApp()
   .then(() => {
@@ -83,5 +84,10 @@ initializeApp()
     logger.error("Failed to initialize application:", err);
   });
 
+const httpsServer = https.createServer(credentials, app);
+
+httpsServer.listen(443, () => {
+  console.log('HTTPS Server running on port 443');
+});
 
 export { app, logger };
