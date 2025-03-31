@@ -1,38 +1,50 @@
 
 import jwt from 'jsonwebtoken';
 import { IJwtService } from '@/modules/auth/interfaces/IJwtService';
-import { User } from '@/modules/user/models/UserModel';
+import { BadRequestResponseError } from '@/shared/response/errors.response';
 
 export class JwtService implements IJwtService {
   private accessTokenSecret = process.env.JWT_ACCESS_SECRET || 'mysecretToken123' ;
   private refreshTokenSecret = process.env.JWT_REFRESH_SECRET ||  'mysecretToken123' ;
   
-  generateAccessToken(user: User): string {
+  generateAccessToken(userId: number, email: string): string {
+    if (!userId || !email) throw new BadRequestResponseError('Invalid user data!');
+    
     return jwt.sign(
-      { userId: user.id, email: user.email },
+      { userId, email },
       this.accessTokenSecret,
       { expiresIn: '15m' }
     );
   }
 
-  generateRefreshToken(user: User): string {
+  generateRefreshToken(userId: number): string {
+    if (!userId) throw new BadRequestResponseError('Invalid user data!');
+
     return jwt.sign(
-      { userId: user.id },
+      { userId },
       this.refreshTokenSecret,
       { expiresIn: '7d' }
     );
   }
 
-  verifyToken(token: string): any {
+  verifyAccessToken(token: string): any {
     try {
       return jwt.verify(token, this.accessTokenSecret);
     } catch (error) {
-      return  jwt.verify(token, this.refreshTokenSecret);
+      throw new BadRequestResponseError('Access token is not valid!');
     }
   }
-  generateTokenPair(user: User): { accessToken: string; refreshToken: string } {
-    const accessToken = this.generateAccessToken(user);
-    const refreshToken = this.generateRefreshToken(user);
+  verifyRefreshToken(token: string): any {
+    try {
+      return jwt.verify(token, this.refreshTokenSecret);
+    } catch (error) {
+      throw new BadRequestResponseError('Refresh token is not valid!');
+    }
+
+  }
+  generateTokenPair(userId: number, email: string): { accessToken: string; refreshToken: string } {
+    const accessToken = this.generateAccessToken(userId,email);
+    const refreshToken = this.generateRefreshToken(userId);
     return { accessToken, refreshToken };
   }
 }

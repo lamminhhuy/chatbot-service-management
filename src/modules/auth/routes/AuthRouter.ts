@@ -6,6 +6,7 @@ import { RegisterRequestDTOSchema } from "../dtos/RegisterRequest.dto";
 import asyncHandler from "@/shared/utils/asyncHandler";
 import { container } from "tsyringe";
 import { LoginRequestDTOSchema } from "../dtos/LoginRequest.dto";
+import { verifyRefreshToken } from "../utils/requireRefreshToken.middleware";
 
 export const authRouter = Router()
 
@@ -17,4 +18,4 @@ authRouter.post('/login', validateRequest(LoginRequestDTOSchema),asyncHandler(au
 
 authRouter.post('/verify-otp', validateRequest(RegisterRequestDTOSchema),asyncHandler(authController.verifyOTP.bind(authController)))
 
-authRouter.post('/refresh',asyncHandler(authController.handleRefreshToken.bind(authController)))
+authRouter.post('/refresh',verifyRefreshToken,asyncHandler(authController.handleRefreshToken.bind(authController)))

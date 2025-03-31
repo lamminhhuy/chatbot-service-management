@@ -11,7 +11,7 @@ class TokenAuthenticator {
     public async authenticateToken (accessToken: string) {
 
         if (accessToken == null)    throw new AuthFailureResponseError();
-        this.jwtService.verifyToken(accessToken);
+        this.jwtService.verifyAccessToken(accessToken);
         const userSession = await this.userService.findUserActiveAccessToken(accessToken);
         if(!userSession)
         {

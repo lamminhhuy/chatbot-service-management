@@ -36,8 +36,8 @@ export class AuthService   {
         throw new BadRequestResponseError('Invalid password!');
     }
       
-    const accessToken = this.jwtService.generateAccessToken(existingUser);
-    const refreshToken = this.jwtService.generateRefreshToken(existingUser);
+    const accessToken = this.jwtService.generateAccessToken(existingUser.id,existingUser.email);
+    const refreshToken = this.jwtService.generateRefreshToken(existingUser.id,existingUser.email);
     await this.userService.createUserSession({
         accessToken,
         refreshToken,
@@ -82,7 +82,7 @@ export class AuthService   {
   }: RegisterRequestDTO): Promise<{ user: User; accessToken: string; refreshToken: string }> {
     await this.verifyOTP(email, otp);
     const user = await this.registerUser({ email, username, password, phoneNumber });
-    const { accessToken, refreshToken } = this.jwtService.generateTokenPair(user);
+    const { accessToken, refreshToken } = this.jwtService.generateTokenPair(user.id, user.email);
     await this.userService.createUserSession({
       accessToken,
       refreshToken,
@@ -96,16 +96,17 @@ export class AuthService   {
     };
   }
   async handleRefreshToken (refreshToken: string): Promise<{accessToken: string, refreshToken: string }> {
-    const { userId } = await this.jwtService.verifyToken(refreshToken);
+    const { userId } = await this.jwtService.verifyRefreshToken(refreshToken);
+
     const userSession = await this.userService.findUserActiveRefreshToken(refreshToken);
 
     if (userSession?.refreshToken !== refreshToken || userSession.userId !== userId) {
       throw new BadRequestResponseError('Refresh token is not valid!');
     }
-    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = this.jwtService.generateTokenPair(userSession.user);
 
-    await this.userService.handleUpdateAccessToken(newAccessToken, userId);
-    await this.userService.handleUpdateRefreshToken(newRefreshToken, userId);
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } = this.jwtService.generateTokenPair(userSession.user.id, userSession.user.email);
+
+    await this.userService.handleUpdateTokens(newAccessToken, newRefreshToken, refreshToken);
 
     return { accessToken: newAccessToken, refreshToken: newRefreshToken };
   }

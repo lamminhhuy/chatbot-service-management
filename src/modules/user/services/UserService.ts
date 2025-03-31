@@ -60,12 +60,10 @@ export class UserService {
     return this.userRepo.findByEmail(email);
   }
 
-  async handleUpdateRefreshToken(refreshToken: string, userId: number): Promise<void> {
-    await this.userSessionRepo.update({ refreshToken }, { userId });
+  async handleUpdateTokens(accessToken: string, refreshToken: string, oldRefreshToken: string): Promise<void> {
+    await this.userSessionRepo.update({ refreshToken: oldRefreshToken }, { accessToken, refreshToken });
   }
-  async handleUpdateAccessToken(accessToken: string, userId: number): Promise<void> {
-    await this.userSessionRepo.update({ accessToken }, { userId });
-  }
+
   async findUserActiveRefreshToken(refreshToken: string): Promise<UserSession | null> {
     return this.userSessionRepo.findOneBy({ refreshToken,is_revoked: false });
   }
