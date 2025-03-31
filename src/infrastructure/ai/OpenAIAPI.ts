@@ -59,7 +59,7 @@ private openai: OpenAI;
 
       const lastMessage = messages[messages.length - 1];
       let webSearchResults = "";
-
+      
       if (lastMessage.role === "user") {
    
         webSearchResults = await this.webSearchService.search(lastMessage.content as string);

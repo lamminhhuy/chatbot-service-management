@@ -36,7 +36,7 @@ export class BadRequestResponseError extends ErrorsResponse {
 
 export class AuthFailureResponseError extends ErrorsResponse {
   constructor(
-    message = ReasonStatusCode.UNAUTHORIZED,
+    message = ReasonStatusCode.UNAUTHORIZED as string,
     statusCode = StatusCode.UNAUTHORIZED
   ) {
     super(message, statusCode);
