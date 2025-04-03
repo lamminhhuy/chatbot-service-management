@@ -4,24 +4,24 @@ import { VectorService } from "../../qAVector/services/VectorService";
 import { IChatbotAPI } from "@/modules/chatbot/interfaces/IChatBotApi";
 import { ISessionStore } from "@/shared/interfaces/repositories/ISessionStore";
 import { Session } from "@/shared/entites/Session";
-import { Author } from "@/shared/entites/Author";
-import { ChatRole } from "../enums/ChatRole";
-import { Message } from "../models/MessageModel";
 import { SessionMessage } from "../types/SessionMessage";
 import { IMessageAdapter } from "../interfaces/IMessageAdapter";
-import { RedisSessionStore } from "@/infrastructure/session/RedisSessionStore";
-import { redisInstance } from "@/database/redisClient";
+import { ChatRole } from "@/modules/conversation/enums/ChatRole";
+import { Message } from "@/modules/conversation/models/Message";
+import { inject, injectable } from "tsyringe";
 
+@injectable()
 export class ChatbotService {
 
   constructor(
-    private chatbotAPI: IChatbotAPI,
-    private sessionStore: ISessionStore,
-    private vectorService: VectorService,
-    private messageAdapter:IMessageAdapter
+   @inject('IChatbotAPI') private chatbotAPI: IChatbotAPI,
+   @inject('ISessionStore') private sessionStore: ISessionStore,
+   @inject('IMessageAdapter') private messageAdapter:IMessageAdapter
   ) {
   }
-
+  async handleAuthenticatedUserQuery(messages: Message[]): Promise<string> {
+   return  this.chatbotAPI.generateResponse(messages.map((message) => this.messageAdapter.toOpenAi(message)));
+  }
   async handleUserQuery(sessionId: string, content: string) {
 
     const session = await this.getOrCreateSession(sessionId);
@@ -53,8 +53,5 @@ export class ChatbotService {
     return {content,role};
   }
 
-  private async retrieveRelevantInformation(content: string): Promise<string | null> {
-    const bestMatch = await this.vectorService.findBestMatch(content);
-    return bestMatch ? bestMatch.answer : null;
-  }
+
 }

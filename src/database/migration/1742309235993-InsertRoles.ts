@@ -6,6 +6,7 @@ export class InsertRoles1742309235993 implements MigrationInterface {
         await queryRunner.query(`
             INSERT INTO roles (name,code,description) VALUES
                 ('admin','ADMINISTRATOR', 'Administrator with full access'),
+                ('assistant','ASSISTANT', 'Chatbot assistant'),
                 ('manager','MANAGER', 'Manager with limited administrative privileges'),
                 ('basic_user','BASIC_USER', 'Basic user with limited access'),
                 ('advance_user','ADVANCED_USER', 'Advanced user with additional privileges'),

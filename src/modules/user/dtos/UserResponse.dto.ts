@@ -6,6 +6,6 @@ export const UserResponseDTOSchema = z.object({
   email: z.string(),
   roles: z.array(RoleResonseDTOSchema),
   username: z.string(),
-  phoneNumber: z.string(),
+  phoneNumber: z.string().nullable(),
   createdAt: z.date()
 })

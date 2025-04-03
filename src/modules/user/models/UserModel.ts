@@ -2,11 +2,14 @@ import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, J
 
 import { UserSession } from './UserSessionModel';
 import { Role } from '../../role/models/RoleModel';
+import { Message } from '@/modules/conversation/models/Message';
+import { Conversation } from '@/modules/conversation/models/Conversation';
 @Entity('users')
 @Index('idx_email', ['email'])
 @Index('idx_google_id', ['googleId'])
 @Index('idx_username', ['username'])
 export class User {
+
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -16,16 +19,13 @@ export class User {
   @Column({ type: 'varchar', length: 50, unique: true})
   username: string; 
 
-  @Column({ type: 'varchar', length: 15, unique: true, nullable: true})
+  @Column({ type: 'varchar', length: 15, unique: true, nullable: true, name:'phone_number' })
   phoneNumber: string| null; 
 
   @Column({ type: 'varchar', length: 255 })
   password: string;
 
-  @Column({ type: 'varchar', length: 100, unique: true, nullable: true})
-  googleId: string;
-
-  @Column({ type: 'varchar', length: 255, nullable: true })
+  @Column({ type: 'varchar', length: 255, nullable: true,name:'avatar_url' })
   avatarUrl: string | null;
 
   @Column({
@@ -35,34 +35,61 @@ export class User {
   })
   status: 'active' | 'inactive' | 'banned' | 'pending'; 
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: 'boolean', default: false,name: 'email_verified' })
   emailVerified: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', name: 'created_at' })
   createdAt: Date;
 
   @Column({
     type: 'timestamp',
+    name: 'updated_at',
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
   })
   updatedAt: Date;
 
-  @Column({ type: 'timestamp', nullable: true })
+  @Column({ type: 'timestamp', nullable: true, name: 'last_login_at' })
   lastLoginAt: Date | null;
 
   @Column({ type: 'timestamp', nullable: true })
   jwtRefreshTokenExpiresAt: Date | null;
 
+
   @ManyToMany(() => Role, (role) => role.users, { cascade: true, eager:true })
   @JoinTable({
     name: 'user_roles',
-    joinColumn: { name: 'userId', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'roleId', referencedColumnName: 'id' },
+    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
+    inverseJoinColumn: { name: 'role_id', referencedColumnName: 'id' },
 
   },)
   roles: Role[];
-  
+
+  @Column({ type: 'varchar', length: 255, nullable: true, name:'google_id' })
+  googleId: string;
+
   @OneToMany(()=> UserSession, (session)=> session.user )
   sessions: UserSession[]
+
+  @OneToMany(()=> Message, (message)=> message.sender)
+  messages: Message[]
+
+  @ManyToMany(() => Conversation, (conversation) => conversation.users, { cascade: true })
+  conversations: Conversation[]
+
+  public static getChatBot(): User {
+    return {
+      id: 999999,
+      username: 'chatbot',
+      roles: [{
+        id: 1,
+        name: 'assistant',
+        code: 'ASSISTANT',
+        description: 'Chatbot Assistant',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      }],
+    } as User;
+  }
+
 }

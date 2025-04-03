@@ -30,7 +30,7 @@ export class AuthController {
     await this.authService.requestOTP(email);
 
     new SuccessResponse({
-      message: 'OTP đã được gửi đến email của bạn',
+      message: 'OTP sent successfully!',
     }).send(res);
   }
 

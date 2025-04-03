@@ -20,7 +20,7 @@ const chatbotAPI = new OpenAIAPI(env.OPENAI_API_KEY, env.OPENAI_ASSISTANT_ID, we
 const vectorRepository = new VectorRepositoryImpl()
 const messageAdapter = new OpenAIMessageAdapter()
 const vectorService = new VectorService(vectorRepository,chatbotAPI)
-const chatbotService = new ChatbotService(chatbotAPI, sessionStore,vectorService,messageAdapter);
+const chatbotService = new ChatbotService(chatbotAPI, sessionStore,messageAdapter);
 const chatController = new ChatController(chatbotService);
 
 chatRouter.post(

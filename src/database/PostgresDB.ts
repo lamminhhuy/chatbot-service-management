@@ -4,6 +4,8 @@ import { env } from '@/configs/envConfig';
 import { Role } from '@/modules/role/models/RoleModel';
 import { User } from '@/modules/user/models/UserModel';
 import { UserSession } from '@/modules/user/models/UserSessionModel';
+import { Conversation } from '@/modules/conversation/models/Conversation';
+import { Message } from '@/modules/conversation/models/Message';
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: env.POSTGRES_HOST,
@@ -11,10 +13,10 @@ export const AppDataSource = new DataSource({
     username: env.POSTGRES_USER,
     password: env.POSTGRES_PASSWORD,
     database: env.POSTGRES_DB,
-    entities: [Role, User, UserSession],
+    entities: [Role, User, UserSession, Message, Conversation],
     synchronize: true, 
     logging: env.NODE_ENV === 'dev',
-    migrations: ['src/database/migration/*.js'],
+    migrations: ['src/database/migration/*.ts'],
     poolSize: env.POSTGRES_MAX_POOL_SIZE || 10,
     ssl: true
 });

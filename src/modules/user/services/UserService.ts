@@ -65,10 +65,10 @@ export class UserService {
   }
 
   async findUserActiveRefreshToken(refreshToken: string): Promise<UserSession | null> {
-    return this.userSessionRepo.findOneBy({ refreshToken,is_revoked: false });
+    return this.userSessionRepo.findOneBy({ refreshToken,isRevoked: false });
   }
 
   async findUserActiveAccessToken(accessToken: string): Promise<UserSession | null> {
-    return await this.userSessionRepo.findOneBy({ accessToken, is_revoked: false });
+    return await this.userSessionRepo.findOneBy({ accessToken, isRevoked: false });
   }
 }

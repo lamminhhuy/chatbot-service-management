@@ -14,8 +14,13 @@ export class Role {
     code: string;
     @Column({ type: "varchar", length: 255 })
     description: string;
+
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "created_at" })
     createdAt: Date;
+
+    @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP", name: "updated_at" })
     updatedAt: Date;
+    
     @ManyToMany(() => User, (user) => user.roles)
     users: User[];
 }

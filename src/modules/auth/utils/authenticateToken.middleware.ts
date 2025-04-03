@@ -3,12 +3,14 @@ import { IJwtService } from "../interfaces/IJwtService";
 import { UserService } from "@/modules/user/services/UserService";
 import { AuthFailureResponseError, BadRequestResponseError } from "@/shared/response/errors.response";
 import { container, inject, injectable } from "tsyringe";
+import { User } from "@/modules/user/models/UserModel";
+import { AuthenticatedRequest } from "@/shared/interfaces/AuthenticatedRequest";
 
 @injectable()
 class TokenAuthenticator {
     constructor( @inject('IJwtService') private jwtService: IJwtService, @inject(UserService) private userService: UserService) {
     }
-    public async authenticateToken (accessToken: string) {
+    public async authenticateToken (accessToken: string): Promise<User> {
 
         if (accessToken == null)    throw new AuthFailureResponseError();
         this.jwtService.verifyAccessToken(accessToken);
@@ -17,13 +19,14 @@ class TokenAuthenticator {
         {
         throw new AuthFailureResponseError()
         }
+        return userSession.user;
 }
 }
 
 const tokenAuthenticator =  container.resolve(TokenAuthenticator);
 
 export const authenticateTokenMiddleware = async (
-  req: Request,
+  req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
@@ -31,15 +34,15 @@ export const authenticateTokenMiddleware = async (
     const authHeader = req.headers.authorization;
     
     if (!authHeader || !authHeader.toLowerCase().startsWith('bearer ')) {
-      throw new BadRequestResponseError('Access token is required');
+      throw new AuthFailureResponseError('Access token is required');
     }
 
     const token = authHeader.split(' ')[1];
     if (!token) {
-      throw new BadRequestResponseError('Access token is required');
+      throw new AuthFailureResponseError('Access token is required');
     }
 
-    await tokenAuthenticator.authenticateToken(token);
+    req.user = await tokenAuthenticator.authenticateToken(token);
     next()
   } catch (error) {
     next(error);

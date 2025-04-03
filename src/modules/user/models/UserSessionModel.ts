@@ -1,18 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, Index, CreateDateColumn, OneToMany } from 'typeorm';
+import { 
+    Entity, Column, PrimaryGeneratedColumn, ManyToOne, 
+    JoinColumn, Index, CreateDateColumn, 
+    JoinTable
+} from 'typeorm';
 import { User } from './UserModel';
-
-
 
 @Entity('user_sessions')
 export class UserSession {
     @PrimaryGeneratedColumn({ type: 'bigint' })
-    id: number;
+    id: number; 
 
-    @Column({ type: 'bigint', name: 'user_id', nullable: false })
-    userId: number;
-
-    @ManyToOne(() => User, (user) => user.sessions, { onDelete: 'CASCADE', eager:true })
-    @JoinColumn({ name: 'user_id' }) 
+    @ManyToOne(() => User, (user) => user.sessions, { onDelete: 'CASCADE', eager: true,nullable: false })
+    @JoinColumn({ name: 'user_id', referencedColumnName: 'id'})
     user: User;
 
     @Index('idx_access_token') 
@@ -36,5 +35,5 @@ export class UserSession {
     expiresAt?: Date;
     
     @Column({ type: 'boolean', name: 'is_revoked', default: false })
-    is_revoked: boolean
+    isRevoked: boolean;
 }

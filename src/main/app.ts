@@ -46,8 +46,9 @@ async function initializeApp() {
 
   const chatRouter = (await import("@/modules/chatbot/routes/chatRoutes")).default;
   const promptRouter = (await import("@/modules/prompt/routes/promptRoutes")).default;
-  const userRouter = (await import("@/modules/user/routes/UserRoute")).userRouter;
-  const authRouter = (await import("@/modules/auth/routes/AuthRouter")).authRouter;
+  const userRouter = (await import("@/modules/user/routes/userRoutes")).userRouter;
+  const authRouter = (await import("@/modules/auth/routes/authRoutes")).authRouter;
+  const conversationRouter = (await import("@/modules/conversation/routes/conversationRoutes")).conversationRouter;
   const {authenticateTokenMiddleware} = (await import("@/modules/auth/utils/authenticateToken.middleware"));
 
   app.use("/ping", (req, res) => {
@@ -59,13 +60,8 @@ async function initializeApp() {
   app.use("/api/v1/prompt", promptRouter);
 
   app.use(asyncHandler(authenticateTokenMiddleware));
-
+  app.use("/api/v1/conversations", conversationRouter);
   app.use("/api/v1/user", userRouter);
-
-  // app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
-  //   console.error("Lỗi xảy ra:", err);
-  //   res.status(500).json({ message: "Internal Server Error", error: err.message });
-  // });
   
 app.use(errorHandler);
 }
@@ -77,6 +73,7 @@ initializeApp()
   .catch((err) => {
     logger.error("Failed to initialize application:", err);
   });
+
 
 
 export { app, logger };

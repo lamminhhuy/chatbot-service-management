@@ -2,6 +2,7 @@
 import jwt from 'jsonwebtoken';
 import { IJwtService } from '@/modules/auth/interfaces/IJwtService';
 import { BadRequestResponseError } from '@/shared/response/errors.response';
+import { env } from '@/configs/envConfig';
 
 export class JwtService implements IJwtService {
   private accessTokenSecret = process.env.JWT_ACCESS_SECRET || 'mysecretToken123' ;
@@ -13,7 +14,7 @@ export class JwtService implements IJwtService {
     return jwt.sign(
       { userId, email },
       this.accessTokenSecret,
-      { expiresIn: '15m' }
+      { expiresIn: env.JWT_ACCESS_TOKEN_EXPIRATION_TIME as number || '15m' }
     );
   }
 

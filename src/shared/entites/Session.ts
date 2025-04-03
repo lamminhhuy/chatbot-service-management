@@ -1,4 +1,3 @@
-import { Message } from "@/modules/chatbot/models/MessageModel";
 import { SessionMessage } from "@/modules/chatbot/types/SessionMessage";
 import { randomUUID } from "node:crypto";
 export class Session {
