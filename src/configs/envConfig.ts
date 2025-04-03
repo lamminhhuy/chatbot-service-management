@@ -65,5 +65,8 @@ default: 30 * 24 * 60 * 60 * 1000
   }),
   OPENAI_ASSISTANT_ID: str({
     default: 'openai_assistant_id'
+  }),
+  JWT_ACCESS_TOKEN_EXPIRATION_TIME: num({
+    default: 30 * 24 * 60 * 60 * 1000
   })
 });
