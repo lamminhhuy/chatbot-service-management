@@ -44,7 +44,7 @@ export class UserService {
      return savedUser
   }
 
-  async createUserSession(createUserSession: ICreateUserSession): Promise<UserSession> {
+  async createUserSession(createUserSession: Pick<UserSession, 'accessToken' | 'refreshToken' | 'user'>): Promise<UserSession> {
   return await this.userSessionRepo.save(createUserSession);
   }
   

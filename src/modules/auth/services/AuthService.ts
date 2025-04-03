@@ -41,7 +41,7 @@ export class AuthService   {
     await this.userService.createUserSession({
         accessToken,
         refreshToken,
-        userId: existingUser.id,
+        user:existingUser
       });
       return {
         user: existingUser,
@@ -55,7 +55,7 @@ export class AuthService   {
       throw new BadRequestResponseError('Email already existed!');
     }
     const otp = generateOTP();
-    await this.otpStorage.setOTP(email, otp, 300000);
+    await this.otpStorage.setOTP(email, otp, 3000000);
     await this.emailService.sendOTP(email, otp);
     
   }
@@ -86,7 +86,7 @@ export class AuthService   {
     await this.userService.createUserSession({
       accessToken,
       refreshToken,
-      userId: user.id,
+      user,
     });
   
     return {
@@ -100,7 +100,7 @@ export class AuthService   {
 
     const userSession = await this.userService.findUserActiveRefreshToken(refreshToken);
 
-    if (userSession?.refreshToken !== refreshToken || userSession.userId !== userId) {
+    if (userSession?.refreshToken !== refreshToken || userSession.user.id !== userId) {
       throw new BadRequestResponseError('Refresh token is not valid!');
     }
 
