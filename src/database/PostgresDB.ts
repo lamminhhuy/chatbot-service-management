@@ -16,7 +16,7 @@ export const AppDataSource = new DataSource({
     entities: [Role, User, UserSession, Message, Conversation],
     synchronize: true, 
     logging: env.NODE_ENV === 'dev',
-    migrations: ['src/database/migration/*.ts'],
+    migrations: env.NODE_ENV === 'dev' ? ['src/database/migration/*.ts']: ['dist/database/migration/*.js'],
     poolSize: env.POSTGRES_MAX_POOL_SIZE || 10,
     ssl: true
 });
