@@ -8,3 +8,11 @@ export const MessageResponseDTOSchema = z.object({
     role: z.enum(["user", "assistant"]),
     createdAt: z.date()
 });
+
+
+export const CreateMessageResponseDTOSchema = z.object({
+  message:  MessageResponseDTOSchema,
+    assistantResponse: z.object({
+    message: MessageResponseDTOSchema
+})
+});

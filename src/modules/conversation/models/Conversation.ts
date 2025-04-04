@@ -5,8 +5,9 @@ import { User } from "@/modules/user/models/UserModel";
 @Entity('conversations')
 export class Conversation {
 
-    constructor( title: string) {
+    constructor(title: string, users: User[]) {
         this.title = title;
+        this.users = users;
     }
     @PrimaryGeneratedColumn('increment')
     id: number;
@@ -28,11 +29,10 @@ export class Conversation {
     })
     users: User[];
 
-
-    @OneToMany(() => Message, (message) => message.conversation)
+    @OneToMany(() => Message, (message) => message.conversation, { cascade: ['remove'] })
     messages: Message[];
 
-    static createConversation(title: string): Conversation {
-        return new Conversation(title)
+    static createConversation(title: string, user: User[]): Conversation {
+        return new Conversation(title, user)
     }
 }

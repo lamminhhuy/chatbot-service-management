@@ -5,5 +5,6 @@ export  enum ChatRole {
     User = 'user',
     Assistant = 'assistant',
     Tool = 'tool',
+    Agent = 'agent',
     Function = 'function'
   }

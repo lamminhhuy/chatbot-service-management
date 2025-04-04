@@ -2,7 +2,6 @@ import { User } from "@/modules/user/models/UserModel";
 import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Conversation } from "./Conversation";
 import { ChatRole } from "../enums/ChatRole";
-import { Exclude } from "class-transformer";
 
 @Entity('messages')
 export class Message {
@@ -30,13 +29,14 @@ export class Message {
     })
     sender: User;
 
-    @ManyToOne(() => Conversation, (conversation) => conversation.messages)
+    @ManyToOne(() => Conversation, (conversation) => conversation.messages, {
+        onDelete: 'CASCADE', 
+      })
     @JoinColumn({
         name: 'conversation_id',
         referencedColumnName: 'id',
         foreignKeyConstraintName: 'fk_message_conversation'
     })
-    @Exclude()
     conversation: Conversation;
 
     public static createMessage(content: string, sender: User, role: ChatRole, conversation: Conversation) {
