@@ -1,7 +1,8 @@
 
 import { z } from "zod";
 import { MessageResponseDTOSchema } from "./MessageResponse.dto";
-
+import _ from "lodash";
+import dayjs from "dayjs";
 
 export const  ConversationReponseDTOSchema = z.object({
         title: z.string(),
@@ -17,4 +18,6 @@ export const CreateConversationReponseDTOSchema = z.object({
     })
 });
 
-export const ConversationsReponseDTOSchema  =  z.array(ConversationReponseDTOSchema)
+export const ConversationsReponseDTOSchema  =  z.array(ConversationReponseDTOSchema).transform((conversations) => {
+    return _.groupBy(conversations, (c) => dayjs(c.createdAt).format('YYYY-MM-DD'));
+  });

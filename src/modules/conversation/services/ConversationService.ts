@@ -13,6 +13,8 @@ import { ChatRole } from "../enums/ChatRole";
 import { UserService } from "@/modules/user/services/UserService";
 import { isUserRole } from "@/modules/auth/utils/role.utils";
 import { env } from "@/configs/envConfig";
+import { groupBy } from 'lodash';
+import dayjs from 'dayjs'; 
 
 @injectable()
 export class ConversationService {
@@ -33,12 +35,17 @@ export class ConversationService {
                     users: {
                         id: userId
                     }
+                },
+                order: {
+                    createdAt: 'DESC' 
                 }
             });
-    
+            
+
             if (!conversations || conversations.length === 0) {
                 return [];
             }
+
             return conversations;
         }
 

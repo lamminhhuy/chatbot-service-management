@@ -44,6 +44,18 @@ export class UserService {
      return savedUser
   }
 
+  async findUserById(userId: number): Promise<User | null> {
+    return this.userRepo.findUserById(userId);
+  }
+
+  async updateUser(userId: number, updateData: User): Promise<User> {
+    const user = await this.userRepo.findUserById(userId);
+    if (!user) {
+      throw new NotFoundResponseError('User not found');
+    }
+    Object.assign(user, updateData);
+    return this.userRepo.save(user);
+  } 
   async createUserSession(createUserSession: Pick<UserSession, 'accessToken' | 'refreshToken' | 'user'>): Promise<UserSession> {
   return await this.userSessionRepo.save(createUserSession);
   }
