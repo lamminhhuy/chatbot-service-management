@@ -68,5 +68,8 @@ default: 30 * 24 * 60 * 60 * 1000
   }),
   JWT_ACCESS_TOKEN_EXPIRATION_TIME: num({
     default: 30 * 24 * 60 * 60 * 1000
-  })
+  }),
+  CHATBOT_ID: num({
+    default: 999999
+  }),
 });
