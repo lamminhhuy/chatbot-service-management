@@ -5,7 +5,7 @@ import { BadRequestResponseError } from '@/shared/response/errors.response';
 import { generateOTP } from '@/shared/utils/generateOTP';
 import { RegisterRequestDTO } from '../dtos/RegisterRequest.dto';
 import { User } from '@/modules/user/models/UserModel';
-import { IJwtService } from '../interfaces/IJwtService';
+import { IJwtService } from '../interfaces/JwtService';
 import { ICreateUser } from '@/modules/user/interfaces/ICreateUser';
 import { RegisterResponseDTO } from '../dtos/RegisterReponse.dto';
 import { inject, injectable } from 'tsyringe';

@@ -21,7 +21,7 @@ export class ConflictResponseError extends ErrorsResponse {
 
 export class ForbiddenResponseError extends ErrorsResponse {
   constructor(
-    message = ReasonStatusCode.FORBIDDEN,
+    message = ReasonStatusCode.FORBIDDEN as string,
     statusCode = StatusCode.FORBIDDEN
   ) {
     super(message, statusCode);

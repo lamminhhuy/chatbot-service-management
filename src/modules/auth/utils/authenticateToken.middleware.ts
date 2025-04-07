@@ -1,10 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { IJwtService } from "../interfaces/IJwtService";
+import { IJwtService } from "../interfaces/JwtService";
 import { UserService } from "@/modules/user/services/UserService";
 import { AuthFailureResponseError, BadRequestResponseError } from "@/shared/response/errors.response";
 import { container, inject, injectable } from "tsyringe";
 import { User } from "@/modules/user/models/UserModel";
-import { AuthenticatedRequest } from "@/shared/interfaces/AuthenticatedRequest";
+import { CustomRequest } from "@/shared/interfaces/CustomRequest";
+
 
 @injectable()
 class TokenAuthenticator {
@@ -26,7 +27,7 @@ class TokenAuthenticator {
 const tokenAuthenticator =  container.resolve(TokenAuthenticator);
 
 export const authenticateTokenMiddleware = async (
-  req: AuthenticatedRequest,
+  req: CustomRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> => {

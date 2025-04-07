@@ -1,6 +1,6 @@
 
 import jwt from 'jsonwebtoken';
-import { IJwtService } from '@/modules/auth/interfaces/IJwtService';
+import { IJwtService } from '@/modules/auth/interfaces/JwtService';
 import { BadRequestResponseError } from '@/shared/response/errors.response';
 import { env } from '@/configs/envConfig';
 

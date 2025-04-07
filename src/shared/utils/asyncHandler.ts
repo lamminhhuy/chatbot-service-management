@@ -1,11 +1,19 @@
 import { NextFunction, Request, Response } from "express";
+import { CustomRequest } from "../interfaces/CustomRequest";
 
-export const asyncHandler = <T extends Request>(
-  fn: (req: any, res: Response, next: NextFunction) => Promise<any>
-) => {
+type AsyncRouteHandler<T extends CustomRequest> = (
+  req: T,
+  res: Response,
+  next: NextFunction
+) => Promise<void>;
+
+export type AsyncHandler = <T extends Request>(
+  fn: AsyncRouteHandler<T>
+) => ((req: T, res: Response, next: NextFunction) => void) 
+export const asyncHandler: AsyncHandler = <T extends Request>(
+  fn: AsyncRouteHandler<T>
+): ((req: T, res: Response, next: NextFunction) => void) => {
   return (req: T, res: Response, next: NextFunction) => {
     fn(req, res, next).catch(next);
   };
 };
-
-export default asyncHandler;

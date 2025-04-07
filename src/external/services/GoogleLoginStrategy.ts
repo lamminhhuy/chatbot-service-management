@@ -1,5 +1,5 @@
 
-import { IAuthStrategy } from '@/modules/auth/interfaces/IAuthStrategy';
+import { IAuthStrategy } from '@/modules/auth/interfaces/AuthStrategy';
 import { google } from 'googleapis';
 
 export class GoogleLoginStrategy implements IAuthStrategy {

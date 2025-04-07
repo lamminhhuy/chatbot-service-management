@@ -1,5 +1,3 @@
-import { User } from "@/modules/user/models/UserModel";
-
 export interface IJwtService {
     generateAccessToken(userId: number, email: string): string;
     generateRefreshToken(userId: number, email: string): string;

@@ -1,6 +1,6 @@
 import rateLimiter from "@/shared/middlewares/rateLimiter";
 import cors from "cors";
-import express, { NextFunction, Request, Response, type Express } from "express";
+import express, { type Express } from "express";
 import helmet from "helmet";
 import { pino } from "pino";
 import { errorHandler } from "@/shared/middlewares/error/errorHanlder";
@@ -8,14 +8,12 @@ import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import { mongoDBInstance } from "@/database/MongoDB";
 import { initializeDatabase } from "@/database/PostgresDB";
-import { pingServer } from "@/shared/utils/ping";
-import * as cron from "node-cron";
 import RedisClient from "@/database/redisClient";
 import "reflect-metadata";
 import { setUpContainers } from "@/container";
-import asyncHandler from "@/shared/utils/asyncHandler";
 import { env } from "@/configs/envConfig";
-
+import { ModuleLoader } from "@/shared/utils/ModuleLoader";
+import { asyncHandler } from "@/shared/utils/asyncHandler";
 const logger = pino({ name: "server start" });
 const app: Express = express();
 const allowedOrigins = env.CORS_ORIGIN?.split(",") || [];
@@ -42,28 +40,22 @@ async function initializeApp() {
   await initializeDatabase(); 
   await mongoDBInstance.connect(); 
   await RedisClient.getInstance(); 
-  setUpContainers(); 
+  setUpContainers();                      
 
-  const chatRouter = (await import("@/modules/chatbot/routes/chatRoutes")).default;
-  const promptRouter = (await import("@/modules/prompt/routes/promptRoutes")).default;
-  const userRouter = (await import("@/modules/user/routes/userRoutes")).userRouter;
-  const authRouter = (await import("@/modules/auth/routes/authRoutes")).authRouter;
-  const conversationRouter = (await import("@/modules/conversation/routes/conversationRoutes")).conversationRouter;
-  const {authenticateTokenMiddleware} = (await import("@/modules/auth/utils/authenticateToken.middleware"));
+  const modules = (await import("@/modules")).default;
+ 
+  const globalMiddlewares = (await import("@/shared/middlewares")).default;
+ 
+  const moduleLoader = new ModuleLoader(modules, globalMiddlewares, asyncHandler);
+
+  app.use(moduleLoader.loadAllModules());
+
 
   app.use("/ping", (req, res) => {
     return res.status(200).send("server pinged!");
   }); 
-  
-  app.use("/api/v1/auth", authRouter); 
-  app.use("/api/v1/chat", chatRouter);
-  app.use("/api/v1/prompt", promptRouter);
 
-  app.use(asyncHandler(authenticateTokenMiddleware));
-  app.use("/api/v1/conversations", conversationRouter);
-  app.use("/api/v1/user", userRouter);
-  
-app.use(errorHandler);
+  app.use(errorHandler);
 }
 
 initializeApp()

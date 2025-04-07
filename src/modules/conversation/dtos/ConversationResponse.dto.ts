@@ -3,6 +3,7 @@ import { z } from "zod";
 import { MessageResponseDTOSchema } from "./MessageResponse.dto";
 import _ from "lodash";
 import dayjs from "dayjs";
+import { Conversation } from "../models/Conversation";
 
 export const  ConversationReponseDTOSchema = z.object({
         title: z.string(),
@@ -11,13 +12,14 @@ export const  ConversationReponseDTOSchema = z.object({
         messages: z.array(MessageResponseDTOSchema),
 })
 
-export const CreateConversationReponseDTOSchema = z.object({
-    conversation:ConversationReponseDTOSchema.omit({messages:true}),
-    assistantResponse: z.object({
-        message: MessageResponseDTOSchema,
-    })
-});
+export const CreateConversationReponseDTOSchema = ConversationReponseDTOSchema.transform((conversation: Conversation) => {
+    return {
+        ...conversation,
+        assistantResponse: conversation.messages[1],
+    };
+}
+);
 
-export const ConversationsReponseDTOSchema  =  z.array(ConversationReponseDTOSchema).transform((conversations) => {
+export const ConversationsReponseDTOSchema  =  z.array(ConversationReponseDTOSchema).transform((conversations: Conversation[]) => {
     return _.groupBy(conversations, (c) => dayjs(c.createdAt).format('YYYY-MM-DD'));
   });

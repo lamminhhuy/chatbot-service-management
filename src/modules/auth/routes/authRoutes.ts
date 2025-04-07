@@ -1,21 +1,44 @@
 import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
-import { Router } from "express";
 import { RequestOtpDTOSchema } from "../dtos/RequestOtp.dto";
 import { AuthController } from "../controllers/AuthController";
 import { RegisterRequestDTOSchema } from "../dtos/RegisterRequest.dto";
-import asyncHandler from "@/shared/utils/asyncHandler";
 import { container } from "tsyringe";
 import { LoginRequestDTOSchema } from "../dtos/LoginRequest.dto";
 import { verifyRefreshToken } from "../utils/requireRefreshToken.middleware";
-
-export const authRouter = Router()
+import { ModuleConfig } from "../interfaces/ModuleConfig";
 
 const authController = container.resolve(AuthController)
 
-authRouter.post('/request-otp', validateRequest(RequestOtpDTOSchema),asyncHandler(authController.requestOTP.bind(authController)))
-
-authRouter.post('/login', validateRequest(LoginRequestDTOSchema),asyncHandler(authController.login.bind(authController)))
-
-authRouter.post('/verify-otp', validateRequest(RegisterRequestDTOSchema),asyncHandler(authController.verifyOTP.bind(authController)))
-
-authRouter.post('/refresh',verifyRefreshToken,asyncHandler(authController.handleRefreshToken.bind(authController)))
+export const authModule: ModuleConfig = {
+    prefix: "/auth",
+    routes: [
+        {
+            method: "post",
+            path: "/request-otp",
+            isPublic: true,
+            handler: authController.requestOTP.bind(authController),
+            middlewares: [validateRequest(RequestOtpDTOSchema)]
+        },
+        {
+            method: "post",
+            path: "/login",
+            isPublic: true,
+            handler: authController.login.bind(authController),
+            middlewares: [validateRequest(LoginRequestDTOSchema)]
+        },
+        {
+            method: "post",
+            isPublic: true,
+            path: "/verify-otp",
+            handler: authController.verifyOTP.bind(authController),   
+            middlewares: [validateRequest(RegisterRequestDTOSchema)]
+        },
+        {
+            method: "post",
+            isPublic: true,
+            path: "/refresh",
+            handler: authController.handleRefreshToken.bind(authController),
+            middlewares: [verifyRefreshToken]
+        }
+    ]
+}

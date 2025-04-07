@@ -4,7 +4,7 @@ import { User } from '../models/UserModel';
 import { IUserRepository } from '../interfaces/IUserRepository';
 import { RoleService } from './RoleService';
 import { RoleCode } from '../enums/Role';
-import { ErrorsResponse, NotFoundResponseError } from '@/shared/response/errors.response';
+import { ErrorsResponse, ForbiddenResponseError, NotFoundResponseError } from '@/shared/response/errors.response';
 import { UserSession } from '../models/UserSessionModel';
 import { Repository } from 'typeorm';
 import { ICreateUserSession } from '../interfaces/ICreateUserSession';
@@ -60,8 +60,13 @@ export class UserService {
   return await this.userSessionRepo.save(createUserSession);
   }
   
-  async getProfile(userId: number): Promise<User> {
-    const result =await  this.userRepo.findUserById(userId);
+  async getProfile(requestedUserId: number, user: User): Promise<User> {
+
+    if (requestedUserId !== user.id && !user.roles.some(role => role.code === RoleCode.ADMIN)) {
+      throw new ForbiddenResponseError('You are not allowed to access this profile');
+    }
+    
+    const result =await  this.userRepo.findUserById(requestedUserId);
     if(!result) {
       throw new NotFoundResponseError('User not found')
     }

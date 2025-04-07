@@ -1,4 +1,5 @@
 import { UserResponseDTOSchema } from "@/modules/user/dtos/UserResponse.dto";
+import { Message } from "@/shared/entites/Message";
 import { z } from "zod";
 
 export const MessageResponseDTOSchema = z.object({
@@ -10,9 +11,9 @@ export const MessageResponseDTOSchema = z.object({
 });
 
 
-export const CreateMessageResponseDTOSchema = z.object({
-  message:  MessageResponseDTOSchema,
-    assistantResponse: z.object({
-    message: MessageResponseDTOSchema
+export const CreateMessageResponseDTOSchema = z.array(MessageResponseDTOSchema).transform((messages: Message[]) => {
+    return {
+      message:messages[0],
+      assistantResponse:{message:messages[1]},
+    };
 })
-});
