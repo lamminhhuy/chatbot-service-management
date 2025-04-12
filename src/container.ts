@@ -5,7 +5,6 @@ import { registerConversationDependencies } from "./modules/conversation/convers
 import { registerRoleDependencies } from "./modules/role/role.container";
 import { registerSubscriptionDependencies } from "./modules/subscription/subscription.container";
 import { registerUserDependencies } from "./modules/user/user.container";
-import { registerUserSubscriptionDependencies } from "./modules/user_subsriptions/userSubscription.container";
 
 export function setUpContainers (){
   registerInfraDependencies()
@@ -15,6 +14,5 @@ export function setUpContainers (){
   registerConversationDependencies()
   registerChatbotDependencies()
   registerSubscriptionDependencies()
-  registerUserSubscriptionDependencies()
 }
 

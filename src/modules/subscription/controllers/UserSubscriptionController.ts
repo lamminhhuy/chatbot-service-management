@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import SubscriptionService from "../services/UserSubscriptionService";
 import { SuccessResponse } from "@/shared/response/success.response";
 import { inject, injectable } from "tsyringe";
 import { UpdateSubscriptionDTO } from "../dtos/UpdateSubscription.dto";

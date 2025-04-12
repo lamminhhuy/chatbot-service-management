@@ -13,9 +13,9 @@ import { Repository } from "typeorm";
 import { inject, injectable } from "tsyringe";
 import UserFactory from "../factories/user.factory";
 import { CreateUserDTO } from "../dtos/CreateUser.dto";
-import UserSubscriptionService from "@/modules/user_subsriptions/services/UserSubscriptionService";
+import UserSubscriptionService from "@/modules/subscription/services/UserSubscriptionService";
 import { Subscription } from "@/modules/subscription/models/Subscription";
-import { UserSubscription } from "@/modules/user_subsriptions/models/UserSubscription";
+import { UserSubscription } from "@/modules/subscription/models/UserSubscription";
 import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
 
 @injectable()

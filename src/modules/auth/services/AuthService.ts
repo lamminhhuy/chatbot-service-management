@@ -6,14 +6,12 @@ import { generateOTP } from '@/shared/utils/generateOTP';
 import { RegisterRequestDTO } from '../dtos/RegisterRequest.dto';
 import { User } from '@/modules/user/models/UserModel';
 import { IJwtService } from '../interfaces/JwtService';
-import { RegisterResponseDTO } from '../dtos/RegisterReponse.dto';
 import { inject, injectable } from 'tsyringe';
 import { IOTPService } from '@/infrastructure/otp/RedisOTPService';
-import { LoginResponseDTO } from '../dtos/LoginResponse.dto';
 import bcrypt from 'bcrypt';
 import { LoginReqDTO } from '../dtos/LoginRequest.dto';
-import UserSubscriptionService from '@/modules/user_subsriptions/services/UserSubscriptionService';
-import { UserSubscription } from '@/modules/user_subsriptions/models/UserSubscription';
+import UserSubscriptionService from '@/modules/subscription/services/UserSubscriptionService';
+import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
 import { CreateUserDTO } from '@/modules/user/dtos/CreateUser.dto';
 import { env } from '@/configs/envConfig';
 

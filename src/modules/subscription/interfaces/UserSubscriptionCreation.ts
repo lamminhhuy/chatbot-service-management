@@ -1,5 +1,5 @@
 import { SubscriptionType } from "@/modules/subscription/enums/SubscriptionType";
-import { SubscriptionCode } from "../../subscription/enums/SubscriptionCode";
+import { SubscriptionCode } from "../enums/SubscriptionCode";
 
 export interface UserSubscriptionCreation {
     userId: number;

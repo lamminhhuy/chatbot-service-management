@@ -1,5 +1,5 @@
 import { RoleResonseDTOSchema } from "@/modules/role/dtos/RoleResponseDTOSchema";
-import { SubscriptionResponseDTOSchema } from "@/modules/user_subsriptions/dtos/SubscriptionReponse.dto";
+import { SubscriptionResponseDTOSchema } from "@/modules/subscription/dtos/SubscriptionReponse.dto";
 import { z } from "zod";
 
 export const UserResponseDTOSchema = z.object({

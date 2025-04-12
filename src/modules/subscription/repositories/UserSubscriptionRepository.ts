@@ -4,7 +4,7 @@ import { injectable } from "tsyringe";
 import { AppDataSource } from "@/database/PostgresDB";
 import { IUserSubscriptionRepository } from "../interfaces/IUserSubscriptionRepository";
 import { UserSubscription } from "../models/UserSubscription";
-import { SubscriptionCode } from "../../subscription/enums/SubscriptionCode";
+import { SubscriptionCode } from "../enums/SubscriptionCode";
 
 @injectable()
 class UserSubscriptionRepository extends Repository<UserSubscription> implements IUserSubscriptionRepository {

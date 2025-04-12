@@ -1,6 +1,6 @@
 import { injectable } from "tsyringe";
 import { UserSubscription } from "../models/UserSubscription";
-import { UserSubscriptionCreation } from "../interfaces/UserSubscriptionCreattion";
+import { UserSubscriptionCreation } from "../interfaces/UserSubscriptionCreation";
 import { SubscriptionType } from "@/modules/subscription/enums/SubscriptionType";
 import dayjs from "dayjs";
 
