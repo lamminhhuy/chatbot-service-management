@@ -12,4 +12,8 @@ export class RoleRepository extends Repository<Role> implements IRoleRepository 
   findRoleByCode (code: RoleCode): Promise<Role | null> {
     return this.findOne({ where: { code } });
   };
+  
+  findRoleById(id: number): Promise<Role | null> {
+    return this.findOne({ where: { id } });
+  }
 }

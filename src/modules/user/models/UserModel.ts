@@ -4,13 +4,27 @@ import { UserSession } from './UserSessionModel';
 import { Role } from '../../role/models/RoleModel';
 import { Message } from '@/modules/conversation/models/Message';
 import { Conversation } from '@/modules/conversation/models/Conversation';
-import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
+
 @Entity('users')
 @Index('idx_email', ['email'])
 @Index('idx_google_id', ['googleId'])
 @Index('idx_username', ['username'])
 export class User {
-
+  constructor(
+    email: string,
+    username: string,
+    phoneNumber: string | null,
+    password: string,
+    avatarUrl: string | null,
+    roles: Role[],
+  ) {
+    this.email = email;
+    this.username = username;
+    this.phoneNumber = phoneNumber;
+    this.password =  password;
+    this.avatarUrl = avatarUrl ?? null;
+    this.roles =roles
+  }
   @PrimaryGeneratedColumn('increment')
   id: number;
 
@@ -92,5 +106,6 @@ export class User {
       }],
     } as User;
   }
+
 
 }

@@ -1,5 +1,6 @@
 import { DeleteResult } from "typeorm";
 import { Subscription } from "../models/Subscription";
+import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
 
 export interface ISubscriptionRepository  {
     existsByName(name: string): Promise<boolean>;
@@ -8,5 +9,5 @@ export interface ISubscriptionRepository  {
     find(): Promise<Subscription[]>;
     findOneById(id: number): Promise<Subscription | null>;
     delete(id: number): Promise<DeleteResult>;
+    findByCode(code: SubscriptionCode): Promise<Subscription | null>;
 }
-    

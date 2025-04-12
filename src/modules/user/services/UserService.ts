@@ -1,47 +1,67 @@
-import { UserRepository } from '../repositories/UserRepository';
-import bcrypt from 'bcrypt';
-import { User } from '../models/UserModel';
-import { IUserRepository } from '../interfaces/IUserRepository';
-import { RoleService } from './RoleService';
-import { RoleCode } from '../enums/Role';
-import { ErrorsResponse, ForbiddenResponseError, NotFoundResponseError } from '@/shared/response/errors.response';
-import { UserSession } from '../models/UserSessionModel';
-import { Repository } from 'typeorm';
-import { ICreateUserSession } from '../interfaces/ICreateUserSession';
-import { ICreateUser } from '../interfaces/ICreateUser';
-import { inject, injectable } from 'tsyringe';
+import { UserRepository } from "../repositories/UserRepository";
+import bcrypt from "bcrypt";
+import { User } from "../models/UserModel";
+import { IUserRepository } from "../interfaces/IUserRepository";
+import { RoleService } from "./RoleService";
+import { RoleCode } from "../enums/Role";
+import {
+  ErrorsResponse,
+  NotFoundResponseError,
+} from "@/shared/response/errors.response";
+import { UserSession } from "../models/UserSessionModel";
+import { Repository } from "typeorm";
+import { inject, injectable } from "tsyringe";
+import UserFactory from "../factories/user.factory";
+import { CreateUserDTO } from "../dtos/CreateUser.dto";
+import UserSubscriptionService from "@/modules/user_subsriptions/services/UserSubscriptionService";
+import { Subscription } from "@/modules/subscription/models/Subscription";
+import { UserSubscription } from "@/modules/user_subsriptions/models/UserSubscription";
+import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
 
 @injectable()
 export class UserService {
   private userRepo: IUserRepository;
   private roleService: RoleService;
-  private userSessionRepo: Repository<UserSession>
-  
-  constructor(@inject('IUserRepository') userRepo: IUserRepository,@inject(RoleService) roleService: RoleService,@inject('UserSessionRepository') userSessionRepo:  Repository<UserSession> ) {
-    this.userRepo =  userRepo;
+  private userSessionRepo: Repository<UserSession>;
+
+  constructor(
+    @inject("IUserRepository") userRepo: IUserRepository,
+    @inject(RoleService) roleService: RoleService,
+    @inject("UserSessionRepository") userSessionRepo: Repository<UserSession>,
+    @inject(UserSubscriptionService) private userSubscriptionService: UserSubscriptionService
+  ) {
+    this.userRepo = userRepo;
     this.roleService = roleService;
     this.userSessionRepo = userSessionRepo;
   }
-  
-  async createUser({password,email,username, phoneNumber}: ICreateUser): Promise<User> {
 
-    const basicUserRole = await this.roleService.findRoleByCode(RoleCode.BASIC_USER)
-    if(!basicUserRole)
-    {
-      throw new ErrorsResponse('Role Basic is not existed',408)
+  async createUser({
+    password,
+    email,
+    username,
+    phoneNumber,
+  }: CreateUserDTO): Promise<User &{ userSubscription: UserSubscription}> {
+    const basicUserRole = await this.roleService.findRoleByCode(
+      RoleCode.BASIC_USER
+    );
+    if (!basicUserRole) {
+      throw new ErrorsResponse("Role Basic is not existed", 408);
     }
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User();
-    user.email = email;
-    user.username = username;
-    user.phoneNumber = phoneNumber ?? null;
-    user.password = hashedPassword;
-    user.avatarUrl = '';
-    user.emailVerified= true;
-    user.roles= [
-       basicUserRole]
+
+    const user = await UserFactory.create({
+      password,
+      email,
+      username,
+      phoneNumber,
+      avatarUrl: null,
+      roles: [basicUserRole],
+    });
     const savedUser = await this.userRepo.save(user);
-     return savedUser
+    const userSubscription = await this.userSubscriptionService.create({
+      userId: savedUser.id,
+      subscriptionCode: SubscriptionCode.BASIC,
+    });
+    return { ...savedUser, userSubscription };
   }
 
   async findUserById(userId: number): Promise<User | null> {
@@ -51,37 +71,55 @@ export class UserService {
   async updateUser(userId: number, updateData: User): Promise<User> {
     const user = await this.userRepo.findUserById(userId);
     if (!user) {
-      throw new NotFoundResponseError('User not found');
+      throw new NotFoundResponseError("User not found");
     }
     Object.assign(user, updateData);
     return this.userRepo.save(user);
-  } 
-  async createUserSession(createUserSession: Pick<UserSession, 'accessToken' | 'refreshToken' | 'user'>): Promise<UserSession> {
-  return await this.userSessionRepo.save(createUserSession);
   }
-  
-  async getProfile(userId: number): Promise<User> {
+  async createUserSession(
+    createUserSession: Pick<
+      UserSession,
+      "accessToken" | "refreshToken" | "user"
+    >
+  ): Promise<UserSession> {
+    return await this.userSessionRepo.save(createUserSession);
+  }
 
-    const result =await  this.userRepo.findUserById(userId);
-    if(!result) {
-      throw new NotFoundResponseError('User not found')
+  async getProfile(userId: number): Promise<User> {
+    const result = await this.userRepo.findUserById(userId);
+    if (!result) {
+      throw new NotFoundResponseError("User not found");
     }
-    return result
+    return result;
   }
 
   async findByEmail(email: string): Promise<User | null> {
     return this.userRepo.findByEmail(email);
   }
 
-  async handleUpdateTokens(accessToken: string, refreshToken: string, oldRefreshToken: string): Promise<void> {
-    await this.userSessionRepo.update({ refreshToken: oldRefreshToken }, { accessToken, refreshToken });
+  async handleUpdateTokens(
+    accessToken: string,
+    refreshToken: string,
+    oldRefreshToken: string
+  ): Promise<void> {
+    await this.userSessionRepo.update(
+      { refreshToken: oldRefreshToken },
+      { accessToken, refreshToken }
+    );
   }
 
-  async findUserActiveRefreshToken(refreshToken: string): Promise<UserSession | null> {
-    return this.userSessionRepo.findOneBy({ refreshToken,isRevoked: false });
+  async findUserActiveRefreshToken(
+    refreshToken: string
+  ): Promise<UserSession | null> {
+    return this.userSessionRepo.findOneBy({ refreshToken, isRevoked: false });
   }
 
-  async findUserActiveAccessToken(accessToken: string): Promise<UserSession | null> {
-    return await this.userSessionRepo.findOneBy({ accessToken, isRevoked: false });
+  async findUserActiveAccessToken(
+    accessToken: string
+  ): Promise<UserSession | null> {
+    return await this.userSessionRepo.findOneBy({
+      accessToken,
+      isRevoked: false,
+    });
   }
 }

@@ -8,6 +8,7 @@ import {
   ConflictResponseError,
 } from "@/shared/response/errors.response";
 import { UpdateSubscriptionDTO } from "../dtos/UpdateSubscription.dto";
+import { SubscriptionCode } from "../enums/SubscriptionCode";
 
 @injectable()
 class SubscriptionService {
@@ -43,17 +44,23 @@ class SubscriptionService {
         throw new ConflictResponseError("Subscription name already exists");
     }
     }
-    
+
     subscription.updateFromDTO(payload);
 
     return this.subscriptionRepository.save(subscription);
   }
 
   async delete(id: number) {
-    const existingById = await this.subscriptionRepository.existsById(id);
+    const existingById = await this.subscriptionRepository.findOneById(id);
     if (!existingById) {
       throw new BadRequestResponseError("Subscription not found");
     }
+
+    if(existingById.code ===SubscriptionCode.BASIC)
+    {
+      throw new BadRequestResponseError("Basic subscription cannot be deleted");
+    }
+
     return this.subscriptionRepository.delete(id);
   }
 
@@ -65,6 +72,11 @@ class SubscriptionService {
     if (!subscription) {
       throw new BadRequestResponseError("Subscription not found");
     }
+    return subscription;
+  }
+
+  async findByCode(code: SubscriptionCode): Promise<Subscription | null> {
+    const subscription = await this.subscriptionRepository.findByCode(code);
     return subscription;
   }
 }

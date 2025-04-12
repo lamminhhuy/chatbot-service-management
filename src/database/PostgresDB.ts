@@ -8,7 +8,7 @@ import { Conversation } from '@/modules/conversation/models/Conversation';
 import { Message } from '@/modules/conversation/models/Message';
 import { Permission } from '@/modules/role/models/PermissionModel';
 import { Subscription } from '@/modules/subscription/models/Subscription';
-import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
+import { UserSubscription } from '@/modules/user_subsriptions/models/UserSubscription';
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: env.POSTGRES_HOST,

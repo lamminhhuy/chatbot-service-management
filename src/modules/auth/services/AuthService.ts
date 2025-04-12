@@ -1,24 +1,28 @@
 
 import { UserService } from '@/modules/user/services/UserService';
 import { IEmailService } from '@/infrastructure/email/interfaces/IEmailService';
-import { BadRequestResponseError } from '@/shared/response/errors.response';
+import { BadRequestResponseError, ErrorsResponse } from '@/shared/response/errors.response';
 import { generateOTP } from '@/shared/utils/generateOTP';
 import { RegisterRequestDTO } from '../dtos/RegisterRequest.dto';
 import { User } from '@/modules/user/models/UserModel';
 import { IJwtService } from '../interfaces/JwtService';
-import { ICreateUser } from '@/modules/user/interfaces/ICreateUser';
 import { RegisterResponseDTO } from '../dtos/RegisterReponse.dto';
 import { inject, injectable } from 'tsyringe';
 import { IOTPService } from '@/infrastructure/otp/RedisOTPService';
 import { LoginResponseDTO } from '../dtos/LoginResponse.dto';
 import bcrypt from 'bcrypt';
 import { LoginReqDTO } from '../dtos/LoginRequest.dto';
+import UserSubscriptionService from '@/modules/user_subsriptions/services/UserSubscriptionService';
+import { UserSubscription } from '@/modules/user_subsriptions/models/UserSubscription';
+import { CreateUserDTO } from '@/modules/user/dtos/CreateUser.dto';
+import { env } from '@/configs/envConfig';
 
 @injectable()
 export class AuthService   {
   constructor(@inject('IEmailService') private emailService: IEmailService,
               @inject('IOTPService') private otpStorage: IOTPService,
               @inject(UserService) private userService: UserService,
+              @inject(UserSubscriptionService) private userSubscriptionService: UserSubscriptionService,
               @inject('IJwtService') private jwtService: IJwtService) {
     this.userService = userService;
     this.emailService = emailService;
@@ -26,7 +30,7 @@ export class AuthService   {
     this.jwtService = jwtService
   }
 
-  async login({ email, password }: LoginReqDTO): Promise<{ user: User; accessToken: string; refreshToken: string }> {
+  async login({ email, password }: LoginReqDTO): Promise<{ user: User &{userSubscription: UserSubscription}; accessToken: string; refreshToken: string }> {
     const existingUser = await this.userService.findByEmail(email);
     if (!existingUser) {
       throw new BadRequestResponseError('User not found!');
@@ -35,7 +39,10 @@ export class AuthService   {
     if (!isPasswordValid) {
         throw new BadRequestResponseError('Invalid password!');
     }
-      
+   const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(existingUser.id);
+   if(!userSubscription) {
+      throw new ErrorsResponse('User subscription not found!',408);
+    }
     const accessToken = this.jwtService.generateAccessToken(existingUser.id,existingUser.email);
     const refreshToken = this.jwtService.generateRefreshToken(existingUser.id,existingUser.email);
     await this.userService.createUserSession({
@@ -43,8 +50,8 @@ export class AuthService   {
         refreshToken,
         user:existingUser
       });
-      return {
-        user: existingUser,
+    return {
+        user: {...existingUser, userSubscription},
         accessToken,
         refreshToken,
       };
@@ -55,7 +62,7 @@ export class AuthService   {
       throw new BadRequestResponseError('Email already existed!');
     }
     const otp = generateOTP();
-    await this.otpStorage.setOTP(email, otp, 3000000);
+    await this.otpStorage.setOTP(email, otp, env.OTP_EXPIRATION_TIME);
     await this.emailService.sendOTP(email, otp);
     
   }
@@ -68,7 +75,7 @@ export class AuthService   {
     await this.otpStorage.deleteOTP(email);
   }
 
-  async registerUser(data: ICreateUser): Promise<User> {
+  async registerUser(data: CreateUserDTO): Promise<User> {
     const user = await this.userService.createUser(data);
     return user;
   }
@@ -86,7 +93,7 @@ export class AuthService   {
     await this.userService.createUserSession({
       accessToken,
       refreshToken,
-      user,
+      user
     });
   
     return {

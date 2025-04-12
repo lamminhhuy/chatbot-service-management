@@ -3,6 +3,7 @@ import { Subscription } from "@/modules/subscription/models/Subscription";
 import { injectable } from "tsyringe";
 import { AppDataSource } from "@/database/PostgresDB";
 import { ISubscriptionRepository } from "../interfaces/ISubscriptionRepository";
+import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
 
 @injectable()
 class SubscriptionRepository extends Repository<Subscription> implements ISubscriptionRepository {
@@ -20,6 +21,10 @@ class SubscriptionRepository extends Repository<Subscription> implements ISubscr
         return subscription;
     }
     
-}
+    async findByCode(code: SubscriptionCode): Promise<Subscription | null> {
+        const subscription = await this.findOneBy({code});
+        return subscription;
+    }
+}  
 
 export default SubscriptionRepository;

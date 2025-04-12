@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { User } from "@/modules/user/models/UserModel";
-import { Subscription } from "./Subscription";
-import { SubscriptionStatus } from "../enums/SubscriptionStatus";
+import { SubscriptionStatus } from "@/modules/subscription/enums/SubscriptionStatus";
+import { Subscription } from "@/modules/subscription/models/Subscription";
 
 
 
@@ -11,7 +11,15 @@ import { SubscriptionStatus } from "../enums/SubscriptionStatus";
 @Index("idx_user_subscriptions_status", ["status"])
 @Index("idx_user_subscriptions_renewal_date", ["renewalDate"])
 export class UserSubscription {
-  @PrimaryGeneratedColumn({ type: "bigint" })
+  
+  constructor(params?: { userId: number; subscriptionId: number; endDate: Date | null; renewalDate: Date | null }) {
+    this.userId = params?.userId || 0;
+    this.subscriptionId = params?.subscriptionId || 0;
+    this.endDate = params?.endDate || null;
+    this.renewalDate = params?.renewalDate || null;
+  }
+
+  @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column({ name: "user_id", type: "bigint", nullable: false })
@@ -29,14 +37,14 @@ export class UserSubscription {
   })
   status: SubscriptionStatus;
 
-  @Column({ name: "start_date", type: "timestamptz", nullable: false, default: () => "CURRENT_TIMESTAMP" })
+  @Column({ name: "start_date", type: "timestamptz",  nullable: false, default: () => "CURRENT_TIMESTAMP" })
   startDate: Date;
 
   @Column({ name: "end_date", type: "timestamptz", nullable: true })
-  endDate?: Date;
+  endDate: Date | null;
 
   @Column({ name: "renewal_date", type: "timestamptz", nullable: true })
-  renewalDate?: Date;
+  renewalDate: Date | null;
 
   @CreateDateColumn({ name: "created_at", type: "timestamptz", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
@@ -51,7 +59,7 @@ export class UserSubscription {
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user: User;
 
-  @ManyToOne(() => Subscription,{ onDelete: "RESTRICT" })
+  @ManyToOne(() => Subscription,{ onDelete: "RESTRICT", eager:true })
   @JoinColumn({ name: "subscription_id", referencedColumnName: "id" })
   subscription: Subscription;
 }

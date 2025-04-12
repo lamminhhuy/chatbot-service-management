@@ -13,6 +13,10 @@ export class RoleService {
     return this.roleRepository.findRoleByCode(code);
   }
 
+  async findRolebyId(roleId: number): Promise<Role | null> {
+      return this.roleRepository.findRoleById(roleId);
+  }
+
   async createRole(roleData: Partial<Role>): Promise<Role> {
     const role = this.roleRepository.create(roleData);
     return this.roleRepository.save(role);

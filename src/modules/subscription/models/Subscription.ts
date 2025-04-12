@@ -11,6 +11,8 @@ import {
   import { Check } from 'typeorm';
 import { BillingCycle } from '../enums/BillingCycle';
 import { UpdateSubscriptionDTO } from '../dtos/UpdateSubscription.dto';
+import { formatCode } from '../utils/formatCode';
+import { SubscriptionType } from '../enums/SubscriptionType';
   
 @Entity('subscriptions')
 @Check(`"price" >= 0`)
@@ -32,7 +34,7 @@ export class Subscription {
     this.queryTokenLimit = queryTokenLimit;
   }
 
-  @PrimaryGeneratedColumn('increment', { type: 'bigint' })
+  @PrimaryGeneratedColumn('increment')
   id: number;
   
     @Column({ name: 'name', type: 'varchar', length: 100, unique: true, nullable: false })
@@ -40,8 +42,18 @@ export class Subscription {
   
     @Column({ name: 'code', type: 'varchar', length: 50, unique: true, nullable: false })
     code: string;
-  
-    @Column({ type: 'decimal', precision: 15, scale: 2, default: 0 })
+
+    @Column({ name: 'type', type: 'enum', enum: SubscriptionType, default: SubscriptionType.BASIC })
+    type: SubscriptionType;
+
+    @Column({ type: 'decimal', precision: 15, scale: 2, default: 0,transformer: {
+      to(value: number): number {
+          return value;
+      },
+      from(value: string): number {
+          return parseFloat(value); 
+      },
+  }, })
     price: number;
   
     @Column({ type: 'varchar', name: 'billing_cycle', length: 20 })
@@ -81,11 +93,11 @@ export class Subscription {
     updatedAt: Date;
   
     @DeleteDateColumn({ type: 'timestamptz' })
-    deletedAt?: Date;
+    deletedAt?: Date; 
 
     updateFromDTO(dto: UpdateSubscriptionDTO): void {
       this.name = dto.name;
-      this.code = this.formatCode(dto.name);
+      this.code = formatCode(dto.name);
       this.price = dto.price;
       this.billingCycle = dto.billingCycle;
       this.description = dto.description;
@@ -93,9 +105,7 @@ export class Subscription {
       this.queryTokenLimit = dto.queryTokenLimit;
     }
     
-    private formatCode(name: string) {
-      return name.split(' ').map(word => word.toUpperCase()).join('_');
-    }
+  
 
 
   }
