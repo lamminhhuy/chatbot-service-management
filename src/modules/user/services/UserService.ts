@@ -60,13 +60,9 @@ export class UserService {
   return await this.userSessionRepo.save(createUserSession);
   }
   
-  async getProfile(requestedUserId: number, user: User): Promise<User> {
+  async getProfile(userId: number): Promise<User> {
 
-    if (requestedUserId !== user.id && !user.roles.some(role => role.code === RoleCode.ADMIN)) {
-      throw new ForbiddenResponseError('You are not allowed to access this profile');
-    }
-    
-    const result =await  this.userRepo.findUserById(requestedUserId);
+    const result =await  this.userRepo.findUserById(userId);
     if(!result) {
       throw new NotFoundResponseError('User not found')
     }
