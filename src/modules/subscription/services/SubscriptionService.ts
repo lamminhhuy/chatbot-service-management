@@ -1,0 +1,72 @@
+import { CreateSubscriptionDTO } from "../dtos/CreateSubscription.dto";
+import { inject, injectable } from "tsyringe";
+import { ISubscriptionRepository } from "../interfaces/ISubscriptionRepository";
+import SubscriptionFactory from "../factories/subscription.factory";
+import { Subscription } from "../models/Subscription";
+import {
+  BadRequestResponseError,
+  ConflictResponseError,
+} from "@/shared/response/errors.response";
+import { UpdateSubscriptionDTO } from "../dtos/UpdateSubscription.dto";
+
+@injectable()
+class SubscriptionService {
+  constructor(
+    @inject("ISubscriptionRepository")
+    private subscriptionRepository: ISubscriptionRepository,
+    @inject(SubscriptionFactory)
+    private subscriptionFactory: SubscriptionFactory
+  ) {}
+
+  async create(payload: CreateSubscriptionDTO) {
+    const existingSubscription = await this.subscriptionRepository.existsByName(
+      payload.name
+    );
+    if (existingSubscription) {
+      throw new BadRequestResponseError("Subscription already exists");
+    }
+    const subscription = await this.subscriptionFactory.create(payload);
+    return this.subscriptionRepository.save(subscription);
+  }
+
+  async update(id: number, payload: UpdateSubscriptionDTO) {
+    const subscription = await this.subscriptionRepository.findOneById(id);
+    if (!subscription) {
+      throw new BadRequestResponseError("Subscription not found");
+    }
+    
+    if(payload.name !== subscription.name) {
+      const isNameExist = await this.subscriptionRepository.existsByName(
+        payload.name
+      );
+      if (isNameExist) {
+        throw new ConflictResponseError("Subscription name already exists");
+    }
+    }
+    
+    subscription.updateFromDTO(payload);
+
+    return this.subscriptionRepository.save(subscription);
+  }
+
+  async delete(id: number) {
+    const existingById = await this.subscriptionRepository.existsById(id);
+    if (!existingById) {
+      throw new BadRequestResponseError("Subscription not found");
+    }
+    return this.subscriptionRepository.delete(id);
+  }
+
+  async findAll() {
+    return this.subscriptionRepository.find();
+  }
+  async findOne(id: number) {
+    const subscription = await this.subscriptionRepository.findOneById(id);
+    if (!subscription) {
+      throw new BadRequestResponseError("Subscription not found");
+    }
+    return subscription;
+  }
+}
+
+export default SubscriptionService;

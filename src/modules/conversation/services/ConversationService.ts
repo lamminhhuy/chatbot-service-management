@@ -74,7 +74,7 @@ export class ConversationService {
         const newUserMessage =  Message.createMessage(initialMessage.content, authUser, ChatRole.User, savedConversation);
         const chatBotMessageContent = await this.chatBotService.handleAuthenticatedUserQuery([newUserMessage]);
 
-        const chatbot =await  this.userService.getProfile(env.CHATBOT_ID);
+        const chatbot =await  this.userService.getProfile(env.CHATBOT_ID,authUser);
         const chatBotResponseMessage = Message.createMessage(chatBotMessageContent,chatbot,ChatRole.Assistant, 
         savedConversation);
         
@@ -89,7 +89,7 @@ export class ConversationService {
         const newUserMessage = Message.createMessage(message.content, user, isUserRole(user.roles) ? ChatRole.User : ChatRole.Assistant, conversation);
       
         const chatBotMessageContent = await this.chatBotService.handleAuthenticatedUserQuery([newUserMessage]);
-        const chatbot =await  this.userService.getProfile(env.CHATBOT_ID);
+        const chatbot =await  this.userService.getProfile(env.CHATBOT_ID,user);
         const chatBotResponseMessage = Message.createMessage(chatBotMessageContent,chatbot,ChatRole.Assistant, 
             conversation);
 

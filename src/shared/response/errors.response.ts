@@ -12,7 +12,7 @@ export class ErrorsResponse extends Error {
 
 export class ConflictResponseError extends ErrorsResponse {
   constructor(
-    message = ReasonStatusCode.CONFLICT,
+    message = ReasonStatusCode.CONFLICT as string,
     statusCode = StatusCode.CONFLICT
   ) {
     super(message, statusCode);

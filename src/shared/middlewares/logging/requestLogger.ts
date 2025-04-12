@@ -99,4 +99,4 @@ const genReqId = (
   return id;
 };
 
-export default requestLogger();
+export default requestLogger;

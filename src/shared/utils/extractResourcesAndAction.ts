@@ -18,16 +18,13 @@ interface ExtractedResource {
       PATCH: 'edit'
     };
   
-    // Chuẩn hóa method
     const normalizedMethod = method.toUpperCase();
   
-    // Tách path và query string
     const [path, queryString] = endpoint.split('?');
     const queryParams = queryString
       ? Object.fromEntries(new URLSearchParams(queryString).entries())
       : undefined;
   
-    // Tách các segment, loại bỏ các segment rỗng
     const segments = path.split('/').filter(segment => segment !== '');
     
     if (segments.length === 0) {
@@ -41,16 +38,14 @@ interface ExtractedResource {
     const resources: ExtractedResource[] = [];
     let action: string | undefined;
   
-    // Xử lý từng cặp segment
     for (let i = 0; i < segments.length; i++) {
       const current = segments[i];
       const next = segments[i + 1];
   
-      // Nếu là segment cuối
       if (i === segments.length - 1) {
         if (resources.length === 0 || typeof resources[resources.length - 1].id !== 'undefined') {
           resources.push({ resource: current });
-          // Xử lý trường hợp đặc biệt: nếu cuối là :id và method là GET thì action là findOne
+        
           if (current === ':id' && normalizedMethod === 'GET') {
             resources[resources.length - 1].id = ':id';
             action = 'findOne';
@@ -60,12 +55,11 @@ interface ExtractedResource {
               : methodActionMapper[normalizedMethod as keyof typeof methodActionMapper];
           }
         } else {
-          action = current; // Segment cuối là action
+          action = current; 
         }
         break;
       }
   
-      // Nếu next là ID (số, UUID hoặc :id)
       const isId = !isNaN(Number(next)) || /^[0-9a-fA-F-]{36}$/.test(next) || next === ':id';
       
       if (isId) {
@@ -73,7 +67,7 @@ interface ExtractedResource {
           resource: current,
           id: !isNaN(Number(next)) ? Number(next) : next
         });
-        i++; // Bỏ qua segment ID
+        i++; 
       } else {
         resources.push({ resource: current });
         if (!next || i === segments.length - 2) {
@@ -85,7 +79,6 @@ interface ExtractedResource {
       }
     }
   
-    // Xử lý trường hợp cuối cùng nếu không có action được gán
     if (!action) {
       action = (normalizedMethod === 'GET' && 
         (resources.some(r => r.id !== undefined && r.id !== ':id') || resources.some(r => r.id === ':id')))

@@ -4,6 +4,7 @@ import { UserSession } from './UserSessionModel';
 import { Role } from '../../role/models/RoleModel';
 import { Message } from '@/modules/conversation/models/Message';
 import { Conversation } from '@/modules/conversation/models/Conversation';
+import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
 @Entity('users')
 @Index('idx_email', ['email'])
 @Index('idx_google_id', ['googleId'])
@@ -31,7 +32,7 @@ export class User {
   @Column({
     type: 'enum',
     enum: ['active', 'inactive', 'banned', 'pending'],
-    default: 'pending',
+    default: 'active',
   })
   status: 'active' | 'inactive' | 'banned' | 'pending'; 
 
@@ -78,9 +79,9 @@ export class User {
   conversations: Conversation[]
 
   public static getChatBot(): User {
-    return {
-      id: 999999,
-      username: 'chatbot',
+  return {
+    id: 999999,
+    username: 'chatbot',
       roles: [{
         id: 1,
         name: 'assistant',

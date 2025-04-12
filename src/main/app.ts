@@ -14,12 +14,14 @@ import { setUpContainers } from "@/container";
 import { env } from "@/configs/envConfig";
 import { ModuleLoader } from "@/shared/utils/ModuleLoader";
 import { asyncHandler } from "@/shared/utils/asyncHandler";
+import { initializePermission } from "@/shared/utils/initializePermission";
+import requestLogger from "@/shared/middlewares/logging/requestLogger";
+
 const logger = pino({ name: "server start" });
 const app: Express = express();
 const allowedOrigins = env.CORS_ORIGIN?.split(",") || [];
-// Middleware setup
+
 app.use(cookieParser());
-app.use(morgan("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
@@ -33,8 +35,8 @@ app.use(
     credentials: true,
   })
 );
+
 app.use(helmet());
-app.use(rateLimiter);
 
 async function initializeApp() {
   await initializeDatabase(); 
@@ -44,12 +46,15 @@ async function initializeApp() {
 
   const modules = (await import("@/modules")).default;
  
-  const globalMiddlewares = (await import("@/shared/middlewares")).default;
+  const middlewares = (await import("@/shared/middlewares")).default;
  
-  const moduleLoader = new ModuleLoader(modules, globalMiddlewares, asyncHandler);
+  app.use(...middlewares.appLevelMiddleware);
+
+  const moduleLoader = new ModuleLoader(modules, middlewares.routerLevelMiddleware, asyncHandler);
 
   app.use(moduleLoader.loadAllModules());
 
+  initializePermission(moduleLoader.getAllModules())
 
   app.use("/ping", (req, res) => {
     return res.status(200).send("server pinged!");
