@@ -1,9 +1,8 @@
-
-import asyncHandler from "@/shared/utils/asyncHandler";
 import { Request, Response, Router } from "express";
 import { PromptController } from "../controllers/PromptController";
 import { PromptRespository } from "../repositories/PromptRespository";
 import {  PromptService } from "../services/PromptServices";
+import { asyncHandler } from "@/shared/utils/asyncHandler";
 ;
 
 const promptRouter = Router();
