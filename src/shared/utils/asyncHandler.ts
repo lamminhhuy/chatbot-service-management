@@ -7,10 +7,11 @@ type AsyncRouteHandler<T extends CustomRequest> = (
   next: NextFunction
 ) => Promise<void>;
 
-export type AsyncHandler = <T extends Request>(
+export type AsyncHandler = <T extends CustomRequest>(
   fn: AsyncRouteHandler<T>
 ) => ((req: T, res: Response, next: NextFunction) => void) 
-export const asyncHandler: AsyncHandler = <T extends Request>(
+
+export const asyncHandler: AsyncHandler = <T extends CustomRequest>(
   fn: AsyncRouteHandler<T>
 ): ((req: T, res: Response, next: NextFunction) => void) => {
   return (req: T, res: Response, next: NextFunction) => {

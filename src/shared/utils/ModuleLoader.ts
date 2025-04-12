@@ -1,4 +1,4 @@
-import { Router } from "express"
+import { RequestHandler, Router } from "express"
 import { AsyncHandler } from "@/shared/utils/asyncHandler";
 import { RequestMiddleware } from "@/modules/auth/interfaces/CustomRoute";
 import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
@@ -19,10 +19,10 @@ export class ModuleLoader {
         module.routes.forEach(route => {
             if(!route.isPublic)
             {
-            router[route.method](this.getRoutePath(route.apiVersion, modulePrefix, route.path), [...this.globalMiddlewares, ...route.middlewares || []], this.asyncHandler(route.handler))
+            router[route.method](this.getRoutePath(route.apiVersion, modulePrefix, route.path), [...this.globalMiddlewares, ...route.middlewares || []] as RequestHandler[], this.asyncHandler(route.handler) as RequestHandler)
             }
             else{
-            router[route.method](this.getRoutePath(route.apiVersion, modulePrefix, route.path), ...route.middlewares || [], this.asyncHandler(route.handler))
+            router[route.method](this.getRoutePath(route.apiVersion, modulePrefix, route.path), [...route.middlewares || []] as RequestHandler[], this.asyncHandler(route.handler) as RequestHandler)
             }
         })
     }) 
