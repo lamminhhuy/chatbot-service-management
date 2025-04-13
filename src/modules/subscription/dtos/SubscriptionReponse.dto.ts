@@ -8,6 +8,7 @@ export const SubscriptionResponseDTOSchema = z.object({
     billingCycle: z.string(),
     periodMonths: z.number(),
     isActive: z.boolean(),
+    type: z.string(),
     description: z.string(),
     metadata: z.record(z.string(), z.any()).nullable(),
     queryTokenLimit: z.number(),
