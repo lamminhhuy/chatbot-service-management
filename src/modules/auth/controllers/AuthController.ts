@@ -1,15 +1,13 @@
 import { Request, Response } from 'express';
 import { AuthService } from '../services/AuthService';
 import { SuccessResponse } from '@/shared/response/success.response';
-import { BadRequestResponseError } from '@/shared/response/errors.response';
-import { RegisterRequestDTO, RegisterRequestDTOSchema } from '../dtos/RegisterRequest.dto';
-import { inject, injectable, singleton } from 'tsyringe';
+import { RegisterRequestDTO } from '../dtos/RegisterRequest.dto';
+import { inject, singleton } from 'tsyringe';
 import { LoginReqDTO } from '../dtos/LoginRequest.dto';
 import { env } from '@/configs/envConfig';
-import { RegisterResponseDTOSchema } from '../dtos/RegisterReponse.dto';
-import { UserResponseDTOSchema } from '@/modules/user/dtos/UserResponse.dto';
-import { LoginResDTOSchema } from '../dtos/LoginResponse.dto';
 import { getCookieOptions } from '@/shared/utils/getCookieOptions';
+import { LoginResDTOSchema } from '../dtos/LoginResponse.dto';
+import { RegisterResponseDTOSchema } from '../dtos/RegisterReponse.dto';
 
 @singleton()
 export class AuthController {
