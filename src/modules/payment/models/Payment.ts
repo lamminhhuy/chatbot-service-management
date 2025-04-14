@@ -6,7 +6,7 @@ import PaymentCodeGenerator from '../utils/PaymentCodeGenerator';
 
 
 @Entity('payments')
-@Index(['userId', 'subscriptionId'], { unique: true })
+@Index(['userId', 'subscriptionId'])
 class Payment {
     @PrimaryGeneratedColumn('uuid')
     public readonly id: string;
