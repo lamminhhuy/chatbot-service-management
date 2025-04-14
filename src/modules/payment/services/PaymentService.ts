@@ -32,12 +32,12 @@ class PaymentService {
             acc: env.BANK_ACC,
             bank: env.BANK_NAME,
             amount: savedPayment.amount,
-            content: this.generateMessageContent(existedSubscription.name)
+            content: this.generateMessageContent(savedPayment._code, existedSubscription.name)
         }  
     }
 
-    private generateMessageContent(subscriptionName: string): string {
-        return `${this.messageContent} ${subscriptionName}`;
+    private generateMessageContent(paymentCode: string,subscriptionName: string): string {
+        return `${paymentCode}. ${this.messageContent} ${subscriptionName}`;
     }
 }
 
