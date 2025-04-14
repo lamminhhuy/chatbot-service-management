@@ -12,7 +12,7 @@ export const MessageResponseDTOSchema = z.object({
 });
 
 
-export const CreateMessageResponseDTOSchema = z.array(MessageResponseDTOSchema).transform((messages: Message[]) => {
+export const CreateMessageResponseDTOSchema = z.array(MessageResponseDTOSchema).transform((messages) => {
     return {
       message:messages[0],
       assistantResponse:{message:messages[1]},

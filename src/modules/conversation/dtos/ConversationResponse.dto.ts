@@ -12,7 +12,7 @@ export const  ConversationReponseDTOSchema = z.object({
         messages: z.array(MessageResponseDTOSchema),
 })
 
-export const CreateConversationReponseDTOSchema = ConversationReponseDTOSchema.transform((conversation: Conversation) => {
+export const CreateConversationReponseDTOSchema = ConversationReponseDTOSchema.transform((conversation) => {
     return {
         ...conversation,
         assistantResponse: conversation.messages[1],
@@ -20,6 +20,6 @@ export const CreateConversationReponseDTOSchema = ConversationReponseDTOSchema.t
 }
 );
 
-export const ConversationsReponseDTOSchema  =  z.array(ConversationReponseDTOSchema).transform((conversations: Conversation[]) => {
+export const ConversationsReponseDTOSchema  =  z.array(ConversationReponseDTOSchema).transform((conversations) => {
     return _.groupBy(conversations, (c) => dayjs(c.createdAt).format('YYYY-MM-DD'));
   });

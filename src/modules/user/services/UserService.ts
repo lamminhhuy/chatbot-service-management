@@ -85,12 +85,16 @@ export class UserService {
     return await this.userSessionRepo.save(createUserSession);
   }
 
-  async getProfile(userId: number): Promise<User> {
+  async getProfile(userId: number): Promise<User & { userSubscription: UserSubscription }> {
     const result = await this.userRepo.findUserById(userId);
+    const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(userId);
+    if(!userSubscription) {
+      throw new NotFoundResponseError("User subscription not found");
+    }
     if (!result) {
       throw new NotFoundResponseError("User not found");
     }
-    return result;
+    return { ...result, userSubscription };
   }
 
   async findByEmail(email: string): Promise<User | null> {

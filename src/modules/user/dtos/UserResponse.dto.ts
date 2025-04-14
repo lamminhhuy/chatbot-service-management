@@ -1,5 +1,6 @@
 import { RoleResonseDTOSchema } from "@/modules/role/dtos/RoleResponseDTOSchema";
 import { SubscriptionResponseDTOSchema } from "@/modules/subscription/dtos/SubscriptionReponse.dto";
+import { DateOrStringSchema } from "@/shared/schemas/DateOrStringSchema";
 import { z } from "zod";
 
 export const UserResponseDTOSchema = z.object({
@@ -8,7 +9,7 @@ export const UserResponseDTOSchema = z.object({
   roles: z.array(RoleResonseDTOSchema),
   username: z.string(),
   phoneNumber: z.string().nullable(),
-  createdAt: z.date(),
+  createdAt: DateOrStringSchema,
   userSubscription: z.object({
     id: z.number(),
     endDate: z.date().nullable(),

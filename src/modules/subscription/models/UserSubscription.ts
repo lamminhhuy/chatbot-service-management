@@ -22,10 +22,10 @@ export class UserSubscription {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ name: "user_id", type: "bigint", nullable: false })
+  @Column({ name: "user_id", type: "integer", nullable: false })
   userId: number;
 
-  @Column({ name: "subscription_id", type: "bigint", nullable: false })
+  @Column({ name: "subscription_id", type: "integer", nullable: false, default: '1' })
   subscriptionId: number;
 
   @Column({

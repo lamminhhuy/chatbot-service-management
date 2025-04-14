@@ -9,6 +9,7 @@ import { Message } from '@/modules/conversation/models/Message';
 import { Permission } from '@/modules/role/models/PermissionModel';
 import { Subscription } from '@/modules/subscription/models/Subscription';
 import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
+import Payment from '@/modules/payment/models/Payment';
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: env.POSTGRES_HOST,
@@ -16,8 +17,8 @@ export const AppDataSource = new DataSource({
     username: env.POSTGRES_USER,
     password: env.POSTGRES_PASSWORD,
     database: env.POSTGRES_DB,
-    entities: [Role, User, UserSession, Message, Conversation, Permission,Subscription,UserSubscription],
-    synchronize: false, 
+    entities: [Role, User, UserSession, Message, Conversation, Permission,Subscription,UserSubscription,Payment],
+    synchronize: env.NODE_ENV === 'dev', 
     logging: env.NODE_ENV === 'dev',
     migrations: env.NODE_ENV === 'dev' ? ['src/database/migration/*.ts']: ['dist/database/migration/*.js'],
     poolSize: env.POSTGRES_MAX_POOL_SIZE || 10,

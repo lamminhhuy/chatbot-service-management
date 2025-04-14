@@ -74,5 +74,10 @@ default: 30 * 24 * 60 * 60 * 1000
   }),
   OTP_EXPIRATION_TIME: num({
     default: 5 * 60 * 1000
-  })
+  }),
+  CHATBOT_USER_ID: num({
+    default: 999999
+  }),
+  BANK_ACC: str(),
+  BANK_NAME: str()
 });

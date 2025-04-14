@@ -9,6 +9,13 @@ import { IMessageAdapter } from "../interfaces/IMessageAdapter";
 import { ChatRole } from "@/modules/conversation/enums/ChatRole";
 import { Message } from "@/modules/conversation/models/Message";
 import { inject, injectable } from "tsyringe";
+import { UserService } from "@/modules/user/services/UserService";
+import { env } from "@/configs/envConfig";
+import RedisClient from "@/database/redisClient";
+import Redis from "ioredis";
+import { User } from "@/modules/user/models/UserModel";
+import { UserSubscription } from "@/modules/subscription/models/UserSubscription";
+import { NotFoundResponseError } from "@/shared/response/errors.response";
 
 @injectable()
 export class ChatbotService {
@@ -16,7 +23,9 @@ export class ChatbotService {
   constructor(
    @inject('IChatbotAPI') private chatbotAPI: IChatbotAPI,
    @inject('ISessionStore') private sessionStore: ISessionStore,
-   @inject('IMessageAdapter') private messageAdapter:IMessageAdapter
+   @inject(Redis) private redisClient: Redis,
+   @inject('IMessageAdapter') private messageAdapter:IMessageAdapter,
+   @inject(UserService) private userService: UserService
   ) {
   }
   async handleAuthenticatedUserQuery(messages: Message[]): Promise<string> {
@@ -53,5 +62,18 @@ export class ChatbotService {
     return {content,role};
   }
 
+  public async getChatbot(): Promise<User> {
+    const cacheKey = 'chatbot'
+    const cached = await this.redisClient.get(cacheKey)
+    if (cached) {
+      return JSON.parse(cached) as User;
+    }
+    const chatbot = await this.userService.findUserById(env.CHATBOT_USER_ID)
+    if (!chatbot) {
+      throw new NotFoundResponseError("Chatbot user not found");
+    }
+    this.redisClient.set(cacheKey, JSON.stringify(chatbot))
+    return chatbot;
+  }
 
 }

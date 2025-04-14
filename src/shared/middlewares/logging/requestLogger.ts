@@ -59,7 +59,6 @@ const responseBodyMiddleware: RequestHandler = (_req, res, next) => {
   if (isNotProduction) {
     const originalSend = res.send;
     res.send = (content) => {
-      res.locals.responseBody = content;
       res.send = originalSend;
       return originalSend.call(res, content);
     };
