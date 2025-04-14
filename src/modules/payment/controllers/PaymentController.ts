@@ -1,5 +1,5 @@
 import { SuccessResponse } from "@/shared/response/success.response";
-import { PaymentRequestDTO } from "../dtos/CreatePaymentRequest.dto";
+import { PaymentRequestDTO, SePayPaymentRequestDTO } from "../dtos/CreatePaymentRequest.dto";
 import PaymentService from "../services/PaymentService";
 import { Request, Response } from "express";
 import { CustomRequest } from "@/shared/interfaces/CustomRequest";
@@ -21,6 +21,13 @@ class PaymentController {
     message: 'Create payment successfully'
    }).send(res);
 }
+
+    async updatePaymentStatus(req: CustomRequest<{}, {}, SePayPaymentRequestDTO>, res: Response) {
+        await this.paymentService.updatePaymentStatus(req.body);
+        new SuccessResponse({
+            message: 'Update payment status successfully'
+        }).send(res);
+    }
 }
 
 export default PaymentController;

@@ -6,7 +6,7 @@ export const CreatePaymentRequestDTOSchema = z.object({
     subscriptionId: z.number()
 });
 
-export const SePayPaymentRequestSchema = z.object({
+export const SePayPaymentRequestDTOSchema = z.object({
     id: z.number(),
     gateway: z.enum(['Vietcombank']),
     transactionDate: z.date(),
@@ -22,5 +22,5 @@ export const SePayPaymentRequestSchema = z.object({
     amount: z.number(),
     currency: z.string().length(3),
 });
-export type SePayPaymentRequestDTO = z.infer<typeof SePayPaymentRequestSchema>;
+export type SePayPaymentRequestDTO = z.infer<typeof SePayPaymentRequestDTOSchema>;
 export type PaymentRequestDTO = z.infer<typeof CreatePaymentRequestDTOSchema>;

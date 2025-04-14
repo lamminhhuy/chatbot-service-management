@@ -1,9 +1,7 @@
-import { PaymentRequestDTO } from "../dtos/CreatePaymentRequest.dto";
+import { PaymentRequestDTO, SePayPaymentRequestDTO } from "../dtos/CreatePaymentRequest.dto";
 import { PaymentStatus } from "../enums/PaymentStatus";
 import { IPaymentRepository } from "../interfaces/IPaymentRepository";
 import { BadRequestResponseError } from "@/shared/response/errors.response";
-import { PaymentMethod } from "@/PaymentMethod";
-import { PaymentGateway } from "../enums/PaymentGateway";
 import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
 import { env } from "@/configs/envConfig";
 import { PaymentCreationDTO } from "../dtos/PaymentCreation.dto";
@@ -32,11 +30,23 @@ class PaymentService {
             acc: env.BANK_ACC,
             bank: env.BANK_NAME,
             amount: savedPayment.amount,
-            content: this.generateMessageContent(savedPayment._code, existedSubscription.name)
+            content: this.formatContent(savedPayment._code, existedSubscription.name)
         }  
     }
+   
+    async updatePaymentStatus(input: SePayPaymentRequestDTO): Promise<void> {
+        const payment = await this.paymentRepository.findOneByCode(input.code);
+        if (!payment) {
+            throw new BadRequestResponseError('Payment not found');
+        }
+        if(input.transferAmount !== payment.amount) {
+            throw new BadRequestResponseError('Amount not match');
+        }
+        payment.status = PaymentStatus.COMPLETED;
+        await this.paymentRepository.save(payment);
+    }
 
-    private generateMessageContent(paymentCode: string,subscriptionName: string): string {
+    private formatContent(paymentCode: string,subscriptionName: string): string {
         return `${paymentCode}. ${this.messageContent} ${subscriptionName}`;
     }
 }

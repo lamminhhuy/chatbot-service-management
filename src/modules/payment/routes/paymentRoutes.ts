@@ -14,6 +14,12 @@ const PaymentModule : ModuleConfig = {
             path: '/',
             handler: paymentController.createPayment.bind(paymentController),
             middlewares: [validateRequest(CreatePaymentRequestDTOSchema)]   
+        },
+        {
+            method: 'post',
+            path: '/update-status',
+            handler: paymentController.updatePaymentStatus.bind(paymentController),
+            middlewares: []
         }
     ]
 }

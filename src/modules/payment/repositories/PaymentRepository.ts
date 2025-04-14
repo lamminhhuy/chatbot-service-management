@@ -7,6 +7,10 @@ class PaymentRepository extends Repository<Payment> implements IPaymentRepositor
     constructor() {
         super(Payment, AppDataSource.manager);
     }
+
+    async findOneByCode(code: string): Promise<Payment | null> {
+        return this.findOne({ where: { _code: code } });
+    }
 }
 
 export default PaymentRepository;
