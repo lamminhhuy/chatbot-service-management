@@ -18,6 +18,7 @@ const PaymentModule : ModuleConfig = {
         {
             method: 'post',
             path: '/update-status',
+            isPublic: true,
             handler: paymentController.updatePaymentStatus.bind(paymentController),
             middlewares: []
         }

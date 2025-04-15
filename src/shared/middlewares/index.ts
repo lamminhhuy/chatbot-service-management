@@ -7,13 +7,8 @@ const rateLimitConfig = {
    windowMs: 60000,
    message: 'Too many requests, please try again later.'
 }
-const customOptions = {
-   level: "info",
-   redact: ["request.headers.authorization"], 
-   enabled: true,
- };
- 
+
 export default {
-   appLevelMiddleware: [requestLogger(customOptions),rateLimitMiddleware(rateLimitConfig)],
+   appLevelMiddleware: [requestLogger,rateLimitMiddleware(rateLimitConfig)],
    routerLevelMiddleware: [authenticateTokenMiddleware]
 }
