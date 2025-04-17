@@ -1,6 +1,6 @@
 services:
-  chatbot-postgres:
-    image: postgres:latest 
+  postgres:
+    image: postgres:15 
     container_name: chatbot-postgres
     ports:
       - "5432:5432"
@@ -14,62 +14,62 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
-  chatbot-redis:
-    image: redis:latest
-    container_name: chatbot-redis
-    ports:
-      - "6379:6379"          
-    networks:
-      - app-network 
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
-      retries: 5
-      timeout: 3s
+  # chatbot-redis:
+  #   image: redis:latest
+  #   container_name: chatbot-redis
+  #   ports:
+  #     - "6379:6379"          
+  #   networks:
+  #     - app-network 
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 5s
+  #     retries: 5
+  #     timeout: 3s
 
-  chatbot-mongo:
-    image: mongo:latest
-    container_name: chatbot-mongo
-    restart: always
-    ports:
-      - "27017:27017"
-    networks:
-      - app-network
-    volumes:
-      - chatbot-mongo-data:/data/db
-    command: mongod --quiet --logpath /dev/null --setParameter enableTestCommands=1
-    healthcheck:
-      test: ["CMD", "mongosh", "--eval", "db.runCommand('ping')"]
-      interval: 10s
-      retries: 5
-      start_period: 30s
-      timeout: 5s
+  # chatbot-mongo:
+  #   image: mongo:latest
+  #   container_name: chatbot-mongo
+  #   restart: always
+  #   ports:
+  #     - "27017:27017"
+  #   networks:
+  #     - app-network
+  #   volumes:
+  #     - chatbot-mongo-data:/data/db
+  #   command: mongod --quiet --logpath /dev/null --setParameter enableTestCommands=1
+  #   healthcheck:
+  #     test: ["CMD", "mongosh", "--eval", "db.runCommand('ping')"]
+  #     interval: 10s
+  #     retries: 5
+  #     start_period: 30s
+  #     timeout: 5s
 
-  chatbot-mongo-express:
-    image: mongo-express
-    container_name: chatbot-mongo-express
-    restart: always
-    ports:
-      - "8081:8081"
-    environment:
-      - ME_CONFIG_MONGODB_SERVER=chatbot-mongo
-      - ME_CONFIG_MONGODB_PORT=27017
-      - ME_CONFIG_BASICAUTH_USERNAME=admin
-      - ME_CONFIG_BASICAUTH_PASSWORD=admin
-    depends_on:
-      chatbot-mongo:
-        condition: service_healthy
-    networks:
-      - app-network 
+  # chatbot-mongo-express:
+  #   image: mongo-express
+  #   container_name: chatbot-mongo-express
+  #   restart: always
+  #   ports:
+  #     - "8081:8081"
+  #   environment:
+  #     - ME_CONFIG_MONGODB_SERVER=chatbot-mongo
+  #     - ME_CONFIG_MONGODB_PORT=27017
+  #     - ME_CONFIG_BASICAUTH_USERNAME=admin
+  #     - ME_CONFIG_BASICAUTH_PASSWORD=admin
+  #   depends_on:
+  #     chatbot-mongo:
+  #       condition: service_healthy
+  #   networks:
+  #     - app-network 
 
-  prometheus:
-    image: prom/prometheus
-    ports: 
-      - "9090:9090"
-    volumes:
-      - ./prometheus.yml:/etc/prometheus/prometheus.yml
-    networks:
-      - monitoring
+  # prometheus:
+  #   image: prom/prometheus
+  #   ports: 
+  #     - "9090:9090"
+  #   volumes:
+  #     - ./prometheus.yml:/etc/prometheus/prometheus.yml
+  #   networks:
+  #     - monitoring
 
 networks:
   monitoring:
