@@ -73,9 +73,13 @@ export class AuthService   {
     await this.otpStorage.deleteOTP(email);
   }
 
-  async registerUser(data: CreateUserDTO): Promise<User> {
+  async registerUser(data: CreateUserDTO): Promise<User &{userSubscription: UserSubscription}> {
     const user = await this.userService.createUser(data);
-    return user;
+    const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(user.id);
+    if(!userSubscription) {
+       throw new ErrorsResponse('User subscription not found!',408);
+     }
+    return {...user,userSubscription};
   }
 
   async verifyOTPAndRegister({
@@ -84,7 +88,7 @@ export class AuthService   {
     username,
     password,
     phoneNumber,
-  }: RegisterRequestDTO): Promise<{ user: User; accessToken: string; refreshToken: string }> {
+  }: RegisterRequestDTO): Promise<{ user: User &{userSubscription: UserSubscription}; accessToken: string; refreshToken: string }> {
     await this.verifyOTP(email, otp);
     const user = await this.registerUser({ email, username, password, phoneNumber });
     const { accessToken, refreshToken } = this.jwtService.generateTokenPair(user.id, user.email);
