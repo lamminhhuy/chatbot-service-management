@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "module": "es2022",
+  "module": "CommonJS",
+
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
@@ -9,7 +10,7 @@
     "strictPropertyInitialization": false,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true, 
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "outDir": "dist",
     "importsNotUsedAsValues": "remove",
     "strict": true,

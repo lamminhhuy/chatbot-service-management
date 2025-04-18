@@ -32,6 +32,10 @@ default: 30 * 24 * 60 * 60 * 1000
   POSTGRES_MAX_POOL_SIZE: num({
     default:20
   }), 
+  POSTGRES_DB_SSL: str({
+    default: "false",
+    choices: ["true", "false"],
+  }),
   MONGO_URI: str({
     default: "mongodb://chatbot-mongo:27017/chatbotdb"
   }),

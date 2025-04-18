@@ -1,5 +1,5 @@
 import { UserRepository } from "../repositories/UserRepository";
-import bcrypt from "bcrypt";
+import * as argon2 from "argon2";
 import { User } from "../models/UserModel";
 import { IUserRepository } from "../interfaces/IUserRepository";
 import { RoleService } from "./RoleService";

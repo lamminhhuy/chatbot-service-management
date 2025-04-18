@@ -23,7 +23,7 @@ export const AppDataSource = new DataSource({
     logging: env.NODE_ENV === 'dev',
     migrations: env.NODE_ENV === 'dev' ? ['src/database/migration/*.ts']: ['dist/database/migration/*.js'],
     poolSize: env.POSTGRES_MAX_POOL_SIZE || 10,
-    ssl: true
+    ssl:  false
 });
 
 export const initializeDatabase = async () => {

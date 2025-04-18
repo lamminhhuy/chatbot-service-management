@@ -1,8 +1,9 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
-import bcrypt from 'bcrypt';
+import * as argon2 from "argon2";
+
 export class CreateChatBotRecord1743610418209 implements MigrationInterface {
     private readonly CHATBOT_ID = 999999; 
-    private readonly CHATBOT_PASSWORD = bcrypt.hash('0923280469', 10); 
+    private readonly CHATBOT_PASSWORD = argon2.hash('0923280469'); 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
             INSERT INTO users (id, username, email, password, created_at)

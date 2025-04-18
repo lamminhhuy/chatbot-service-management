@@ -8,7 +8,7 @@ import { User } from '@/modules/user/models/UserModel';
 import { IJwtService } from '../interfaces/JwtService';
 import { inject, injectable } from 'tsyringe';
 import { IOTPService } from '@/infrastructure/otp/RedisOTPService';
-import bcrypt from 'bcrypt';
+import * as argon2 from "argon2";
 import { LoginReqDTO } from '../dtos/LoginRequest.dto';
 import UserSubscriptionService from '@/modules/subscription/services/UserSubscriptionService';
 import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
@@ -33,7 +33,7 @@ export class AuthService   {
     if (!existingUser) {
       throw new BadRequestResponseError('User not found!');
     }
-    const  isPasswordValid = await bcrypt.compare(password, existingUser.password);
+    const  isPasswordValid = await argon2.verify(password, existingUser.password);
     if (!isPasswordValid) {
         throw new BadRequestResponseError('Invalid password!');
     }
