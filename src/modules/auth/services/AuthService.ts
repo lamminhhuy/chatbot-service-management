@@ -33,7 +33,7 @@ export class AuthService   {
     if (!existingUser) {
       throw new BadRequestResponseError('User not found!');
     }
-    const  isPasswordValid = await argon2.verify(password, existingUser.password);
+    const  isPasswordValid = await argon2.verify(existingUser.password, password);
     if (!isPasswordValid) {
         throw new BadRequestResponseError('Invalid password!');
     }

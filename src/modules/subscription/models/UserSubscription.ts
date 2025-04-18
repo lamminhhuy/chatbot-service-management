@@ -55,11 +55,11 @@ export class UserSubscription {
   @Column({ name: "deleted_at", type: "timestamptz", nullable: true })
   deletedAt?: Date;
 
-  @ManyToOne(() => User,{ onDelete: "RESTRICT" })
+  @ManyToOne(() => User,{ onDelete: "RESTRICT", cascade: true })
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user: User;
 
-  @ManyToOne(() => Subscription,{ onDelete: "RESTRICT", eager:true })
+  @ManyToOne(() => Subscription,{ onDelete: "RESTRICT", eager:true, cascade: true })
   @JoinColumn({ name: "subscription_id", referencedColumnName: "id" })
   subscription: Subscription;
 }
