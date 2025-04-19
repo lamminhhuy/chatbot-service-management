@@ -37,6 +37,7 @@ class PaymentService {
     const savedPayment = await this.paymentRepository.save(payment);
 
     return {
+      paymentId: savedPayment.id,
       acc: env.BANK_ACC,
       bank: env.BANK_NAME,
       amount: savedPayment.amount,
