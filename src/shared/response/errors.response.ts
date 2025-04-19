@@ -34,6 +34,14 @@ export class BadRequestResponseError extends ErrorsResponse {
   }
 }
 
+export class DomainError extends ErrorsResponse {
+  constructor(
+    message = ReasonStatusCode.BAD_REQUEST as string,
+    statusCode = StatusCode.BAD_REQUEST
+  ) {
+    super(message, statusCode);
+  }
+}
 export class AuthFailureResponseError extends ErrorsResponse {
   constructor(
     message = ReasonStatusCode.UNAUTHORIZED as string,
