@@ -11,6 +11,8 @@ import { Subscription } from '@/modules/subscription/models/Subscription';
 import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
 import Payment from '@/modules/payment/models/Payment';
 import { AuditLog } from '@/modules/payment/models/AuditLog';
+import { initializeTransactionalContext, addTransactionalDataSource, StorageDriver } from 'typeorm-transactional';
+
 export const AppDataSource = new DataSource({
     type: 'postgres',
     host: env.POSTGRES_HOST,
@@ -46,3 +48,7 @@ export const closeDatabase = async () => {
     }
 };
 
+
+
+initializeTransactionalContext({ storageDriver: StorageDriver.ASYNC_LOCAL_STORAGE });
+addTransactionalDataSource(AppDataSource);

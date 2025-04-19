@@ -15,7 +15,7 @@ import { env } from "@/configs/envConfig";
 import { ModuleLoader } from "@/shared/utils/ModuleLoader";
 import { asyncHandler } from "@/shared/utils/asyncHandler";
 import { initializePermission } from "@/shared/utils/initializePermission";
-import requestLogger from "@/shared/middlewares/logging/requestLogger";
+import { initializeTransactionalContext } from "typeorm-transactional";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -62,6 +62,7 @@ async function initializeApp() {
 
   app.use(errorHandler);
 }
+initializeTransactionalContext();
 
 initializeApp()
   .then(() => {
