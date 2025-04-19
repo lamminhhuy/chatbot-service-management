@@ -5,6 +5,7 @@ import { OpenAIAPI } from "./ai/OpenAIAPI"
 import { env } from "@/configs/envConfig"
 import { WebSearchService } from "./search/WebSearchService"
 import Redis from "ioredis"
+import { TypeOrmUnitOfWork } from "./uow/TypeOrmUnitOfWork"
 
 
 export const registerInfraDependencies = () => {
@@ -12,4 +13,5 @@ export const registerInfraDependencies = () => {
     container.register('ISessionStore', {useValue: new RedisSessionStore(RedisClient.getInstance())})
     container.register('IWebSearchService', {useValue: new WebSearchService(env.SERP_API_KEY)})
     container.register('IChatbotAPI',{useFactory: () => new OpenAIAPI(env.OPENAI_API_KEY, env.OPENAI_ASSISTANT_ID, container.resolve('IWebSearchService'))})
+    container.register('IUnitOfWorkService', {useValue: new TypeOrmUnitOfWork()})
 }
