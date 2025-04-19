@@ -18,3 +18,20 @@ export function validateRequest<T extends ZodSchema>(schema: T) {
     }
   };
 }
+
+export function validateRequestQueryParams<T extends ZodSchema>(schema: T) {
+  return (req: Request, res: Response, next: NextFunction): void => {
+    try {
+      schema.parse(req.query);
+      next();
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        const errorMessages = error.errors.map(
+          (err) => `${err.path.join(".")}: ${err.message}`
+        );
+        return next(new BadRequestResponseError(errorMessages.join("; ")));
+      }
+      next(error);
+    }
+  };
+}
