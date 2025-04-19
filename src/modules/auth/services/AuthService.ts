@@ -14,6 +14,7 @@ import UserSubscriptionService from '@/modules/subscription/services/UserSubscri
 import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
 import { CreateUserDTO } from '@/modules/user/dtos/CreateUser.dto';
 import { env } from '@/configs/envConfig';
+import { Transactional } from 'typeorm-transactional';
 
 @injectable()
 export class AuthService   {
@@ -27,7 +28,7 @@ export class AuthService   {
     this.otpStorage = otpStorage;
     this.jwtService = jwtService
   }
-
+  @Transactional()
   async login({ email, password }: LoginReqDTO): Promise<{ user: User &{userSubscription: UserSubscription}; accessToken: string; refreshToken: string }> {
     const existingUser = await this.userService.findByEmail(email);
     if (!existingUser) {
