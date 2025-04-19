@@ -15,6 +15,7 @@ import { isUserRole } from "@/modules/auth/utils/role.utils";
 import { env } from "@/configs/envConfig";
 import { groupBy } from 'lodash';
 import dayjs from 'dayjs'; 
+import { ITokenLimiter } from "../interfaces/ITokenLimiter";
 
 @injectable()
 export class ConversationService {
@@ -22,7 +23,8 @@ export class ConversationService {
         @inject('IConversationRepository') private conversationRepository: IConversationRepository,
         @inject('IMessageRepository') private messageRepository: IMessageRepository,
         @inject(ChatbotService) private chatBotService: ChatbotService,
-        @inject(UserService) private userService: UserService) {}
+        @inject('ITokenLimiter') private tokenLimiter: ITokenLimiter) {
+    }
         async getConversations(userId: number): Promise<Conversation[]> {
             const conversations = await this.conversationRepository.find({
                 relations: {
@@ -83,7 +85,10 @@ export class ConversationService {
         
         const messages = await this.messageRepository.save([newUserMessage, chatBotResponseMessage]);
         conversation.messages  = messages;
-        return conversation
+
+       await this.tokenLimiter.decreToken(authUser.id);
+
+        return conversation;
     }
 
     async createMessage(conversationId: number, message: CreateMessageDTO, user: User): Promise<Message[]> {
@@ -95,7 +100,9 @@ export class ConversationService {
         const chatbot =await  this.chatBotService.getChatbot();
         const chatBotResponseMessage = Message.createMessage(chatBotMessageContent,chatbot,ChatRole.Assistant, 
             conversation);
-
+       
+        await this.tokenLimiter.decreToken(user.id);
+                 
        return await this.messageRepository.save([newUserMessage, chatBotResponseMessage]);
     }
 

@@ -4,6 +4,8 @@ import { UserSession } from './UserSessionModel';
 import { Role } from '../../role/models/RoleModel';
 import { Message } from '@/modules/conversation/models/Message';
 import { Conversation } from '@/modules/conversation/models/Conversation';
+import Payment from '@/modules/payment/models/Payment';
+import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
 
 @Entity('users')
 @Index('idx_email', ['email'])
@@ -107,5 +109,5 @@ export class User {
     } as User;
   }
 
-
+  userSubscription: UserSubscription;
 }

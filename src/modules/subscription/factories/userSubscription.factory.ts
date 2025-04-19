@@ -15,6 +15,7 @@ class UserSubscriptionFactory {
   );
 
   public create(data: UserSubscriptionCreation): UserSubscription {
+
     const { endDate, renewalDate } = this.subscriptionTypeMapper.get(data.subscriptionType) ?? { endDate: null, renewalDate: null };
     
     return new UserSubscription({

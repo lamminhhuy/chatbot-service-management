@@ -14,4 +14,10 @@ export class UserRepository extends Repository<User> implements IUserRepository 
  async findUserById(id: number): Promise<User | null> {
     return await this.findOneBy({ id });
   }
+  async findAll(): Promise<User[]> {
+    return await this.find();
+  }
+  async findById(id: number): Promise<User | null> {
+    return await this.findOneBy({ id });
+  }
 }

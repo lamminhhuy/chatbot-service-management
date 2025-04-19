@@ -1,21 +1,35 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, Index } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  CreateDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { PaymentMethod } from '../enums/PaymentMethod';
 import { PaymentGateway } from '../enums/PaymentGateway';
 import { PaymentStatus } from '../enums/PaymentStatus';
 import PaymentCodeGenerator from '../utils/PaymentCodeGenerator';
-
+import { formatPaymentAmount } from '../utils/formatPaymentAmount';
+import { DomainError } from '@/shared/response/errors.response';
+import { User } from '@/modules/user/models/UserModel';
 
 @Entity('payments')
-@Index(['userId', 'subscriptionId'])
 class Payment {
-    @PrimaryGeneratedColumn('uuid')
-    public readonly id: string;
+  @PrimaryGeneratedColumn('uuid')
+  public readonly id: string;
 
-  @Column({ name: 'user_id', type: 'integer' })
-  public readonly userId: number;
+  @ManyToOne(() => User)
+  @JoinColumn({
+    name: 'user_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'fk_payment_user',
+  })
+  public user: User;
 
   @Column({ name: 'subscription_id', type: 'integer' })
-  public readonly subscriptionId: number;
+  public subscriptionId: number;
 
   @Column({
     name: 'payment_method',
@@ -23,7 +37,7 @@ class Payment {
     enum: PaymentMethod,
     default: PaymentMethod.BANK_TRANSFER,
   })
-  public readonly _paymentMethod: PaymentMethod;
+  public _paymentMethod: PaymentMethod;
 
   @Column({
     name: 'payment_gateway',
@@ -31,7 +45,7 @@ class Payment {
     enum: PaymentGateway,
     default: PaymentGateway.SEPAY,
   })
-  public readonly _paymentGateway: PaymentGateway;
+  public _paymentGateway: PaymentGateway;
 
   @Column({
     name: 'transaction_id',
@@ -39,13 +53,13 @@ class Payment {
     nullable: true,
     comment: 'Transaction ID from payment gateway',
   })
-  public readonly _transactionId: number | null;
+  public _transactionId: number | null;
 
   @Column({ name: 'completed_at', type: 'timestamp', nullable: true })
-  public readonly _completedAt: Date | null;
+  public _completedAt: Date | null;
 
   @Column({ name: 'failed_at', type: 'timestamp', nullable: true })
-  public readonly _failedAt: Date | null;
+  public _failedAt: Date | null;
 
   @Column({
     name: 'metadata',
@@ -53,7 +67,7 @@ class Payment {
     nullable: true,
     comment: 'Additional data, e.g., gateway response, fraud check',
   })
-  public readonly _metadata: Record<string, any> | null;
+  public _metadata: Record<string, any> | null;
 
   @Column({
     name: 'status',
@@ -70,16 +84,16 @@ class Payment {
     scale: 2,
     comment: 'Amount of the payment',
   })
-  public readonly amount: number;
+  private _amount: number;
 
   @Column({
     name: 'currency',
     type: 'varchar',
     length: 3,
     comment: 'Currency code, e.g., VND',
-    default: 'VND'
+    default: 'VND',
   })
-  public readonly _currency: string;
+  public _currency: string;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -102,53 +116,29 @@ class Payment {
     length: 15,
     comment: 'Payment code',
   })
-  public readonly _code: string;
+  public _code: string;
 
-  private constructor(params?: {
-    userId: number;
-    subscriptionId: number;
-    paymentMethod: PaymentMethod;
-    paymentGateway: PaymentGateway;
-    status: PaymentStatus;
-    amount: number;
-    code: string;
-    transactionId?: number;
-    completedAt?: Date;
-    failedAt?: Date;
-    metadata?: Record<string, any>;
-  }) {
-
-    this.userId = params?.userId || 0;
-    this.subscriptionId = params?.subscriptionId || 0;
-    this._paymentMethod = params?.paymentMethod || PaymentMethod.BANK_TRANSFER;
-    this._paymentGateway = params?.paymentGateway || PaymentGateway.SEPAY;
-    this._status = params?.status || PaymentStatus.PENDING;
-    this.amount = params?.amount || 0;
-    this._code = params?.code || '';
-    this._transactionId = params?.transactionId ?? null;
-    this._completedAt = params?.completedAt ?? null;
-    this._failedAt = params?.failedAt ?? null;
-    this._metadata = params?.metadata ?? null;
-  }
+  private constructor() {}
 
   static create(params: {
-    userId: number;
+    user: User;
     subscriptionId: number;
     amount: number;
   }): Payment {
-    
-    const code = PaymentCodeGenerator.generateCode();
- 
-    return  new Payment({
-      userId: params.userId,
-      subscriptionId: params.subscriptionId,
-      paymentMethod: PaymentMethod.BANK_TRANSFER,
-      paymentGateway: PaymentGateway.SEPAY,
-      status: PaymentStatus.PENDING,
-      amount: params.amount,
-      code: code,
-    });
-
+    const payment = new Payment();
+    payment.user = params.user;
+    payment.subscriptionId = params.subscriptionId;
+    payment._paymentMethod = PaymentMethod.BANK_TRANSFER;
+    payment._paymentGateway = PaymentGateway.SEPAY;
+    payment._status = PaymentStatus.PENDING;
+    payment._amount = params.amount;
+    payment._code = PaymentCodeGenerator.generateCode();
+    payment._transactionId = null;
+    payment._completedAt = null;
+    payment._failedAt = null;
+    payment._metadata = null;
+    payment._currency = 'VND';
+    return payment;
   }
 
   get status(): PaymentStatus {
@@ -158,7 +148,20 @@ class Payment {
   set status(value: PaymentStatus) {
     this._status = value;
   }
- 
+
+  get amount(): number {
+    return formatPaymentAmount(this._amount);
+  }
+
+  public complete(transferAmount: number): void {
+    if (transferAmount !== this.amount) {
+      throw new DomainError('Amount not match');
+    }
+    if (this._status !== PaymentStatus.PENDING) {
+      throw new DomainError('Payment is not pending');
+    }
+    this._status = PaymentStatus.COMPLETED;
+  }
 }
 
 export default Payment;

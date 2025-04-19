@@ -5,6 +5,7 @@ import { AppDataSource } from "@/database/PostgresDB";
 import { IUserSubscriptionRepository } from "../interfaces/IUserSubscriptionRepository";
 import { UserSubscription } from "../models/UserSubscription";
 import { SubscriptionCode } from "../enums/SubscriptionCode";
+import { SubscriptionStatus } from "../enums/SubscriptionStatus";
 
 @injectable()
 class UserSubscriptionRepository extends Repository<UserSubscription> implements IUserSubscriptionRepository {
@@ -12,6 +13,8 @@ class UserSubscriptionRepository extends Repository<UserSubscription> implements
         super(UserSubscription, AppDataSource.manager);
     }
     async createUserSubscription(userSubscription: UserSubscription): Promise<UserSubscription> {
+        await this.update({ user: { id: userSubscription.userId},status: SubscriptionStatus.ACTIVE}, 
+        { status: SubscriptionStatus.CANCELLED });
         return await this.save(userSubscription);
     }
     
@@ -20,8 +23,9 @@ class UserSubscriptionRepository extends Repository<UserSubscription> implements
     }
 
     async findActiveUserSubscription(userId: number): Promise<UserSubscription | null> {
-        return await this.findOne({ where: {user: {id: userId}}});
+        return await this.findOne({ where: {user: {id: userId}, status: SubscriptionStatus.ACTIVE}});
     }
+
     
 }
 

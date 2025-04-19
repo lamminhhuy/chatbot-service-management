@@ -9,6 +9,7 @@ import {
 } from "@/shared/response/errors.response";
 import { UpdateSubscriptionDTO } from "../dtos/UpdateSubscription.dto";
 import { SubscriptionCode } from "../enums/SubscriptionCode";
+import { Transactional } from "typeorm-transactional";
 
 @injectable()
 class SubscriptionService {
@@ -67,7 +68,8 @@ class SubscriptionService {
   async findAll() {
     return this.subscriptionRepository.find();
   }
-  async findOne(id: number) {
+
+  async findById(id: number) {
     const subscription = await this.subscriptionRepository.findOneById(id);
     if (!subscription) {
       throw new BadRequestResponseError("Subscription not found");
@@ -79,6 +81,7 @@ class SubscriptionService {
     const subscription = await this.subscriptionRepository.findByCode(code);
     return subscription;
   }
+  
 }
 
 export default SubscriptionService;

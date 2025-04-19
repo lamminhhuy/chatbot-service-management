@@ -11,14 +11,14 @@ class PaymentController {
 
     async createPayment(req: CustomRequest<{}, {}, PaymentRequestDTO>, res: Response) {
         const { subscriptionId } = req.body;
-    const result = await this.paymentService.createPayment({
-        userId: req.user.id,
-        subscriptionId,
-    });
+const result = await this.paymentService.createPayment({
+    user: req.user,
+    subscriptionId,
+});
 
    new SuccessResponse({
-    data:result,
-    message: 'Create payment successfully'
+data:result,
+message: 'Create payment successfully'
    }).send(res);
 }
 
@@ -26,6 +26,14 @@ class PaymentController {
         await this.paymentService.updatePaymentStatus(req.body);
         new SuccessResponse({
             message: 'Update payment status successfully'
+        }).send(res);
+    }
+
+    async checkSuccess(req: CustomRequest<{},{}, {},{ paymentId:string}>, res: Response) {
+        const result = await this.paymentService.checkSuccess(req.query.paymentId);
+        new SuccessResponse({
+            data: { isSuccess: result },
+            message: 'Check payment status successfully'
         }).send(res);
     }
 }

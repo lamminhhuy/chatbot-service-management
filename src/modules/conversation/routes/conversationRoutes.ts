@@ -4,6 +4,7 @@ import { ConversationController } from "../controllers/ConversationController";
 import { container } from "tsyringe";
 import { CreateMessageDTOSchema } from "../dtos/CreateMessage.dto";
 import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
+import { validateQueryToken } from "../middlewares/validateQueryToken.middleware";
 
 const conversationController = container.resolve(ConversationController)
 
@@ -14,13 +15,13 @@ export const conversationModule: ModuleConfig = {
             method: 'post',
             path: '/',
             handler: conversationController.handleCreateConversation.bind(conversationController),
-            middlewares: [validateRequest(CreateConversationDTOSchema)]
+            middlewares: [validateRequest(CreateConversationDTOSchema),validateQueryToken]
         },
         {
             method: 'post',
             path: '/:id/messages',
             handler: conversationController.handleCreateMessage.bind(conversationController),
-            middlewares: [validateRequest(CreateMessageDTOSchema)]
+            middlewares: [validateRequest(CreateMessageDTOSchema), validateQueryToken]
         },
         {
             method: 'get',

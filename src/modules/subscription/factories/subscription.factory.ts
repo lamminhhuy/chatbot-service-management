@@ -7,7 +7,7 @@ import { formatCode } from "../utils/formatCode";
 class SubscriptionFactory {
 
   public create(data: CreateSubscriptionDTO): Subscription{
-    return new Subscription(data.name, formatCode(data.name), data.price, data.billingCycle, data.description, data.metadata, data.queryTokenLimit);
+    return new Subscription(data.name, formatCode(data.name), data.price, data.billingCycle, data.queryTokenLimit, data.description, data.metadata);
   }
 }
 

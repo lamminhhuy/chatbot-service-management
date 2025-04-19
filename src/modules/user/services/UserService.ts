@@ -17,6 +17,7 @@ import UserSubscriptionService from "@/modules/subscription/services/UserSubscri
 import { Subscription } from "@/modules/subscription/models/Subscription";
 import { UserSubscription } from "@/modules/subscription/models/UserSubscription";
 import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
+import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
 
 @injectable()
 export class UserService {
@@ -28,9 +29,11 @@ export class UserService {
     @inject("IUserRepository") userRepo: IUserRepository,
     @inject(RoleService) roleService: RoleService,
     @inject("UserSessionRepository") userSessionRepo: Repository<UserSession>,
+    @inject(SubscriptionService) private subscriptionService: SubscriptionService, 
     @inject(UserSubscriptionService) private userSubscriptionService: UserSubscriptionService
   ) {
     this.userRepo = userRepo;
+    this.subscriptionService = subscriptionService;
     this.roleService = roleService;
     this.userSessionRepo = userSessionRepo;
   }
@@ -57,9 +60,13 @@ export class UserService {
       roles: [basicUserRole],
     });
     const savedUser = await this.userRepo.save(user);
+   const subscription= await   this.subscriptionService.findByCode(SubscriptionCode.BASIC);
+     if(!subscription){
+    throw new ErrorsResponse("Basic subscription is not existed",500);
+    }
     const userSubscription = await this.userSubscriptionService.create({
       userId: savedUser.id,
-      subscriptionCode: SubscriptionCode.BASIC,
+      subscriptionId: subscription.id,
     });
     return { ...savedUser, userSubscription };
   }

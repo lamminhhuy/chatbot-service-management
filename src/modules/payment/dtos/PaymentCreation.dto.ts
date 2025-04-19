@@ -1,4 +1,6 @@
+import { User } from "@/modules/user/models/UserModel";
+
 export interface PaymentCreationDTO {
-    userId: number;
+    user: User;
     subscriptionId: number;
 }

@@ -24,7 +24,7 @@ import { SubscriptionType } from '../enums/SubscriptionType';
 
 export class Subscription {
 
-  constructor(name: string, code: string, price: number, billingCycle: BillingCycle, description?: string, metadata?: Record<string, any>, queryTokenLimit?: number) {
+  constructor(name: string, code: string, price: number, billingCycle: BillingCycle, queryTokenLimit: number, description: string, metadata?: Record<string, any>) {
     this.name = name;
     this.code = code;
     this.price = price;
@@ -84,7 +84,7 @@ export class Subscription {
     metadata?: Record<string, any>;
   
     @Column({ type: 'integer', name: 'query_token_limit', nullable: true })
-    queryTokenLimit?: number;
+    queryTokenLimit: number;
   
     @CreateDateColumn({ type: 'timestamptz' })
     createdAt: Date;
