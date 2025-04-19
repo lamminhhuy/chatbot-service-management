@@ -3,45 +3,48 @@ import { inject, injectable } from "tsyringe";
 import { ITokenConfig } from "../interfaces/ITokenConfig";
 import Redis from "ioredis";
 import { ITokenLimiter } from "../interfaces/ITokenLimiter";
+import { IUserSubscriptionService } from "@/modules/subscription/interfaces/IUsersubscriptionService";
+import UserSubscriptionService from "@/modules/subscription/services/UserSubscriptionService";
 
-const defaultTokenConfig: ITokenConfig = {
-    tokenExpireTime: 3600,
-    tokenKeyPrefix: 'chatbot:token'
-};
 
 @injectable()
 export class UserTokenLimiter implements ITokenLimiter {
     private readonly config: ITokenConfig;
   
     constructor(
-    
-      @inject('IRedisClient') private redisClient: Redis,
-      @inject('TokenConfig') config: ITokenConfig = defaultTokenConfig
+  @inject('IRedisClient') private redisClient: Redis,
+  config: ITokenConfig,
+  @inject(UserSubscriptionService) private userSubscriptionService: UserSubscriptionService
     ) {
-      this.redisClient = redisClient;
-      this.config = config;
-    }
+  this.redisClient = redisClient;
+  this.config = config;
+}
   
-    async checkToken(userId: number, userMaxTokens: number): Promise<boolean> {
-      try {
-        const tokenKey = this.getTokenKey(userId);
-        const currentTokens = await this.getCurrentTokenCount(tokenKey);
-        
-        if (currentTokens === null) {
-          await this.initializeUserToken(userId,userMaxTokens, this.config.tokenExpireTime);
-          return true;
+    async checkToken(userId: number): Promise<boolean> {
+      const tokenKey = this.getTokenKey(userId);
+      const currentTokens = await this.getCurrentTokenCount(tokenKey);
+  
+      if (currentTokens === null) {
+        const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(userId);
+        if(!userSubscription) {
+          throw new Error('User subscription not found');
         }
   
-        if (currentTokens >= userMaxTokens) {
-          return false;
-        }
-  
-        await this.redisClient.incr(tokenKey);
+        const userMaxTokens = userSubscription.subscription.queryTokenLimit;
+        await this.redisClient.set(tokenKey, userMaxTokens - 1);
+        await this.redisClient.expire(tokenKey, this.config.tokenExpireTime);
         return true;
-      } catch (error) {
-        console.error(`Token check failed for user ${userId}:`, error);
-        throw new Error('Token verification failed');
       }
+    
+      if (currentTokens <= 0) {
+        return false;
+      }
+      return true;
+    }
+    
+    async decreToken(userId: number): Promise<void> {
+      const tokenKey = this.getTokenKey(userId);
+      await this.redisClient.decr(tokenKey);
     }
   
     async getRemainingTokens(userId: number, userMaxTokens: number): Promise<number> {
@@ -67,7 +70,7 @@ export class UserTokenLimiter implements ITokenLimiter {
     }
   
     private getTokenKey(userId: number): string {
-      return `${this.config.tokenKeyPrefix}${userId}`;
+      return `${this.config.tokenKeyPrefix}:${userId}`;
     }
   
     private async getCurrentTokenCount(tokenKey: string): Promise<number | null> {
