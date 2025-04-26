@@ -1,9 +1,7 @@
 // src/middleware/upload.ts
 import multer from 'multer';
-import { Response, NextFunction, Request } from 'express';
+import { NextFunction } from 'express';
 import { ErrorsResponse } from '@/shared/response/errors.response';
-import { UploadDTOSchema } from '../interfaces/Upload.dto';
-import { validateRequest } from '@/shared/middlewares/validateRequest/validateRequest';
 
 export const upload = multer({
   storage: multer.memoryStorage(),
@@ -26,8 +24,7 @@ export const UploadFileMiddleware = (req: any, res: any, next: NextFunction) => 
     }
     if (!req.file) {
       return res.status(400).json(new ErrorsResponse('Không có file được upload', 400));
-    }
-    validateRequest(UploadDTOSchema)
+    } 
     next();
   });
 };

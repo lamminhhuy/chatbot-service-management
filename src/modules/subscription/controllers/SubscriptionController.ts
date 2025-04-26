@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import SubscriptionService from "../services/SubscriptionService";
 import { SuccessResponse } from "@/shared/response/success.response";
-import { inject, injectable } from "tsyringe";
+import { inject, injectable, singleton } from "tsyringe";
 import { UpdateSubscriptionDTO } from "../dtos/UpdateSubscription.dto";
 
-@injectable()
+@singleton()
 export class SubscriptionController {
     constructor(@inject(SubscriptionService) private subscriptionService: SubscriptionService) {}
 
@@ -25,7 +25,7 @@ export class SubscriptionController {
     }
     async handleGetOne(req: Request, res: Response) {
         const id = Number(req.params.id);
-        const subscription = await this.subscriptionService.findOne(id);
+        const subscription = await this.subscriptionService.findById(id);
         new SuccessResponse({
             message: 'Subscription fetched successfully!',
             data: subscription,

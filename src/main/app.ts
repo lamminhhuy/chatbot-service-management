@@ -54,7 +54,7 @@ async function initializeApp() {
 
   app.use(moduleLoader.loadAllModules());
 
-  initializePermission(moduleLoader.getAllModules())
+  // initializePermission(moduleLoader.getAllModules())
 
   app.use("/ping", (req, res) => {
     return res.status(200).send("server pinged!");

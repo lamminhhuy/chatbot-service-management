@@ -6,7 +6,7 @@ import { Column, Entity, PrimaryGeneratedColumn, Index } from "typeorm";
 @Index("idx_media_created_at", ["createdAt"])
 export class Media {
   @PrimaryGeneratedColumn("increment", { type: "bigint" })
-  id: number;
+  id: string;
 
   @Column({name: "media_type", type: "varchar", length: 50, nullable: false })
   mediaType: string;
@@ -14,10 +14,10 @@ export class Media {
   @Column({name: "file_url", type: "varchar", length: 512, nullable: false })
   fileUrl: string;
 
-  @Column({name: "reference_type", type: "varchar", length: 50, nullable: false })
+  @Column({name: "reference_type", type: "varchar", length: 50, nullable: true })
   referenceType: string;
 
-  @Column({name: "reference_id", type: "varchar", length: 255, nullable: false })
+  @Column({name: "reference_id", type: "varchar", length: 255, nullable: true })
   referenceId: string;
 
   @Column({name: "thumbnail_url", type: "varchar", length: 512, nullable: true })
@@ -49,12 +49,11 @@ export class Media {
   @Column({name: "deleted_at", type: "timestamp", nullable: true })
   deletedAt: Date | null;
 
-  static create(parms: {fileUrl: string, mediaType: string, referenceType: string, referenceId: string, mimeType: string}): Media {
+  static create(parms: {fileUrl: string, mediaType: string, mimeType: string}): Media {
     const media = new Media();
     media.fileUrl = parms.fileUrl;
     media.mediaType = parms.mediaType;
-    media.referenceType = parms.referenceType;
-    media.referenceId = parms.referenceId;
+    media.mimeType = parms.mimeType;
     return media;
 }
 }

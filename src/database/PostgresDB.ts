@@ -13,6 +13,7 @@ import Payment from '@/modules/payment/models/Payment';
 import { AuditLog } from '@/modules/payment/models/AuditLog';
 import { initializeTransactionalContext, addTransactionalDataSource, StorageDriver } from 'typeorm-transactional';
 import { Media } from '@/modules/media/models/MediaModel';
+import { Post } from '@/modules/post/models/Post';
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -22,7 +23,7 @@ export const AppDataSource = new DataSource({
     password: env.POSTGRES_PASSWORD,
     database: env.POSTGRES_DB,
     entities: [Role, User, UserSession, Message, Conversation, Permission,Subscription,UserSubscription,Payment,AuditLog,
-        Media
+        Media, Post
     ],
     synchronize: true, 
     logging: env.NODE_ENV === 'dev',
