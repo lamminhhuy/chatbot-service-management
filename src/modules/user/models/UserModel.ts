@@ -1,11 +1,11 @@
 import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, JoinTable } from 'typeorm';
 
 import { UserSession } from './UserSessionModel';
-import { Role } from '../../role/models/RoleModel';
 import { Message } from '@/modules/conversation/models/Message';
 import { Conversation } from '@/modules/conversation/models/Conversation';
 import Payment from '@/modules/payment/models/Payment';
 import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
+import { Role } from '@/modules/authorization/models/RoleModel';
 
 @Entity('users')
 @Index('idx_email', ['email'])
@@ -108,6 +108,14 @@ export class User {
       }],
     } as User;
   }
+  public assginRole(role: Role): User {
+    this.roles.push(role)
+    return this
+  }
 
+  public removeRole(role: Role): User {
+    this.roles = this.roles.filter(r => r.id !== role.id)
+    return this
+  }
   userSubscription: UserSubscription;
 }

@@ -30,7 +30,7 @@ export class Permission {
     updatedAt: Date;
 
     @DeleteDateColumn({ type: 'timestamp', nullable: true })
-    deletedAt: Date;
+    deletedAt: Date | null;
 
     @ManyToMany(() => Role, (role) => role.permissions)
     roles: Role[];

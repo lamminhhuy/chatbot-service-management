@@ -8,43 +8,53 @@ export class Media {
   @PrimaryGeneratedColumn("increment", { type: "bigint" })
   id: number;
 
-  @Column({ type: "varchar", length: 50, nullable: false })
+  @Column({name: "media_type", type: "varchar", length: 50, nullable: false })
   mediaType: string;
 
-  @Column({ type: "varchar", length: 512, nullable: false })
+  @Column({name: "file_url", type: "varchar", length: 512, nullable: false })
   fileUrl: string;
 
-  @Column({ type: "varchar", length: 50, nullable: false })
+  @Column({name: "reference_type", type: "varchar", length: 50, nullable: false })
   referenceType: string;
 
-  @Column({ type: "varchar", length: 255, nullable: false })
+  @Column({name: "reference_id", type: "varchar", length: 255, nullable: false })
   referenceId: string;
 
-  @Column({ type: "varchar", length: 512, nullable: true })
+  @Column({name: "thumbnail_url", type: "varchar", length: 512, nullable: true })
   thumbnailUrl: string | null;
 
-  @Column({ type: "varchar", length: 50, nullable: true })
+  @Column({name: "mime_type", type: "varchar", length: 50, nullable: true })
   mimeType: string | null;
 
-  @Column({ type: "bigint", nullable: true })
+  @Column({name: "file_size", type: "bigint", nullable: true })
   fileSize: number | null;
 
-  @Column({ type: "int", nullable: true })
+  @Column({ name: "duration", type: "int", nullable: true })
   duration: number | null;
 
-  @Column({ type: "json", nullable: true })
+  @Column({name: "metadata", type: "json", nullable: true })
   metadata: any;
-
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
+  
+  @Column({name: "created_at", type: "timestamp", default: () => "CURRENT_TIMESTAMP" })
   createdAt: Date;
-
+  
   @Column({
+    name: "updated_at",
     type: "timestamp",
     default: () => "CURRENT_TIMESTAMP",
     onUpdate: "CURRENT_TIMESTAMP",
   })
   updatedAt: Date;
 
-  @Column({ type: "timestamp", nullable: true })
+  @Column({name: "deleted_at", type: "timestamp", nullable: true })
   deletedAt: Date | null;
+
+  static create(parms: {fileUrl: string, mediaType: string, referenceType: string, referenceId: string, mimeType: string}): Media {
+    const media = new Media();
+    media.fileUrl = parms.fileUrl;
+    media.mediaType = parms.mediaType;
+    media.referenceType = parms.referenceType;
+    media.referenceId = parms.referenceId;
+    return media;
+}
 }

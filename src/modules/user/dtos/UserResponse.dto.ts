@@ -1,4 +1,5 @@
-import { RoleResonseDTOSchema } from "@/modules/role/dtos/RoleResponseDTOSchema";
+
+import { RoleResonseDTOSchema } from "@/modules/authorization/dtos/RoleResponseDTOSchema";
 import { SubscriptionResponseDTOSchema } from "@/modules/subscription/dtos/SubscriptionReponse.dto";
 import { DateOrStringSchema } from "@/shared/schemas/DateOrStringSchema";
 import { z } from "zod";

@@ -18,6 +18,9 @@ import { Subscription } from "@/modules/subscription/models/Subscription";
 import { UserSubscription } from "@/modules/subscription/models/UserSubscription";
 import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
 import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
+import { AssignRoleDTO } from "../dtos/AssignRole.dto";
+import { Role } from "@/shared/enums/Role";
+import { RemoveRoleDTO } from "../dtos/RemoveRole.dto";
 
 @injectable()
 export class UserService {
@@ -132,5 +135,30 @@ export class UserService {
       accessToken,
       isRevoked: false,
     });
+  }
+
+  async  assignRole(input: AssignRoleDTO): Promise<User> {
+    const role = await this.roleService.findRolebyId(input.roleId);
+    if(!role) {
+      throw new NotFoundResponseError("Role not found");
+    }
+    const user = await this.userRepo.findUserById(input.userId);
+    if(!user) {
+      throw new NotFoundResponseError("User not found");
+    }
+    user.roles.push(role);
+    return this.userRepo.save(user);
+  }
+  async removeRole(input: RemoveRoleDTO){
+    const role = await this.roleService.findRolebyId(input.roleId);
+    if(!role) {
+      throw new NotFoundResponseError("Role not found");
+    }
+    const user = await this.userRepo.findUserById(input.userId);
+    if(!user) {
+      throw new NotFoundResponseError("User not found");
+    }
+     user.removeRole(role);
+    return this.userRepo.save(user);
   }
 }

@@ -3,6 +3,7 @@ import { Role } from '@/modules/role/models/RoleModel';
 import { RoleCode } from '../enums/Role';
 import { IRoleRepository } from '../interfaces/IRoleRepository';
 import { inject, injectable } from 'tsyringe';
+import { AssignRoleDTO } from '../dtos/AssignRole.dto';
 @injectable()
 export class RoleService {
   constructor(
@@ -21,4 +22,5 @@ export class RoleService {
     const role = this.roleRepository.create(roleData);
     return this.roleRepository.save(role);
   }
+
 }

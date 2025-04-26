@@ -11,7 +11,7 @@ import { ChatbotService } from "@/modules/chatbot/services/ChatbotService";
 import { User } from "@/modules/user/models/UserModel";
 import { ChatRole } from "../enums/ChatRole";
 import { UserService } from "@/modules/user/services/UserService";
-import { isUserRole } from "@/modules/auth/utils/role.utils";
+import { isUserRole } from "@/modules/auth/middlewares/role.utils";
 import { env } from "@/configs/envConfig";
 import { groupBy } from 'lodash';
 import dayjs from 'dayjs'; 

@@ -4,7 +4,7 @@ import { AuthController } from "../controllers/AuthController";
 import { RegisterRequestDTOSchema } from "../dtos/RegisterRequest.dto";
 import { container } from "tsyringe";
 import { LoginRequestDTOSchema } from "../dtos/LoginRequest.dto";
-import { verifyRefreshToken } from "../utils/requireRefreshToken.middleware";
+import { verifyRefreshToken } from "../middlewares/requireRefreshToken.middleware";
 import { ModuleConfig } from "../interfaces/ModuleConfig";
 
 const authController = container.resolve(AuthController)

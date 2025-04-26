@@ -1,7 +1,7 @@
 import { AppDataSource } from "@/database/PostgresDB";
 import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
-import { Permission } from "@/modules/role/models/PermissionModel";
 import {  extractResourcesAndAction } from "./extractResourcesAndAction";
+import { Permission } from "@/modules/authorization/models/PermissionModel";
 
 export const initializePermission = async (modules: ModuleConfig[]) => {
 

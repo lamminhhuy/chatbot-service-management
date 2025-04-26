@@ -5,24 +5,8 @@ import { AuthFailureResponseError, BadRequestResponseError } from "@/shared/resp
 import { container, inject, injectable } from "tsyringe";
 import { User } from "@/modules/user/models/UserModel";
 import { CustomRequest } from "@/shared/interfaces/CustomRequest";
+import TokenAuthenticator from "../services/TokenAuthenticator";
 
-
-@injectable()
-class TokenAuthenticator {
-    constructor( @inject('IJwtService') private jwtService: IJwtService, @inject(UserService) private userService: UserService) {
-    }
-    public async authenticateToken (accessToken: string): Promise<User> {
-
-        if (accessToken == null)    throw new AuthFailureResponseError();
-        this.jwtService.verifyAccessToken(accessToken);
-        const userSession = await this.userService.findUserActiveAccessToken(accessToken);
-        if(!userSession)
-        {
-        throw new AuthFailureResponseError()
-        }
-        return userSession.user;
-}
-}
 
 const tokenAuthenticator =  container.resolve(TokenAuthenticator);
 

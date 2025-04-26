@@ -69,8 +69,7 @@ initializeApp()
     logger.info("Application initialized successfully");
   })
   .catch((err) => {
-    logger.error("Failed to initialize application:", err);
-  });
+ logger.error("Failed to initialize application:", err);});
 
 
 

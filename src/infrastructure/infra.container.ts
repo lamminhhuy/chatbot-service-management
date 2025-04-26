@@ -1,9 +1,9 @@
 import RedisClient from "@/database/redisClient"
 import { container } from "tsyringe"
 import { RedisSessionStore } from "./session/RedisSessionStore"
-import { OpenAIAPI } from "./ai/OpenAIAPI"
+import { OpenAIAPI } from "../external/openai/OpenAIAPI"
 import { env } from "@/configs/envConfig"
-import { WebSearchService } from "./search/WebSearchService"
+import { WebSearchService } from "../external/web-search/WebSearchService"
 import Redis from "ioredis"
 import { TypeOrmUnitOfWork } from "./uow/TypeOrmUnitOfWork"
 

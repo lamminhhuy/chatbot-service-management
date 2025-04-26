@@ -1,4 +1,4 @@
-import { authenticateTokenMiddleware } from "@/modules/auth/utils/authenticateToken.middleware";
+import { authenticateTokenMiddleware } from "@/modules/auth/middlewares/authenticateToken.middleware";
 import { rateLimitMiddleware } from "./rate-limit/rateLimiter";
 import requestLogger from "./logging/requestLogger";
 

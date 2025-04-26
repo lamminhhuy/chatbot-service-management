@@ -83,5 +83,9 @@ default: 30 * 24 * 60 * 60 * 1000
     default: 999999
   }),
   BANK_ACC: str(),
-  BANK_NAME: str()
+  BANK_NAME: str(),
+  AWS_ACCESS_KEY_ID: str(),
+  AWS_SECRET_ACCESS_KEY: str(),
+  S3_BUCKET_NAME: str(),
+  S3_REGION: str()
 });
