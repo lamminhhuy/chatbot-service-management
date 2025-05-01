@@ -1,3 +1,4 @@
+import nodemailer from 'nodemailer'
 export interface IEmailService {
-    sendOTP(email: string, otp: string): Promise<void> 
+    send(mailOptions: nodemailer.SendMailOptions): Promise<void> 
 }

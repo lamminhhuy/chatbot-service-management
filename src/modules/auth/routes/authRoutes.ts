@@ -6,39 +6,60 @@ import { container } from "tsyringe";
 import { LoginRequestDTOSchema } from "../dtos/LoginRequest.dto";
 import { verifyRefreshToken } from "../middlewares/requireRefreshToken.middleware";
 import { ModuleConfig } from "../interfaces/ModuleConfig";
+import { RequestResetPasswordDTOSchema, VerifyResetPasswordDTOSchema } from "../dtos/ResetPassword.dto";
 
 const authController = container.resolve(AuthController)
 
 export const authModule: ModuleConfig = {
     prefix: "/auth",
+    moduleName: "auth",
     routes: [
         {
-            method: "post",
+            method: "POST",
             path: "/request-otp",
             isPublic: true,
-            handler: authController.requestOTP.bind(authController),
+            handler: { controller: 'auth',
+                action:  authController.requestOTP.bind(authController)},
             middlewares: [validateRequest(RequestOtpDTOSchema)]
         },
         {
-            method: "post",
+            method: "POST",
             path: "/login",
             isPublic: true,
-            handler: authController.login.bind(authController),
+            handler: { controller: 'auth',
+                action:  authController.login.bind(authController)},
             middlewares: [validateRequest(LoginRequestDTOSchema)]
         },
         {
-            method: "post",
+            method: "POST",
             isPublic: true,
             path: "/verify-otp",
-            handler: authController.verifyOTP.bind(authController),   
+            handler: { controller: 'auth',
+                action:  authController.verifyOTP.bind(authController)},   
             middlewares: [validateRequest(RegisterRequestDTOSchema)]
         },
         {
-            method: "post",
+            method: "POST",
             isPublic: true,
             path: "/refresh",
-            handler: authController.handleRefreshToken.bind(authController),
+            handler: { controller: 'auth',
+                action:  authController.handleRefreshToken.bind(authController)},
             middlewares: [verifyRefreshToken]
+        },
+        {
+            method: "POST",
+            isPublic: true,
+            path: "/reset-password",
+            handler: { controller: 'auth',
+                action:  authController.resetPassword.bind(authController)},
+            middlewares: [validateRequest(RequestResetPasswordDTOSchema)]
+        },
+        {
+            method: "POST",
+            path: "/reset-password/verify",
+            handler: { controller: 'auth',
+                action:  authController.verifyResetPasswordOtp.bind(authController)},
+            middlewares: [validateRequest(VerifyResetPasswordDTOSchema)]
         }
     ]
 }

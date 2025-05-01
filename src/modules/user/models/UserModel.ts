@@ -33,7 +33,7 @@ export class User {
   @Column({ type: 'varchar', length: 255, unique: true})
   email: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true})
+  @Column({ type: 'varchar', length: 50, unique: false})
   username: string; 
 
   @Column({ type: 'varchar', length: 15, unique: true, nullable: true, name:'phone_number' })

@@ -8,6 +8,8 @@ import { env } from '@/configs/envConfig';
 import { getCookieOptions } from '@/shared/utils/getCookieOptions';
 import { LoginResDTOSchema } from '../dtos/LoginResponse.dto';
 import { RegisterResponseDTOSchema } from '../dtos/RegisterReponse.dto';
+import { UpdatePasswordDTO } from '@/modules/user/dtos/UpdateUser.dto';
+import { RequestResetPasswordDTO, VerifyResetPasswordDTO } from '../dtos/ResetPassword.dto';
 
 @singleton()
 export class AuthController {
@@ -51,4 +53,19 @@ export class AuthController {
       message: 'Access token refreshed successfully! ',
       data: { accessToken },
     }).send(res);
-}}
+}
+  async resetPassword(req: Request<{}, {}, RequestResetPasswordDTO>, res: Response): Promise<void> {
+    const user = await this.authService.resetPassword(req.body);
+    new SuccessResponse({
+      message: 'OTP sent successfully!',
+      data: { user },
+    }).send(res);
+  }
+  async verifyResetPasswordOtp(req: Request<{}, {}, VerifyResetPasswordDTO>, res: Response): Promise<void> {
+    const user = await this.authService.verifyResetPasswordOtp(req.body);
+    new SuccessResponse({
+      message: 'Password reset successfully!',
+      data: { user },
+    }).send(res);
+  }
+}

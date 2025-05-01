@@ -7,25 +7,21 @@ import {  chatRequestSchema } from "../validators/ChatValidator";
 import { OpenAIAPI } from "@/external/openai/OpenAIAPI";
 import { OpenAIMessageAdapter } from "../helpers/OpenAIMessageAdapter";
 import { WebSearchService } from "@/external/web-search/WebSearchService";
-import { RedisSessionStore } from "@/infrastructure/session/RedisSessionStore";
 import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
 import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
+import { container } from "tsyringe";
 
-const chatRouter = Router();
-const sessionStore = new RedisSessionStore(redisInstance);
-const webSearchService = new WebSearchService(env.SERP_API_KEY);
-const chatbotAPI = new OpenAIAPI(env.OPENAI_API_KEY, env.OPENAI_ASSISTANT_ID, webSearchService);
-const messageAdapter = new OpenAIMessageAdapter()
-const chatbotService = new ChatbotService(chatbotAPI, sessionStore,messageAdapter);
-const chatController = new ChatController(chatbotService);
+const chatController = container.resolve(ChatController);
 
 export const chatModule: ModuleConfig = {
   prefix: "/chat",
+  moduleName: "chat",
   routes: [
     {
-      method: 'post',
+      method: 'POST',
       path: '/',
-      handler: chatController.handleChat.bind(chatController),
+      handler: { controller: 'chat',
+                action:  chatController.handleChat.bind(chatController)},
       middlewares: [validateRequest(chatRequestSchema)]
     }
   ]

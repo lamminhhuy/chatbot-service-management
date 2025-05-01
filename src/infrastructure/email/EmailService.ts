@@ -7,7 +7,6 @@ import { injectable } from 'tsyringe';
 export class EmailService implements IEmailService {
     private transporter
     constructor (){
-
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -16,15 +15,7 @@ export class EmailService implements IEmailService {
             }
         })
     }
-    async sendOTP(email: string, otp: string): Promise<void> {
-        const mailOptions = {
-          from: env.EMAIL_USER,
-          to: email,
-          subject: 'Mã OTP của bạn',
-          html: `<p>Mã OTP của bạn là: <b>${otp}</b>. Hiệu lực trong 5 phút.</p>`,
-          text: `Mã OTP của bạn là: ${otp}. Hiệu lực trong 5 phút.`,
-        };
-    
+    async send(mailOptions: nodemailer.SendMailOptions): Promise<void> {
         await this.transporter.sendMail(mailOptions);
       }
 }

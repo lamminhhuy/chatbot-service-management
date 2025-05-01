@@ -22,7 +22,7 @@ export class WebSearchService  {
           });
 
         return {
-            method: 'post',
+            method: 'POST',
             maxBodyLength: Infinity,
             url: WebSearchService.webSearchUrl,
             headers: { 

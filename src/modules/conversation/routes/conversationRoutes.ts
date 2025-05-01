@@ -10,33 +10,39 @@ const conversationController = container.resolve(ConversationController)
 
 export const conversationModule: ModuleConfig = {
     prefix: "/conversations",
+    moduleName: 'conversation',
     routes: [
         {
-            method: 'post',
+            method: 'POST',
             path: '/',
-            handler: conversationController.handleCreateConversation.bind(conversationController),
+            handler: { controller: 'conversation',
+                action:  conversationController.handleCreateConversation.bind(conversationController)},
             middlewares: [validateRequest(CreateConversationDTOSchema),validateQueryToken]
         },
         {
-            method: 'post',
+            method: 'POST',
             path: '/:id/messages',
-            handler: conversationController.handleCreateMessage.bind(conversationController),
+            handler: { controller: 'conversation',
+                action:  conversationController.handleCreateMessage.bind(conversationController)},
             middlewares: [validateRequest(CreateMessageDTOSchema), validateQueryToken]
         },
         {
-            method: 'get',
+            method: 'GET',
             path: '/',
-            handler: conversationController.handleGetConversations.bind(conversationController)
+            handler: { controller: 'conversation',
+                action:  conversationController.handleGetConversations.bind(conversationController)}
         },
         {
-            method: 'get',
+            method: 'GET',
             path: '/:id',
-            handler: conversationController.handleGetConversationById.bind(conversationController)
+            handler: { controller: 'conversation',
+                action:  conversationController.handleGetConversationById.bind(conversationController)}
         },
         {
-            method: 'delete',
+            method: 'DELETE',
             path: '/:id',
-            handler: conversationController.handleDeleteConversation.bind(conversationController)
+            handler: { controller: 'conversation',
+                action:  conversationController.handleDeleteConversation.bind(conversationController)}
         }
     ]
 } ;

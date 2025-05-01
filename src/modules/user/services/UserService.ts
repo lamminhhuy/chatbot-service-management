@@ -2,9 +2,9 @@ import { UserRepository } from "../repositories/UserRepository";
 import * as argon2 from "argon2";
 import { User } from "../models/UserModel";
 import { IUserRepository } from "../interfaces/IUserRepository";
-import { RoleService } from "./RoleService";
 import { RoleCode } from "../enums/Role";
 import {
+  BadRequestResponseError,
   ErrorsResponse,
   NotFoundResponseError,
 } from "@/shared/response/errors.response";
@@ -21,6 +21,10 @@ import SubscriptionService from "@/modules/subscription/services/SubscriptionSer
 import { AssignRoleDTO } from "../dtos/AssignRole.dto";
 import { Role } from "@/shared/enums/Role";
 import { RemoveRoleDTO } from "../dtos/RemoveRole.dto";
+import { hashPassword } from "../utils/hashPassword";
+import { UpdatePasswordDTO, UpdateUserDTO } from "../dtos/UpdateUser.dto";
+import { UserResponseDTO, UserResponseDTOSchema } from "../dtos/UserResponse.dto";
+import { RoleService } from "@/modules/authorization/services/RoleService";
 
 @injectable()
 export class UserService {
@@ -46,10 +50,12 @@ export class UserService {
     email,
     username,
     phoneNumber,
-  }: CreateUserDTO): Promise<User &{ userSubscription: UserSubscription}> {
+  }: CreateUserDTO): Promise<User> {
+    await this.validateUserInput({ email, phoneNumber });
     const basicUserRole = await this.roleService.findRoleByCode(
       RoleCode.BASIC_USER
     );
+
     if (!basicUserRole) {
       throw new ErrorsResponse("Role Basic is not existed", 408);
     }
@@ -63,27 +69,24 @@ export class UserService {
       roles: [basicUserRole],
     });
     const savedUser = await this.userRepo.save(user);
-   const subscription= await   this.subscriptionService.findByCode(SubscriptionCode.BASIC);
-     if(!subscription){
-    throw new ErrorsResponse("Basic subscription is not existed",500);
-    }
-    const userSubscription = await this.userSubscriptionService.create({
-      userId: savedUser.id,
-      subscriptionId: subscription.id,
-    });
-    return { ...savedUser, userSubscription };
+   
+    return savedUser;
   }
 
   async findUserById(userId: number): Promise<User | null> {
     return this.userRepo.findUserById(userId);
   }
 
-  async updateUser(userId: number, updateData: User): Promise<User> {
+  async updateUser(userId: number, input: UpdateUserDTO): Promise<User> {
     const user = await this.userRepo.findUserById(userId);
+
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
-    Object.assign(user, updateData);
+
+    await this.validateUserInput({ email: input.email, phoneNumber: input.phoneNumber });
+    
+    Object.assign(user, input);
     return this.userRepo.save(user);
   }
   async createUserSession(
@@ -95,16 +98,20 @@ export class UserService {
     return await this.userSessionRepo.save(createUserSession);
   }
 
-  async getProfile(userId: number): Promise<User & { userSubscription: UserSubscription }> {
-    const result = await this.userRepo.findUserById(userId);
+  async getProfile(userId: number): Promise<UserResponseDTO> {
+    const user = await this.userRepo.findUserById(userId);
     const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(userId);
     if(!userSubscription) {
       throw new NotFoundResponseError("User subscription not found");
     }
-    if (!result) {
+    if (!user) {
       throw new NotFoundResponseError("User not found");
     }
-    return { ...result, userSubscription };
+    const sanitizedUser = UserResponseDTOSchema.parse({
+      ...user,
+      userSubscription
+    })
+    return sanitizedUser;
   }
 
   async findByEmail(email: string): Promise<User | null> {
@@ -161,4 +168,38 @@ export class UserService {
      user.removeRole(role);
     return this.userRepo.save(user);
   }
+  async updatePassword(userId: number, input: UpdatePasswordDTO): Promise<User> {
+    const user = await this.userRepo.findUserById(userId);
+    if (!user) {
+      throw new NotFoundResponseError("User not found");
+    }
+    const isPasswordValid = await argon2.verify(user.password, input.oldPassword);
+    if(!isPasswordValid) {
+      throw new BadRequestResponseError('Invalid old password!');
+    } 
+    user.password = await hashPassword(input.newPassword);
+    return this.userRepo.save(user);
+  }
+
+  async resetPassword(userId: number, newPassword: string): Promise<User> {
+    const user = await this.userRepo.findUserById(userId)
+    if (!user) {
+      throw new BadRequestResponseError('User not found!')
+    }
+    user.password = await hashPassword(newPassword)
+    return this.userRepo.save(user)
+  }
+private async validateUserInput({ email, phoneNumber }: { email: string; phoneNumber: string | null }): Promise<void> {
+  const emailExists = await this.userRepo.isExistedByEmail(email);
+  if (emailExists) {
+    throw new BadRequestResponseError('Email is already taken');
+  }
+
+  if (phoneNumber) {
+    const phoneNumberExists = await this.userRepo.isExistedByPhoneNumber(phoneNumber);
+    if (phoneNumberExists) {
+      throw new BadRequestResponseError('Phone number is already taken');
+    }
+  }
+}
 }

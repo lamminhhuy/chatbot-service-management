@@ -4,9 +4,11 @@ import { ChatbotService } from "../services/ChatbotService";
 import { IChatRequest } from "../dtos/ChatDTOs";
 import { getCookieOptions } from "@/shared/utils/getCookieOptions";
 import { env } from "@/configs/envConfig";
+import { inject, injectable } from "tsyringe";
 
+@injectable()
 export class ChatController {
-  constructor(private chatBotService: ChatbotService) {}
+  constructor(@inject(ChatbotService)private chatBotService: ChatbotService) {}
 
   async handleChat(req: Request<{},{},IChatRequest>, res: Response): Promise<void> {
     const { content } = req.body;

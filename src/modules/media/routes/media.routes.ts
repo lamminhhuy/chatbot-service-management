@@ -8,10 +8,12 @@ const mediaController = container.resolve(MediaController);
 
 export const mediaModule: ModuleConfig = {
   prefix: '/media',
+  moduleName: 'media',
   routes: [{
-    method: 'post',
+    method: 'POST',
     path: '/',
-    handler: mediaController.handleUpload.bind(mediaController),
+    handler: { controller: 'media',
+                action:  mediaController.handleUpload.bind(mediaController)},
     middlewares: [UploadFileMiddleware]
   }]
 }

@@ -32,7 +32,7 @@ app.use(
       } else {
         callback(new Error(`${origin} Not allowed by CORS`));
       }},
-    credentials: true,
+    credentials: true
   })
 );
 
@@ -50,11 +50,11 @@ async function initializeApp() {
  
   app.use(...middlewares.appLevelMiddleware);
 
-  const moduleLoader = new ModuleLoader(modules, middlewares.routerLevelMiddleware, asyncHandler);
+  const moduleLoader =  ModuleLoader.getInstance(modules, middlewares.routerLevelMiddleware, asyncHandler);
 
   app.use(moduleLoader.loadAllModules());
 
-  // initializePermission(moduleLoader.getAllModules())
+  initializePermission(moduleLoader.getAllModules())
 
   app.use("/ping", (req, res) => {
     return res.status(200).send("server pinged!");
@@ -63,6 +63,7 @@ async function initializeApp() {
   app.use(errorHandler);
 }
 initializeTransactionalContext();
+
 
 initializeApp()
   .then(() => {

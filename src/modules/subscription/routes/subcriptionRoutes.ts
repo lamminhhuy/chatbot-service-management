@@ -10,33 +10,40 @@ const subscriptionController = container.resolve(SubscriptionController);
 
 export const subscriptionModule: ModuleConfig = {
   prefix: '/subscriptions',
+  moduleName: 'subscription',
   routes: [
     {
       path: '/',
-      method: 'get',
-      handler: subscriptionController.handleGetAll.bind(subscriptionController)
+      method: 'GET',
+      isPublic: true,
+      handler: { controller: 'subscription',
+                action:  subscriptionController.handleGetAll.bind(subscriptionController)}
     },
     {
       path: '/:id',
-      method: 'get',
-      handler: subscriptionController.handleGetOne.bind(subscriptionController)
+      method: 'GET',
+      handler: { controller: 'subscription',
+                action:  subscriptionController.handleGetOne.bind(subscriptionController)}
     },
     {
       path: '/',
-      method: 'post',
+      method: 'POST',
       middlewares: [validateRequest(CreateSubscriptionDTOSchema)],
-      handler: subscriptionController.handleCreate.bind(subscriptionController)
+      handler: { controller: 'subscription',
+                action:  subscriptionController.handleCreate.bind(subscriptionController)}
     },
     {
       path: '/:id',
-      method: 'put',
+      method: 'PUT',
       middlewares: [validateRequest(UpdateSubscriptionDTOSchema)],
-      handler: subscriptionController.handleUpdate.bind(subscriptionController)
+      handler: { controller: 'subscription',
+                action:  subscriptionController.handleUpdate.bind(subscriptionController)}
     },
     {
       path: '/:id',
-      method: 'delete',
-      handler: subscriptionController.handleDelete.bind(subscriptionController)
+      method: 'DELETE',
+      handler: { controller: 'subscription',
+                action:  subscriptionController.handleDelete.bind(subscriptionController)}
     }
   ]
 }

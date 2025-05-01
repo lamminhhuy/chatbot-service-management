@@ -24,8 +24,7 @@ class UserSubscriptionService {
 
     const userSubscription = this.userSubscriptionFactory.create({
       userId: payload.userId,
-      subscriptionId: subscription.id,
-      subscriptionType: subscription.type,
+      subscription
     });
     
     return this.userSubscriptionRepository.createUserSubscription(userSubscription);

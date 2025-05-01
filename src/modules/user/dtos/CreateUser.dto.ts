@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { UserResponseDTOSchema } from "./UserResponse.dto";
 
-export const CreateUserSchema = z.object({
+export const CreateUserDTOSchema = z.object({
     email: z.string().email(),
     username: z.string().min(3).max(50),
     password: z.string().min(8),
@@ -8,4 +9,7 @@ export const CreateUserSchema = z.object({
     roleId: z.number().optional()
 })
 
-export type CreateUserDTO = z.infer<typeof CreateUserSchema>
+export const CreateUserResponseSchema = UserResponseDTOSchema
+
+export type CreateUserDTO = z.infer<typeof CreateUserDTOSchema>
+export type CreateUserResponseDTO = z.infer<typeof CreateUserResponseSchema>

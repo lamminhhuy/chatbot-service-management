@@ -1,7 +1,8 @@
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { IPermissionRepository } from "../interfaces/IPermissionRepository";
 import { Permission } from "../models/PermissionModel";
 import { AppDataSource } from "@/database/PostgresDB";
+import { BadRequestResponseError } from "@/shared/response/errors.response";
 
 export class PermissionRepository extends Repository<Permission> implements IPermissionRepository {
     constructor() {
@@ -10,5 +11,13 @@ export class PermissionRepository extends Repository<Permission> implements IPer
 
     findPermissionById(id: number): Promise<Permission | null> {
         return this.findOne({ where: { id } });
+    }
+    getAllPermissionByRoles(roleIds: number[]): Promise<Permission[] | null> {
+        return this.find({ where: { roles: In(roleIds) } });
+    }
+  async  findPermissionByIds(ids: number[]): Promise<Permission[]> {
+        const permissions = await this.find({ where: { id: In(ids) } });
+
+        return permissions;
     }
 }

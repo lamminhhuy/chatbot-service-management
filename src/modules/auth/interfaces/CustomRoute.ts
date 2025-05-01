@@ -1,7 +1,7 @@
 import { CustomRequest } from "@/shared/interfaces/CustomRequest";
-import { NextFunction, Response, RequestHandler as ExpressRequestHandler } from "express";
+import { NextFunction, Response } from "express";
 
-export type HttpMethod = 'get' | 'post' | 'put' | 'delete' | 'patch';
+export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 export type RequestHandler = (
     req: CustomRequest,
@@ -20,6 +20,9 @@ export interface CustomRoute {
     isPublic?: boolean;
     apiVersion?: number; 
     path: string;
-    handler: RequestHandler;
+    handler: {
+        controller: string;
+        action: RequestHandler;
+    };
     middlewares?: RequestMiddleware[];
 }

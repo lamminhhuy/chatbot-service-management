@@ -20,3 +20,4 @@ export const UserResponseDTOSchema = z.object({
   })
 })
 
+export type UserResponseDTO = z.infer<typeof UserResponseDTOSchema>

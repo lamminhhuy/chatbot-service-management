@@ -1,8 +1,6 @@
-import { SubscriptionType } from "@/modules/subscription/enums/SubscriptionType";
-import { SubscriptionCode } from "../enums/SubscriptionCode";
+import { Subscription } from "../models/Subscription";
 
 export interface UserSubscriptionCreation {
     userId: number;
-    subscriptionType: SubscriptionType;
-    subscriptionId: number;
+    subscription: Subscription
 }

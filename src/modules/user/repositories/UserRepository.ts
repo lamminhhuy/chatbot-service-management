@@ -20,4 +20,10 @@ export class UserRepository extends Repository<User> implements IUserRepository 
   async findById(id: number): Promise<User | null> {
     return await this.findOneBy({ id });
   }
+  async isExistedByPhoneNumber(phoneNumber: string): Promise<boolean> {
+    return await this.existsBy({ phoneNumber });
+  }
+  async isExistedByEmail(email: string): Promise<boolean> {
+    return await this.existsBy({ email });
+  }
 }

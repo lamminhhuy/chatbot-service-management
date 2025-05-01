@@ -16,16 +16,14 @@ class UserSubscriptionFactory {
 
   public create(data: UserSubscriptionCreation): UserSubscription {
 
-    const { endDate, renewalDate } = this.subscriptionTypeMapper.get(data.subscriptionType) ?? { endDate: null, renewalDate: null };
+    const { endDate, renewalDate } = this.subscriptionTypeMapper.get(data.subscription.type) ?? { endDate: null, renewalDate: null };
     
-    return new UserSubscription({
-      userId: data.userId,
-      subscriptionId: data.subscriptionId,
-      endDate,
-      renewalDate,
-    });
+    const subscription = new UserSubscription();
+    subscription.userId = data.userId;
+    subscription.subscription = data.subscription;
+    subscription.endDate = endDate;
+    subscription.renewalDate = renewalDate;
+    return subscription;
   }
-
 }
-
 export default UserSubscriptionFactory;

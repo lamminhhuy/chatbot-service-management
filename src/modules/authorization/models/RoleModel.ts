@@ -31,6 +31,7 @@ export class Role {
     inverseJoinColumns: [{name: 'permission_id', referencedColumnName: 'id'}]})
     permissions: Permission[];
 
+
     static createRole(roleData: CreateRoleDTO): Role {
         const role = new Role();
         role.name = roleData.name;

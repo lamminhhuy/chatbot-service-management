@@ -9,27 +9,32 @@ const postController = container.resolve(PostController);
 
 export const postModule: ModuleConfig = {
   prefix: '/posts',
+  moduleName: 'post',
   routes: [
     {
-      method: 'post',
+      method: 'POST',
       path: '/',
-      handler: postController.handleCreate.bind(postController),
+      handler: { controller: 'post',
+                  action:  postController.handleCreate.bind(postController)},
       middlewares: [validateRequest(CreatePostDTOSchema)]
     },
     {
-      method: 'get',
+      method: 'GET',
       path: '/',
-      handler: postController.handleGetAll.bind(postController)
+      handler: { controller: 'post',
+                  action:  postController.handleGetAll.bind(postController)}
     },
     {
-      method: 'put',
+      method: 'PUT',
       path: '/:id',
-      handler: postController.handleUpdate.bind(postController)
+      handler: { controller: 'post',
+                  action:  postController.handleUpdate.bind(postController)}
     },
     {
-      method: 'delete',
+      method: 'DELETE',
       path: '/:id',
-      handler: postController.handleDelete.bind(postController)
+      handler: { controller: 'post',
+                  action:  postController.handleDelete.bind(postController)}
     }
   ]
 }

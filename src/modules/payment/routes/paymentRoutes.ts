@@ -9,24 +9,28 @@ import { CheckSuccessQueryDTOSchema } from "../dtos/CheckSuccess.dto";
 const paymentController = container.resolve(PaymentController);
 const PaymentModule : ModuleConfig = {
     prefix: '/payments',
+    moduleName: 'payment',
     routes: [
         {
-            method: 'post',
+            method: 'POST',
             path: '/',
-            handler: paymentController.createPayment.bind(paymentController),
+            handler: { controller: 'payment',
+                action:  paymentController.createPayment.bind(paymentController)},
             middlewares: [validateRequest(CreatePaymentRequestDTOSchema)]   
         },
         {
-            method: 'post',
+            method: 'POST',
             path: '/update-status',
             isPublic: true,
-            handler: paymentController.updatePaymentStatus.bind(paymentController),
+            handler: { controller: 'payment',
+                action:  paymentController.updatePaymentStatus.bind(paymentController)},
             middlewares: []
         },
         {
-            method: 'get',
+            method: 'GET',
             path: '/check-success',
-            handler: paymentController.checkSuccess.bind(paymentController),
+            handler: { controller: 'payment',
+                action:  paymentController.checkSuccess.bind(paymentController)},
             middlewares: [validateRequestQueryParams(CheckSuccessQueryDTOSchema)]
         }
     ]

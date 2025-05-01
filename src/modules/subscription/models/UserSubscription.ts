@@ -7,26 +7,21 @@ import { Subscription } from "@/modules/subscription/models/Subscription";
 
 @Entity("user_subscriptions")
 @Index("idx_user_subscriptions_user_id", ["userId"])
-@Index("idx_user_subscriptions_subscription_id", ["subscriptionId"])
 @Index("idx_user_subscriptions_status", ["status"])
 @Index("idx_user_subscriptions_renewal_date", ["renewalDate"])
 export class UserSubscription {
   
-  constructor(params?: { userId: number; subscriptionId: number; endDate: Date | null; renewalDate: Date | null }) {
-    this.userId = params?.userId || 0;
-    this.subscriptionId = params?.subscriptionId || 0;
-    this.endDate = params?.endDate || null;
-    this.renewalDate = params?.renewalDate || null;
-  }
-
   @PrimaryGeneratedColumn('increment')
   id: number;
 
   @Column({ name: "user_id", type: "integer", nullable: false })
   userId: number;
-
-  @Column({ name: "subscription_id", type: "integer", nullable: false, default: '1' })
+  
+  @Column({ name: "subscription_id", type: "integer", nullable: false }) 
   subscriptionId: number;
+  @ManyToOne(() => Subscription,{ onDelete: "RESTRICT", eager:true, cascade: true })
+  @JoinColumn({ name: "subscription_id", referencedColumnName: "id" })
+  subscription: Subscription;
 
   @Column({
     type: "varchar",
@@ -59,7 +54,5 @@ export class UserSubscription {
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user: User;
 
-  @ManyToOne(() => Subscription,{ onDelete: "RESTRICT", eager:true, cascade: true })
-  @JoinColumn({ name: "subscription_id", referencedColumnName: "id" })
-  subscription: Subscription;
+
 }
