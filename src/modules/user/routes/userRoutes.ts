@@ -16,7 +16,7 @@ export const userModule: ModuleConfig = {
     routes:[
         {
             method: "GET",
-            path: "/profile/:id",
+            path: "/me/profile",
             handler: { controller: 'user',
                 action:  userController.getProfile.bind(userController)},
             middlewares: []

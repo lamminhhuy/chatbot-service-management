@@ -14,7 +14,7 @@ export class UserController {
     }
     async getProfile(req: CustomRequest<{ id: number }, {}, {}>, res: Response, next: NextFunction): Promise<void> {
     
-     const result =   await this.userService.getProfile(req.params.id);
+     const result =   await this.userService.getProfile(req.user.id);
             
      new SuccessResponse(
         { data: UserResponseDTOSchema.parse(result) }
