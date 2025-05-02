@@ -30,7 +30,7 @@ class PaymentService {
 
     const payment = Payment.create({
       user: input.user,
-      subscriptionId: input.subscriptionId,
+      subscription: existedSubscription,
       amount: existedSubscription.price,
     });
 
@@ -57,7 +57,7 @@ class PaymentService {
 
     await this.userSubscriptionService.create({
       userId: payment.user.id,
-      subscriptionId: payment.subscriptionId 
+      subscriptionId: payment.subscription.id 
     });
 
     return savedPayment;

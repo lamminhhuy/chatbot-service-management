@@ -14,7 +14,7 @@ class PaymentRepository extends Repository<Payment> implements IPaymentRepositor
         return this.findOne({ where: { _code: code }, relations: ['user'] });
     }
     async findByUserId(userId: number): Promise<Payment[]> {
-        return this.find({ where: { user: { id: userId }, status: Equal(PaymentStatus.COMPLETED) }});
+        return this.find({ where: { user: { id: userId }, status: Equal(PaymentStatus.COMPLETED) }, relations: ['subscription'] });
     }
 
     async findById(id: string): Promise<Payment | null> {

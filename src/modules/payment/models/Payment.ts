@@ -14,6 +14,7 @@ import PaymentCodeGenerator from '../utils/PaymentCodeGenerator';
 import { formatPaymentAmount } from '../utils/formatPaymentAmount';
 import { DomainError } from '@/shared/response/errors.response';
 import { User } from '@/modules/user/models/UserModel';
+import { Subscription } from '@/modules/subscription/models/Subscription';
 
 @Entity('payments')
 class Payment {
@@ -27,9 +28,13 @@ class Payment {
     foreignKeyConstraintName: 'fk_payment_user',
   })
   public user: User;
- 
-  @Column({ name: 'subscription_id', type: 'integer' })
-  public subscriptionId: number;
+  @ManyToOne(() => Subscription, {cascade: true})
+  @JoinColumn({
+    name: 'subscription_id',
+    referencedColumnName: 'id',
+    foreignKeyConstraintName: 'fk_payment_subscription',
+  })
+  public subscription: Subscription;
 
   @Column({
     name: 'payment_method',
@@ -122,12 +127,12 @@ class Payment {
 
   static create(params: {
     user: User;
-    subscriptionId: number;
+    subscription: Subscription;
     amount: number;
   }): Payment {
     const payment = new Payment();
     payment.user = params.user;
-    payment.subscriptionId = params.subscriptionId;
+    payment.subscription = params.subscription;
     payment._paymentMethod = PaymentMethod.BANK_TRANSFER;
     payment._paymentGateway = PaymentGateway.SEPAY;
     payment.status = PaymentStatus.PENDING;
