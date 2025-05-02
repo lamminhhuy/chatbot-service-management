@@ -81,6 +81,8 @@ class PaymentService {
     }
     return true;
   }
-
+  async getUserPayments(userId: number): Promise<Payment[]> {
+    return this.paymentRepository.findByUserId(userId);
+  }
 }
 export default PaymentService;

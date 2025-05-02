@@ -32,6 +32,13 @@ const PaymentModule : ModuleConfig = {
             handler: { controller: 'payment',
                 action:  paymentController.checkSuccess.bind(paymentController)},
             middlewares: [validateRequestQueryParams(CheckSuccessQueryDTOSchema)]
+        },
+        {
+            method: 'GET',
+            path: '/user',
+            handler: { controller: 'payment',
+                action:  paymentController.getUserPayments.bind(paymentController)},
+            middlewares: []
         }
     ]
 }

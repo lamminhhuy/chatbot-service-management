@@ -36,6 +36,14 @@ message: 'Create payment successfully'
             message: 'Check payment status successfully'
         }).send(res);
     }
+
+    async getUserPayments(req: CustomRequest<{},{}, {},{ userId: number }>, res: Response) {
+        const result = await this.paymentService.getUserPayments(req.user.id);
+        new SuccessResponse({
+            data: result,
+            message: 'Get user payments successfully'
+        }).send(res);
+    }
 }
 
 export default PaymentController;

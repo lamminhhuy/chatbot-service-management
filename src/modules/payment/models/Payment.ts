@@ -27,7 +27,7 @@ class Payment {
     foreignKeyConstraintName: 'fk_payment_user',
   })
   public user: User;
-
+ 
   @Column({ name: 'subscription_id', type: 'integer' })
   public subscriptionId: number;
 
@@ -75,7 +75,7 @@ class Payment {
     enum: PaymentStatus,
     comment: 'Payment status, e.g., COMPLETED, FAILED',
   })
-  private _status: PaymentStatus;
+  public status: PaymentStatus;
 
   @Column({
     name: 'amount',
@@ -130,7 +130,7 @@ class Payment {
     payment.subscriptionId = params.subscriptionId;
     payment._paymentMethod = PaymentMethod.BANK_TRANSFER;
     payment._paymentGateway = PaymentGateway.SEPAY;
-    payment._status = PaymentStatus.PENDING;
+    payment.status = PaymentStatus.PENDING;
     payment._amount = params.amount;
     payment._code = PaymentCodeGenerator.generateCode();
     payment._transactionId = null;
@@ -141,13 +141,6 @@ class Payment {
     return payment;
   }
 
-  get status(): PaymentStatus {
-    return this._status;
-  }
-
-  set status(value: PaymentStatus) {
-    this._status = value;
-  }
 
   get amount(): number {
     return formatPaymentAmount(this._amount);
@@ -157,10 +150,10 @@ class Payment {
     if (transferAmount !== this.amount) {
       throw new DomainError('Amount not match');
     }
-    if (this._status !== PaymentStatus.PENDING) {
+    if (this.status !== PaymentStatus.PENDING) {
       throw new DomainError('Payment is not pending');
     }
-    this._status = PaymentStatus.COMPLETED;
+    this.status = PaymentStatus.COMPLETED;
   }
 }
 
