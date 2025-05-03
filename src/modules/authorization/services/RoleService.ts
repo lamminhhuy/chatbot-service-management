@@ -6,13 +6,27 @@ import { PermissionService } from '@/modules/authorization/services/PermissionSe
 import { Role } from '@/modules/authorization/models/RoleModel';;
 import { RoleCode } from '@/modules/user/enums/Role';
 import { IRoleRepository } from '@/modules/user/interfaces/IRoleRepository';
+import { CreateRoleDTO } from '@/modules/authorization/dtos/CreateRole.dto';
+import { UpdateRoleDTO } from '../dtos/UpdateRole.dto';
 @injectable()
 export class RoleService {
   constructor(
     @inject('IRoleRepository') private readonly roleRepository: IRoleRepository, 
     @inject(PermissionService) private readonly permissionService: PermissionService
   ) {}
-
+  async createRole(roleData: CreateRoleDTO): Promise<Role> {
+    const role = Role.createRole(roleData);
+    const isRoleExists = await this.roleRepository.findRoleByCode(role.code);
+    if (isRoleExists) throw new BadRequestResponseError('Role already exists');
+    return this.roleRepository.createRole(role);
+  }
+  async updateRole(roleId: number, roleData: UpdateRoleDTO): Promise<Role> {
+    const role = await this.findRolebyId(roleId);
+    if (!role) throw new BadRequestResponseError('Role not found');
+    role.name = roleData.name;
+    role.description = roleData.description;
+    return this.roleRepository.save(role);
+  }
   async findRoleByCode(code: RoleCode): Promise<Role | null> {
     return this.roleRepository.findRoleByCode(code);
   }
@@ -55,5 +69,13 @@ export class RoleService {
     }
     const updatedRole = await this.roleRepository.save(role);
     return updatedRole;
+  }
+  async getAllRoles(): Promise<Role[]> {
+    return this.roleRepository.getAllRoles();
+  }
+  async deleteRole(roleId: number): Promise<void> {
+    const role = await this.findRolebyId(roleId);
+    if (!role) throw new BadRequestResponseError('Role not found');
+    await this.roleRepository.delete(roleId);
   }
 }

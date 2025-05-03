@@ -32,4 +32,8 @@ export class ConversationController {
     const result = await this.conversationService.deleteConversation(Number(req.params.id), req.user.id);
     return new SuccessResponse({ message: 'Conversation deleted successfully!' }).send(res);
     }
+    async handleGetAllConversations (req: CustomRequest, res: Response) {
+    const result = await this.conversationService.getAllConversations();
+    return new SuccessResponse({ data: ConversationsReponseDTOSchema.parse(result) }).send(res);
+    }
 }

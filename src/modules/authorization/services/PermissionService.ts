@@ -19,4 +19,7 @@ export class PermissionService {
     async findPermissionByIds(ids: number[]): Promise<Permission[] | null> {
         return this.permissionRepository.findPermissionByIds(ids);
     }
+    async getAllPermission(): Promise<Permission[] | null> {
+        return this.permissionRepository.getAllPermission();
+    }
 }

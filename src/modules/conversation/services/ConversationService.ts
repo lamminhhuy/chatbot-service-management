@@ -119,5 +119,7 @@ export class ConversationService {
         if (!conversation) throw new BadRequestResponseError('Conversation not found');
         await this.conversationRepository.remove(conversation);
     }
-    
+    getAllConversations(): Promise<Conversation[]> {
+        return this.conversationRepository.find();
+    }
 }

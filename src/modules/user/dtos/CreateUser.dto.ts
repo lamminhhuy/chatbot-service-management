@@ -9,7 +9,9 @@ export const CreateUserDTOSchema = z.object({
     roleId: z.number().optional()
 })
 
-export const CreateUserResponseSchema = UserResponseDTOSchema
+export const CreateUserResponseSchema = UserResponseDTOSchema.omit({
+    userSubscription: true,
+  })
 
 export type CreateUserDTO = z.infer<typeof CreateUserDTOSchema>
 export type CreateUserResponseDTO = z.infer<typeof CreateUserResponseSchema>

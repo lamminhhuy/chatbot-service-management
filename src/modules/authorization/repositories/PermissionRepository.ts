@@ -20,4 +20,7 @@ export class PermissionRepository extends Repository<Permission> implements IPer
 
         return permissions;
     }
+    async getAllPermission(): Promise<Permission[] | null> {
+        return this.find();
+    }
 }

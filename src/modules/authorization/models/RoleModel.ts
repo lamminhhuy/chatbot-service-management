@@ -2,6 +2,8 @@ import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColum
 import { User } from "../../user/models/UserModel";
 import { Permission } from "./PermissionModel";
 import { CreateRoleDTO } from "../dtos/CreateRole.dto";
+import { generateCode } from "../utils/genrateCode";
+import { RoleCode } from "@/modules/user/enums/Role";
 
 @Entity('roles')
 export class Role {
@@ -13,7 +15,7 @@ export class Role {
 
     @Column({ type: "varchar", length: 50 })
     @Unique(['code'])
-    code: string;
+    code: RoleCode;
     @Column({ type: "varchar", length: 255 })
     description: string;
 
@@ -26,7 +28,7 @@ export class Role {
     @ManyToMany(() => User, (user) => user.roles)
     users: User[];
 
-    @ManyToMany(() => Permission, (permission) => permission.roles)
+    @ManyToMany(() => Permission, (permission) => permission.roles,{cascade:true})
     @JoinTable({name: 'role_permissions', joinColumns: [{name: 'role_id', referencedColumnName: 'id'}],
     inverseJoinColumns: [{name: 'permission_id', referencedColumnName: 'id'}]})
     permissions: Permission[];
@@ -35,7 +37,7 @@ export class Role {
     static createRole(roleData: CreateRoleDTO): Role {
         const role = new Role();
         role.name = roleData.name;
-        role.code = roleData.code;
+        role.code = generateCode(roleData.name);
         role.description = roleData.description;
         return role;
     }

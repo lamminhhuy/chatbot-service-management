@@ -5,6 +5,8 @@ import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
 import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
 import { UpdatePasswordDTOSchema, UpdateUserDTOSchema } from "../dtos/UpdateUser.dto";
 import { CreateUserDTOSchema } from "../dtos/CreateUser.dto";
+import { AssignRoleDTOSchema } from "../dtos/AssignRole.dto";
+import { RemoveRoleDTOSchema } from "../dtos/RemoveRole.dto";
 
 export const userRouter = Router()
 
@@ -41,6 +43,27 @@ export const userModule: ModuleConfig = {
             handler: { controller: 'user',
                 action:  userController.updatePassword.bind(userController)},
             middlewares: [validateRequest(UpdatePasswordDTOSchema)]
+        },
+        {
+            method: "POST",
+            path: "/assign-role",
+            handler: { controller: 'user',
+                action:  userController.assignRole.bind(userController)},
+            middlewares: [validateRequest(AssignRoleDTOSchema)]
+        },
+        {
+            method: "POST",
+            path: "/remove-role",
+            handler: { controller: 'user',
+                action:  userController.removeRole.bind(userController)},
+            middlewares: [validateRequest(RemoveRoleDTOSchema)]
+        },
+        {
+            method: "POST",
+            path: "/",
+            handler: { controller: 'user',
+                action:  userController.create.bind(userController)},
+            middlewares: [validateRequest(CreateUserDTOSchema)]
         }
       
     ]

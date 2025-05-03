@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const RemoveRoleDTOSchema = z.object({
+export const RemoveRoleDTOSchema = z.object({
   roleId: z.number(),
   userId: z.number()
 });

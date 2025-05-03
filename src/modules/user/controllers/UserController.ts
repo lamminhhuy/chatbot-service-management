@@ -7,6 +7,8 @@ import { UserResponseDTOSchema } from "../dtos/UserResponse.dto";
 import { CustomRequest } from "@/shared/interfaces/CustomRequest";
 import { CreateUserDTO, CreateUserResponseSchema } from "../dtos/CreateUser.dto";
 import { UpdatePasswordDTO, UpdateUserDTO, UpdateUserResponseDTOSchema } from "../dtos/UpdateUser.dto";
+import { AssignRoleDTO } from "../dtos/AssignRole.dto";
+import { RemoveRoleDTO } from "../dtos/RemoveRole.dto";
 
 @injectable()
 export class UserController {
@@ -32,5 +34,15 @@ export class UserController {
     async updatePassword(req: CustomRequest<{},UpdatePasswordDTO>, res: Response, next: NextFunction): Promise<void> {
         await this.userService.updatePassword(req.user.id, req.body);
         new SuccessResponse({ data: null}).send(res);
+      }
+
+      async assignRole(req: CustomRequest<{},{},AssignRoleDTO>, res: Response, next: NextFunction): Promise<void> {
+        const result = await this.userService.assignRole(req.body);
+        new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
+      }
+
+      async removeRole(req: CustomRequest<{},{},RemoveRoleDTO>, res: Response, next: NextFunction): Promise<void> {
+        const result = await this.userService.removeRole(req.body);
+        new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
       }
 }

@@ -28,9 +28,15 @@ export const conversationModule: ModuleConfig = {
         },
         {
             method: 'GET',
-            path: '/',
+            path: '/user',
             handler: { controller: 'conversation',
                 action:  conversationController.handleGetConversations.bind(conversationController)}
+        },
+        {
+            method: 'GET',
+            path: '/',
+            handler: { controller: 'conversation',
+                action:  conversationController.handleGetAllConversations.bind(conversationController)}
         },
         {
             method: 'GET',

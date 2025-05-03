@@ -5,4 +5,5 @@ export const AssignRoleDTOSchema = z.object({
   userId: z.number()
 });
 
+
 export type AssignRoleDTO = z.infer<typeof AssignRoleDTOSchema>;

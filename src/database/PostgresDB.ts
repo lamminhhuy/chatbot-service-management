@@ -14,6 +14,7 @@ import { AuditLog } from '@/modules/payment/models/AuditLog';
 import { initializeTransactionalContext, addTransactionalDataSource, StorageDriver } from 'typeorm-transactional';
 import { Media } from '@/modules/media/models/MediaModel';
 import { Post } from '@/modules/post/models/Post';
+import { PostCategory } from '@/modules/post/models/PostCategory';
 
 export const AppDataSource = new DataSource({
     type: 'postgres',
@@ -23,7 +24,7 @@ export const AppDataSource = new DataSource({
     password: env.POSTGRES_PASSWORD,
     database: env.POSTGRES_DB,
     entities: [Role, User, UserSession, Message, Conversation, Permission,Subscription,UserSubscription,Payment,AuditLog,
-        Media, Post
+        Media, Post,PostCategory
     ],
     synchronize: true, 
     logging: env.NODE_ENV === 'dev',

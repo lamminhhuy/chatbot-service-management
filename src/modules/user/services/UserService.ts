@@ -50,8 +50,11 @@ export class UserService {
     email,
     username,
     phoneNumber,
+    roleId
   }: CreateUserDTO): Promise<User> {
     await this.validateUserInput({ email, phoneNumber });
+
+    const roles = []
     const basicUserRole = await this.roleService.findRoleByCode(
       RoleCode.BASIC_USER
     );
@@ -60,16 +63,26 @@ export class UserService {
       throw new ErrorsResponse("Role Basic is not existed", 408);
     }
 
+    roles.push(basicUserRole)
+ 
+    if(roleId) {
+      const role = await this.roleService.findRolebyId(roleId);
+      if(!role) {
+        throw new NotFoundResponseError("Role not found");
+      }
+      roles.push(role)
+    }
+ 
     const user = await UserFactory.create({
       password,
       email,
       username,
       phoneNumber,
       avatarUrl: null,
-      roles: [basicUserRole],
+      roles,
     });
     const savedUser = await this.userRepo.save(user);
-   
+  
     return savedUser;
   }
 

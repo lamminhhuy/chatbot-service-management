@@ -2,8 +2,8 @@ import { BadRequestResponseError } from "@/shared/response/errors.response";
 import { IPostRepository } from "../interfaces/IPostRepository";
 import { Post } from "../models/Post";
 import { inject } from "tsyringe";
-import { CreatePostPayloadDTO } from "../interfaces/CreatePost.dto";
-import { UpdatePostPayloadDTO } from "../interfaces/UpdatePost.dto";
+import { CreatePostPayloadDTO } from "../dtos/CreatePost.dto";
+import { UpdatePostPayloadDTO } from "../dtos/UpdatePost.dto";
 import { MediaService } from "@/modules/media/services/MediaService";
 import { injectable } from "tsyringe";
 import { Media } from "@/modules/media/models/MediaModel";
@@ -44,5 +44,15 @@ class PostService {
             return { ...post, media };
         });
     }
+    async getById(id: number): Promise<PostWithMedia> {
+        const post = await this.postRepo.findById(id);
+        if(!post) {
+            throw new BadRequestResponseError('Post not found');
+        }
+        const media = await this.mediaService.getByReferenceId(String(post.id));
+        return { ...post, media };
+    }
+
+
 }
 export default PostService

@@ -1,10 +1,16 @@
-import { Media } from "@/modules/media/models/MediaModel";
-import { Column, CreateDateColumn, Entity } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne } from "typeorm";
+import { PostCategory } from "./PostCategory";
 
 @Entity('posts')
 export class Post {
     @Column({type: 'int', primary: true, generated: 'increment'})
     id: number;
+
+    @ManyToOne(() => PostCategory, (postCategory) => postCategory.posts)
+    category: PostCategory;
+
+    @Column({type: 'int', nullable: true})
+    categoryId: number;
 
     @Column({type: 'varchar', nullable: false})
     title: string;

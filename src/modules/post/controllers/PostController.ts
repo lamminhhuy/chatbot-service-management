@@ -1,9 +1,9 @@
 import { inject, injectable } from "tsyringe";
 import PostService from "../services/PostService";
 import { NextFunction } from "express";
-import { CreatePostPayloadDTO } from "../interfaces/CreatePost.dto";
+import { CreatePostPayloadDTO } from "../dtos/CreatePost.dto";
 import { Request, Response } from "express";
-import { PostResponseDTOSchema, PostResponseDTOsSchema } from "../interfaces/PostResponse.dto";
+import { PostResponseDTOSchema, PostResponseDTOsSchema } from "../dtos/PostResponse.dto";
 import { SuccessResponse } from "@/shared/response/success.response";
 
 @injectable()
@@ -35,6 +35,13 @@ class PostController {
     new SuccessResponse({
         message: 'Posts fetched successfully',
         data: PostResponseDTOsSchema.parse(posts)
+    }).send(res);
+}
+async handleGetById(req: Request<{id: number}>, res: Response, next: NextFunction) {
+    const post = await this.postService.getById(req.params.id);
+    new SuccessResponse({
+        message: 'Post fetched successfully',
+        data: PostResponseDTOSchema.parse(post)
     }).send(res);
 }
 }

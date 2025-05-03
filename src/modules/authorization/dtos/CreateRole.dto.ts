@@ -1,9 +1,8 @@
 import { z } from "zod";
 
-export const CreateRoleDTO = z.object({
-  code: z.string(),
+export const CreateRoleDTOSchema = z.object({
   name: z.string(),
   description: z.string()
 });
 
-export type CreateRoleDTO = z.infer<typeof CreateRoleDTO>;
+export type CreateRoleDTO = z.infer<typeof CreateRoleDTOSchema>;

@@ -16,6 +16,7 @@ class PostRepository extends Repository<Post> implements IPostRepository {
     findById(id: number): Promise<Post | null> {
         return this.findOne({ where: { id } });
     }
+    
 }
 
 export default PostRepository;
