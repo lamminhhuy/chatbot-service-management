@@ -15,6 +15,7 @@ import { RequestResetPasswordDTO, VerifyResetPasswordDTO } from '../dtos/ResetPa
 import { UserResponseDTO, UserResponseDTOSchema } from '@/modules/user/dtos/UserResponse.dto';
 import SubscriptionService from '@/modules/subscription/services/SubscriptionService';
 import { SubscriptionCode } from '@/modules/subscription/enums/SubscriptionCode';
+import { UserSession } from '@/modules/user/models/UserSessionModel';
 
 @injectable()
 export class AuthService   {
@@ -139,5 +140,18 @@ export class AuthService   {
     }
     
     await this.userService.resetPassword(user.id, input.newPassword);
+  }
+
+  async logout(refreshToken: string): Promise<void> {
+    await this.validateRefreshToken(refreshToken);
+    await this.userService.revokeToken(refreshToken);
+  }
+
+  private async validateRefreshToken(refreshToken: string): Promise<UserSession> {
+    const userSession = await this.userService.findUserActiveRefreshToken(refreshToken);
+    if (!userSession) {
+      throw new BadRequestResponseError('Refresh token is not valid!');
+    }
+    return userSession;
   }
 }

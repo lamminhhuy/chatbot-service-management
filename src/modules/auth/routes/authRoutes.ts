@@ -60,6 +60,13 @@ export const authModule: ModuleConfig = {
             handler: { controller: 'auth',
                 action:  authController.verifyResetPasswordOtp.bind(authController)},
             middlewares: [validateRequest(VerifyResetPasswordDTOSchema)]
+        },
+        {
+            method: "POST",
+            path: "/logout",
+            handler: { controller: 'auth',
+                action:  authController.logout.bind(authController)},
+            middlewares: [verifyRefreshToken]
         }
     ]
 }

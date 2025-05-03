@@ -143,6 +143,9 @@ export class UserService {
       isRevoked: false,
     });
   }
+  async revokeToken(refreshToken: string): Promise<void> {
+    await this.userSessionRepo.update({ refreshToken }, { isRevoked: true });
+  }
 
   async  assignRole(input: AssignRoleDTO): Promise<User> {
     const role = await this.roleService.findRolebyId(input.roleId);
@@ -202,4 +205,5 @@ private async validateUserInput({ email, phoneNumber }: { email: string; phoneNu
     }
   }
 }
+
 }
