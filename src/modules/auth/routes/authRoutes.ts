@@ -56,6 +56,7 @@ export const authModule: ModuleConfig = {
         },
         {
             method: "POST",
+            isPublic: true,
             path: "/reset-password/verify",
             handler: { controller: 'auth',
                 action:  authController.verifyResetPasswordOtp.bind(authController)},
