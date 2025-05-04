@@ -5,6 +5,7 @@ import { CreatePostPayloadDTO } from "../dtos/CreatePost.dto";
 import { Request, Response } from "express";
 import { PostResponseDTOSchema, PostResponseDTOsSchema } from "../dtos/PostResponse.dto";
 import { SuccessResponse } from "@/shared/response/success.response";
+import { PostQueryParamsDTO } from "../dtos/PostQueryParams.dto";
 
 @injectable()
 class PostController {
@@ -44,6 +45,22 @@ async handleGetById(req: Request<{id: number}>, res: Response, next: NextFunctio
         data: PostResponseDTOSchema.parse(post)
     }).send(res);
 }
+async handleGetPaginatedPosts(
+    req: Request<{}, {}, {}, PostQueryParamsDTO>,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const posts = await this.postService.getPaginatedPosts(req.query);
+      new SuccessResponse({
+        message: 'Posts fetched successfully',
+        data: PostResponseDTOsSchema.parse(posts),
+      }).send(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+
 }
 
 export default PostController

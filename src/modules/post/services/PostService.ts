@@ -9,6 +9,7 @@ import { injectable } from "tsyringe";
 import { Media } from "@/modules/media/models/MediaModel";
 import { PostWithMedia } from "../types/post.type";
 import { Transactional } from "typeorm-transactional";
+import { PostQueryParamsDTO } from "../dtos/PostQueryParams.dto";
 @injectable()
 class PostService {
     constructor(@inject('IPostRepository') private postRepo: IPostRepository, @inject(MediaService) private mediaService: MediaService) {}
@@ -52,7 +53,15 @@ class PostService {
         const media = await this.mediaService.getByReferenceId(String(post.id));
         return { ...post, media };
     }
-
+    async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<PostWithMedia[]> {
+        const posts = await this.postRepo.getPaginatedPosts(queryParams);
+        const mediaIds = posts.map(post => String(post.id));
+        const medias = await this.mediaService.getByReferenceIds(mediaIds);
+        return posts.map(post => {
+            const media = medias.find(media => media.referenceId === String(post.id)) ||  null;
+            return { ...post, media };
+        });
+    }
 
 }
 export default PostService

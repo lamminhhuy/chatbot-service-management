@@ -8,6 +8,7 @@ import { RoleCode } from '@/modules/user/enums/Role';
 import { IRoleRepository } from '@/modules/user/interfaces/IRoleRepository';
 import { CreateRoleDTO } from '@/modules/authorization/dtos/CreateRole.dto';
 import { UpdateRoleDTO } from '../dtos/UpdateRole.dto';
+import { Permission } from '../models/PermissionModel';
 @injectable()
 export class RoleService {
   constructor(

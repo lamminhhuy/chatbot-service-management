@@ -66,6 +66,14 @@ class RoleController {
         data: result
     }).send(res);
     }
+
+    async handleGetAllPermissionByRoleId(req: CustomRequest<{roleId:number},{},{}>,res:Response, next:NextFunction): Promise<void> {
+    const result = await this.permissionService.getAllPermissionByRoleId(req.params.roleId);
+    new SuccessResponse({
+        message: 'Permission fetched successfully',
+        data: result
+    }).send(res);
+    }
 }
 
 

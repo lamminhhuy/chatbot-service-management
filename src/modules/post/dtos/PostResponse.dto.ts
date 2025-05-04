@@ -19,6 +19,14 @@ export const PostResponseDTOSchema = z.object({
 
 export const PostResponseDTOsSchema = z.array(PostResponseDTOSchema).min(0);
 
-export type PostResponseDTO = z.infer<typeof PostResponseDTOSchema>;
+export const PostResponseDTOsSchemaWithPagination =z.object({
+    data: PostResponseDTOsSchema,
+    meta: z.object({
+        total: z.number(),
+        limit: z.number(),
+        offset: z.number(),
+        pages: z.number()
+    })
+})
 
 export type PostResponseDTOs = z.infer<typeof PostResponseDTOsSchema>;

@@ -1,9 +1,10 @@
 import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
 import PostController from "../controllers/PostController";
-import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
+import { validateRequest, validateRequestQueryParams } from "@/shared/middlewares/validateRequest/validateRequest";
 import { container } from "tsyringe";
 import { CreatePostDTOSchema } from "../dtos/CreatePost.dto";
 import PostCategoryController from "../controllers/PostCategoryController";
+import { PostQueryParamsDTOSchema } from "../dtos/PostQueryParams.dto";
 
 
 const postController = container.resolve(PostController);
@@ -67,6 +68,18 @@ export const postModule: ModuleConfig = {
       handler: { controller: 'postCategory',
                   action:  postCategoryController.deletePostCategory.bind(postCategoryController)}
     },
-    
+    {
+      method: 'GET',
+      path: '/:id',
+      handler: { controller: 'post',
+                  action:  postController.handleGetById.bind(postController)}
+    },
+    {
+      method: 'GET',
+      path: '/paginated',
+      handler: { controller: 'post',
+                  action:  postController.handleGetPaginatedPosts.bind(postController)},
+     middlewares: [validateRequestQueryParams(PostQueryParamsDTOSchema)]
+    }
   ]
 }
