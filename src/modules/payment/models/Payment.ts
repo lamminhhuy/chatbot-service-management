@@ -28,7 +28,7 @@ class Payment {
     foreignKeyConstraintName: 'fk_payment_user',
   })
   public user: User;
-  @ManyToOne(() => Subscription, {cascade: true})
+  @ManyToOne(() => Subscription, {cascade: true,eager: true })
   @JoinColumn({
     name: 'subscription_id',
     referencedColumnName: 'id',
@@ -159,6 +159,7 @@ class Payment {
       throw new DomainError('Payment is not pending');
     }
     this.status = PaymentStatus.COMPLETED;
+    this._completedAt = new Date();
   }
 }
 

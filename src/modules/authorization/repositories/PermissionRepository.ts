@@ -23,4 +23,7 @@ export class PermissionRepository extends Repository<Permission> implements IPer
     async getAllPermission(): Promise<Permission[] | null> {
         return this.find();
     }
+   getAllPermissionByRole(roleId: number): Promise<Permission[] | null> {
+        return this.find({ where: { roles: { id: roleId } } });
+    }
 }

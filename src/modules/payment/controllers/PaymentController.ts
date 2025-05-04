@@ -4,10 +4,13 @@ import PaymentService from "../services/PaymentService";
 import { Request, Response } from "express";
 import { CustomRequest } from "@/shared/interfaces/CustomRequest";
 import { inject, injectable } from "tsyringe";
+import RevenueService from "../services/RevenueService";
+import { RevenueQueryParams } from "../dtos/RevenueQueryParams.type";
 
 @injectable()
 class PaymentController {
-    constructor(@inject(PaymentService) private paymentService: PaymentService) {}
+    constructor(@inject(PaymentService) private paymentService: PaymentService,
+    @inject(RevenueService) private revenueService: RevenueService) {}
 
     async createPayment(req: CustomRequest<{}, {}, PaymentRequestDTO>, res: Response) {
         const { subscriptionId } = req.body;
@@ -42,6 +45,22 @@ message: 'Create payment successfully'
         new SuccessResponse({
             data: result,
             message: 'Get user payments successfully'
+        }).send(res);
+    }
+
+    async getWeeklyRevenue(req: CustomRequest<{},{},RevenueQueryParams>, res: Response) {
+        const result = await this.revenueService.getWeeklyRevenue(req.query.startDate, req.query.endDate);
+        new SuccessResponse({
+            data: result,
+            message: 'Get weekly revenue successfully'
+        }).send(res);
+    }
+
+    async getMonthlyRevenue(req: CustomRequest<{},{},RevenueQueryParams>, res: Response) {
+        const result = await this.revenueService.getMonthlyRevenue(req.query.startDate, req.query.endDate);
+        new SuccessResponse({
+            data: result,
+            message: 'Get monthly revenue successfully'
         }).send(res);
     }
 }

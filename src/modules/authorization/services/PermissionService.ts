@@ -22,4 +22,7 @@ export class PermissionService {
     async getAllPermission(): Promise<Permission[] | null> {
         return this.permissionRepository.getAllPermission();
     }
+    async getAllPermissionByRoleId(roleId: number): Promise<Permission[] | null> {
+        return this.permissionRepository.getAllPermissionByRole(roleId);
+    }
 }
