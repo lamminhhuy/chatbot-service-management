@@ -7,6 +7,7 @@ import { SuccessResponse } from "@/shared/response/success.response";
 import { PermissionService } from "../services/PermissionService";
 import { CreateRoleDTO } from "../dtos/CreateRole.dto";
 import { UpdateRoleDTO } from "../dtos/UpdateRole.dto";
+import { PermissionsResponseDTOSchema } from "../dtos/PermissionsResponse.dto";
 
 @injectable()
 class RoleController {
@@ -35,7 +36,7 @@ class RoleController {
     const result = await this.permissionService.getAllPermission();
     new SuccessResponse({
         message: 'Permission fetched successfully',
-        data: result
+        data: PermissionsResponseDTOSchema.parse(result)
     }).send(res);
     }
     async handleGetAllRoles(req: CustomRequest<{roleId:number},{},RevokePermissionDTO>,res:Response, next:NextFunction): Promise<void> {
@@ -71,7 +72,7 @@ class RoleController {
     const result = await this.permissionService.getAllPermissionByRoleId(req.params.roleId);
     new SuccessResponse({
         message: 'Permission fetched successfully',
-        data: result
+        data: PermissionsResponseDTOSchema.parse(result)
     }).send(res);
     }
 }
