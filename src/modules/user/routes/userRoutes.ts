@@ -53,7 +53,7 @@ export const userModule: ModuleConfig = {
         },
         {
             method: "POST",
-            path: "/remove-role",
+            path: "/revoke-role",
             handler: { controller: 'user',
                 action:  userController.removeRole.bind(userController)},
             middlewares: [validateRequest(RemoveRoleDTOSchema)]

@@ -169,6 +169,10 @@ export class UserService {
     if(!user) {
       throw new NotFoundResponseError("User not found");
     }
+    const isRoleExists = user.roles.some(r => r.id === role.id);
+    if(isRoleExists) {
+      throw new BadRequestResponseError("Role already exists");
+    }
     user.roles.push(role);
     return this.userRepo.save(user);
   }
