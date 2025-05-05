@@ -26,4 +26,5 @@ export class UserRepository extends Repository<User> implements IUserRepository 
   async isExistedByEmail(email: string): Promise<boolean> {
     return await this.existsBy({ email });
   }
+ 
 }

@@ -64,6 +64,12 @@ export const userModule: ModuleConfig = {
             handler: { controller: 'user',
                 action:  userController.create.bind(userController)},
             middlewares: [validateRequest(CreateUserDTOSchema)]
+        },
+        {
+            method: 'GET',
+            path: '/',
+            handler: { controller: 'user',
+                action:  userController.getAll.bind(userController)}
         }
       
     ]

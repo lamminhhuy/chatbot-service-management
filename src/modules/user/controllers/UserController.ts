@@ -3,7 +3,7 @@ import { inject, injectable } from "tsyringe";
 import { UserService } from "../services/UserService";
 import { NextFunction, Request, Response } from "express";
 import { SuccessResponse } from "@/shared/response/success.response";
-import { UserResponseDTOSchema } from "../dtos/UserResponse.dto";
+import { UserResponseDTOSchema, UserResponseDTOSchemaArray } from "../dtos/UserResponse.dto";
 import { CustomRequest } from "@/shared/interfaces/CustomRequest";
 import { CreateUserDTO, CreateUserResponseSchema } from "../dtos/CreateUser.dto";
 import { UpdatePasswordDTO, UpdateUserDTO, UpdateUserResponseDTOSchema } from "../dtos/UpdateUser.dto";
@@ -44,5 +44,9 @@ export class UserController {
       async removeRole(req: CustomRequest<{},{},RemoveRoleDTO>, res: Response, next: NextFunction): Promise<void> {
         const result = await this.userService.removeRole(req.body);
         new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
+      }
+      async getAll(req: CustomRequest<{},{},{}>, res: Response, next: NextFunction): Promise<void> {
+        const result = await this.userService.getAll();
+        new SuccessResponse({ data: UserResponseDTOSchemaArray.parse(result) }).send(res);
       }
 }

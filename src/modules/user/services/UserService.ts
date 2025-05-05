@@ -219,4 +219,8 @@ private async validateUserInput({ email, phoneNumber }: { email: string; phoneNu
   }
 }
 
+async getAll(): Promise<User[]> {
+    return this.userRepo.findAll();
+  }
+
 }
