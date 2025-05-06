@@ -24,10 +24,17 @@ export const userModule: ModuleConfig = {
             middlewares: []
         },
         {
+            method: 'PUT',
+            path: '/:id',
+            handler: { controller: 'user',
+                action:  userController.updateUser.bind(userController)},
+            middlewares: [validateRequest(UpdateUserDTOSchema)]
+        },
+        {
             method: "PUT",
             path: "/me",
             handler: { controller: 'user',
-                action:  userController.update.bind(userController)},
+                action:  userController.updateMe.bind(userController)},
             middlewares: [validateRequest(UpdateUserDTOSchema)]
         },
         {
