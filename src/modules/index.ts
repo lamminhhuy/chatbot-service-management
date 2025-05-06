@@ -7,5 +7,6 @@ import PaymentModule from "./payment/routes/paymentRoutes";
 import { mediaModule } from "./media/routes/media.routes";
 import { postModule } from "./post/routes/post.routes";
 import { authorizationModule } from "./authorization/routes/authorization.routes";
+import { postCategoryModule } from "./post/routes/postCategory.route";
 
-export default [authModule,authorizationModule, chatModule, conversationModule, userModule,subscriptionModule, PaymentModule, mediaModule, postModule];
+export default [authModule,authorizationModule, chatModule, conversationModule, userModule,subscriptionModule, PaymentModule, mediaModule, postModule, postCategoryModule];

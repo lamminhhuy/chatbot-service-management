@@ -27,8 +27,8 @@ export class UserController {
         new SuccessResponse({ data: CreateUserResponseSchema.parse(result) }).send(res);
     }
 
-    async update(req: CustomRequest<{id:number},{},UpdateUserDTO>, res: Response, next: NextFunction): Promise<void> {
-        const result = await this.userService.updateUser(req.params.id, req.body);
+    async updateMe(req: CustomRequest<{id:number},{},UpdateUserDTO>, res: Response, next: NextFunction): Promise<void> {
+        const result = await this.userService.updateMe(req.user.id, req.body);
         new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
       }
     async updatePassword(req: CustomRequest<{},UpdatePasswordDTO>, res: Response, next: NextFunction): Promise<void> {
@@ -48,5 +48,9 @@ export class UserController {
       async getAll(req: CustomRequest<{},{},{}>, res: Response, next: NextFunction): Promise<void> {
         const result = await this.userService.getAll();
         new SuccessResponse({ data: UserResponseDTOSchemaArray.parse(result) }).send(res);
+      }
+      async updateUser(req: CustomRequest<{id:number},{},UpdateUserDTO>, res: Response, next: NextFunction): Promise<void> {
+        const result = await this.userService.updateUser(req.params.id, req.body);
+        new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
       }
 }

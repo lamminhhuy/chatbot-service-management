@@ -9,6 +9,7 @@ export class PostCategory {
 
     @Column({ type: "varchar", length: 255, unique: true, nullable: false })
     name: string;
+
     @ManyToOne(() => PostCategory, (parent) => parent.children, { nullable: true })
     parent: PostCategory;
 
@@ -19,7 +20,7 @@ export class PostCategory {
     @Index()
     parentId: number | null;
 
-    @OneToMany(() => PostCategory, (child) => child.parent)
+    @OneToMany(() => PostCategory, (child) => child.parent, { onDelete: 'CASCADE' })
     children: PostCategory[];
 
     @CreateDateColumn()
@@ -31,7 +32,7 @@ export class PostCategory {
     @OneToMany(() => Post, (post) => post.category)
     posts: Post[];
 
-    static create(name: string, friendlySlug: string, parentId: number| null): PostCategory {
+    static create(name: string, friendlySlug: string, parentId: number | null): PostCategory {
         const postCategory = new PostCategory();
         postCategory.name = name;
         postCategory.friendlySlug = friendlySlug || generateSlug(name);

@@ -90,14 +90,15 @@ export class UserService {
     return this.userRepo.findUserById(userId);
   }
 
-  async updateUser(userId: number, input: UpdateUserDTO): Promise<User> {
+  async updateMe(userId: number, input: UpdateUserDTO): Promise<User> {
     const user = await this.userRepo.findUserById(userId);
 
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
-
+   if(user.email !== input.email || user.phoneNumber !== input.phoneNumber){
     await this.validateUserInput({ email: input.email, phoneNumber: input.phoneNumber });
+   }
     
     Object.assign(user, input);
     return this.userRepo.save(user);
@@ -226,5 +227,12 @@ private async validateUserInput({ email, phoneNumber }: { email: string; phoneNu
 async getAll(): Promise<User[]> {
     return this.userRepo.findAll();
   }
-
+async updateUser(userId:number,input:UpdateUserDTO){
+const user = await this.userRepo.findUserById(userId);
+if(!user){
+    throw new NotFoundResponseError("User not found");
+}
+Object.assign(user,input);
+return this.userRepo.save(user);
+}
 }

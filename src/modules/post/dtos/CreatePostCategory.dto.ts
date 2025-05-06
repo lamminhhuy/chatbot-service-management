@@ -1,9 +1,9 @@
 import { z } from "zod";
 
-export const CreatePostCategoryPayloadDTO = z.object({
+export const CreatePostCategoryDTOSchema = z.object({
     name: z.string(),
-    friendlySlug: z.string(),
+    friendlySlug: z.string().nullable(),
     parentId: z.number().nullable()
 });
 
-export type CreatePostCategoryPayloadDTOType = z.infer<typeof CreatePostCategoryPayloadDTO>;
+export type CreatePostCategoryDTOType = z.infer<typeof CreatePostCategoryDTOSchema>;
