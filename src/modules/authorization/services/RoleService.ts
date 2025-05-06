@@ -58,13 +58,14 @@ export class RoleService {
     const role = await this.findRolebyId(roleId);
     if (!role) throw new BadRequestResponseError('Role not found');
     const permissions = await this.permissionService.findPermissionByIds(permissionIds);
-    const isPermissionIdsValid = permissions && permissions.length !== permissionIds.length;
-    if (isPermissionIdsValid) {
+    if (!permissions) throw new BadRequestResponseError('Permission not found');
+    const isPermissionIdsValid = permissions.length === permissionIds.length;
+    if ( !isPermissionIdsValid) {
       const foundIds = permissions.map(p => p.id);
       const missingIds = permissionIds.filter(id => !foundIds.includes(id));
       throw new BadRequestResponseError(`Permissions with IDs ${missingIds.join(', ')} not found`);
     }
-    const newPermissions = permissions?.filter(p => role.permissions.some(rp => rp.id === p.id));
+    const newPermissions = role.permissions?.filter(rp => permissions.some(p => p.id !== rp.id));
     if (newPermissions) {
       role.permissions = newPermissions;
     }
