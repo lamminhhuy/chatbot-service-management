@@ -86,7 +86,7 @@ class PostCategoryService {
 
     if (input.parentId) {
       const parent = await this.findParent(input.parentId);
-      if (parent.parentId) {
+      if (!parent) {
         throw new BadRequestResponseError("Parent post category not found");
       }
       input.parentId = parent.id;
