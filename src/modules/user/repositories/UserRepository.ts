@@ -16,10 +16,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     return await this.findOneBy({ id });
   }
   async findAll(): Promise<User[]> {
-    return await this.createQueryBuilder("user")
-      .leftJoinAndSelect("user.roles", "role")
-      .where("role.code != :basic", { basic: RoleCode.BASIC_USER })
-      .getMany();
+   return await this.find()
   }
   
   async findById(id: number): Promise<User | null> {

@@ -251,9 +251,9 @@ async deleteUser(userId:number){
     if(!user){
         throw new NotFoundResponseError("User not found");
     }
-    const isAdminUser = user.roles.some(r => r.code === RoleCode.ADMIN);
-    if(isAdminUser){
-        throw new BadRequestResponseError("Admin user cannot be deleted");
+    const adminUsers = await this.userRepo.findUsersByRoles([RoleCode.ADMIN]);
+    if(!adminUsers.length){
+        throw new BadRequestResponseError("At least one admin user must exist");
     }
     return this.userRepo.remove(user);
 }
