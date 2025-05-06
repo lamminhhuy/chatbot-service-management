@@ -14,16 +14,14 @@ import { inject, injectable } from "tsyringe";
 import UserFactory from "../factories/user.factory";
 import { CreateUserDTO } from "../dtos/CreateUser.dto";
 import UserSubscriptionService from "@/modules/subscription/services/UserSubscriptionService";
-import { Subscription } from "@/modules/subscription/models/Subscription";
-import { UserSubscription } from "@/modules/subscription/models/UserSubscription";
-import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
-import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
 import { AssignRoleDTO } from "../dtos/AssignRole.dto";
-import { Role } from "@/shared/enums/Role";
 import { RemoveRoleDTO } from "../dtos/RemoveRole.dto";
 import { hashPassword } from "../utils/hashPassword";
 import { UpdatePasswordDTO, UpdateUserDTO } from "../dtos/UpdateUser.dto";
-import { UserResponseDTO, UserResponseDTOSchema } from "../dtos/UserResponse.dto";
+import {
+  UserResponseDTO,
+  UserResponseDTOSchema,
+} from "../dtos/UserResponse.dto";
 import { RoleService } from "@/modules/authorization/services/RoleService";
 
 @injectable()
@@ -36,7 +34,8 @@ export class UserService {
     @inject("IUserRepository") userRepo: IUserRepository,
     @inject(RoleService) roleService: RoleService,
     @inject("UserSessionRepository") userSessionRepo: Repository<UserSession>,
-    @inject(UserSubscriptionService) private userSubscriptionService: UserSubscriptionService
+    @inject(UserSubscriptionService)
+    private userSubscriptionService: UserSubscriptionService
   ) {
     this.userRepo = userRepo;
     this.roleService = roleService;
@@ -48,13 +47,13 @@ export class UserService {
     email,
     username,
     phoneNumber,
-    roleId
+    roleId,
   }: CreateUserDTO): Promise<User> {
     await this.isExistedEmail(email);
-    if(phoneNumber){
-        await this.isExistedPhoneNumber(phoneNumber);
+    if (phoneNumber) {
+      await this.isExistedPhoneNumber(phoneNumber);
     }
-    const roles = []
+    const roles = [];
     const basicUserRole = await this.roleService.findRoleByCode(
       RoleCode.BASIC_USER
     );
@@ -63,16 +62,16 @@ export class UserService {
       throw new ErrorsResponse("Role Basic is not existed", 408);
     }
 
-    roles.push(basicUserRole)
- 
-    if(roleId) {
+    roles.push(basicUserRole);
+
+    if (roleId) {
       const role = await this.roleService.findRolebyId(roleId);
-      if(!role) {
+      if (!role) {
         throw new NotFoundResponseError("Role not found");
       }
-      roles.push(role)
+      roles.push(role);
     }
- 
+
     const user = await UserFactory.create({
       password,
       email,
@@ -82,7 +81,7 @@ export class UserService {
       roles,
     });
     const savedUser = await this.userRepo.save(user);
-  
+
     return savedUser;
   }
 
@@ -96,12 +95,12 @@ export class UserService {
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
- 
-    if(user.email !== input.email){
-        await this.isExistedEmail(input.email);
+
+    if (user.email !== input.email) {
+      await this.isExistedEmail(input.email);
     }
-    if(input.phoneNumber && user.phoneNumber !== input.phoneNumber){
-        await this.isExistedPhoneNumber(input.phoneNumber);
+    if (input.phoneNumber && user.phoneNumber !== input.phoneNumber) {
+      await this.isExistedPhoneNumber(input.phoneNumber);
     }
     Object.assign(user, input);
     return this.userRepo.save(user);
@@ -117,8 +116,9 @@ export class UserService {
 
   async getProfile(userId: number): Promise<UserResponseDTO> {
     const user = await this.userRepo.findUserById(userId);
-    const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(userId);
-    if(!userSubscription) {
+    const userSubscription =
+      await this.userSubscriptionService.getActiveUserSubsription(userId);
+    if (!userSubscription) {
       throw new NotFoundResponseError("User subscription not found");
     }
     if (!user) {
@@ -126,8 +126,8 @@ export class UserService {
     }
     const sanitizedUser = UserResponseDTOSchema.parse({
       ...user,
-      userSubscription
-    })
+      userSubscription,
+    });
     return sanitizedUser;
   }
 
@@ -164,97 +164,107 @@ export class UserService {
     await this.userSessionRepo.update({ refreshToken }, { isRevoked: true });
   }
 
-  async  assignRole(input: AssignRoleDTO): Promise<User> {
+  async assignRole(input: AssignRoleDTO): Promise<User> {
     const role = await this.roleService.findRolebyId(input.roleId);
-    if(!role) {
+    if (!role) {
       throw new NotFoundResponseError("Role not found");
     }
     const user = await this.userRepo.findUserById(input.userId);
-    if(!user) {
+    if (!user) {
       throw new NotFoundResponseError("User not found");
     }
-    const isRoleExists = user.roles.some(r => r.id === role.id);
-    if(isRoleExists) {
+    const isRoleExists = user.roles.some((r) => r.id === role.id);
+    if (isRoleExists) {
       throw new BadRequestResponseError("Role already exists");
     }
     user.roles.push(role);
     return this.userRepo.save(user);
   }
-  async removeRole(input: RemoveRoleDTO){
+  async removeRole(input: RemoveRoleDTO) {
     const role = await this.roleService.findRolebyId(input.roleId);
-    if(!role) {
+    if (!role) {
       throw new NotFoundResponseError("Role not found");
     }
     const user = await this.userRepo.findUserById(input.userId);
-    if(!user) {
+    if (!user) {
       throw new NotFoundResponseError("User not found");
     }
-     user.removeRole(role);
+    user.removeRole(role);
     return this.userRepo.save(user);
   }
-  async updatePassword(userId: number, input: UpdatePasswordDTO): Promise<User> {
+  async updatePassword(
+    userId: number,
+    input: UpdatePasswordDTO
+  ): Promise<User> {
     const user = await this.userRepo.findUserById(userId);
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
-    const isPasswordValid = await argon2.verify(user.password, input.oldPassword);
-    if(!isPasswordValid) {
-      throw new BadRequestResponseError('Invalid old password!');
-    } 
+    const isPasswordValid = await argon2.verify(
+      user.password,
+      input.oldPassword
+    );
+    if (!isPasswordValid) {
+      throw new BadRequestResponseError("Invalid old password!");
+    }
     user.password = await hashPassword(input.newPassword);
     return this.userRepo.save(user);
   }
 
   async resetPassword(userId: number, newPassword: string): Promise<User> {
-    const user = await this.userRepo.findUserById(userId)
+    const user = await this.userRepo.findUserById(userId);
     if (!user) {
-      throw new BadRequestResponseError('User not found!')
+      throw new BadRequestResponseError("User not found!");
     }
-    user.password = await hashPassword(newPassword)
-    return this.userRepo.save(user)
+    user.password = await hashPassword(newPassword);
+    return this.userRepo.save(user);
   }
 
-
-private async isExistedEmail(email: string): Promise<void> {
+  private async isExistedEmail(email: string): Promise<void> {
     const emailExists = await this.userRepo.isExistedByEmail(email);
     if (emailExists) {
-      throw new BadRequestResponseError('Email is already taken');
+      throw new BadRequestResponseError("Email is already taken");
     }
   }
 
-private async isExistedPhoneNumber(phoneNumber: string): Promise<void> {
-    const phoneNumberExists = await this.userRepo.isExistedByPhoneNumber(phoneNumber);
+  private async isExistedPhoneNumber(phoneNumber: string): Promise<void> {
+    const phoneNumberExists = await this.userRepo.isExistedByPhoneNumber(
+      phoneNumber
+    );
     if (phoneNumberExists) {
-      throw new BadRequestResponseError('Phone number is already taken');
+      throw new BadRequestResponseError("Phone number is already taken");
     }
   }
 
-async getAll(): Promise<User[]> {
+  async getAll(): Promise<User[]> {
     return this.userRepo.findAll();
   }
-async updateUser(userId:number,input:UpdateUserDTO){
-const user = await this.userRepo.findUserById(userId);
-if(!user){
-    throw new NotFoundResponseError("User not found");
-}
-if(user.email !== input.email){
-    await this.isExistedEmail(input.email);
-}
-if(input.phoneNumber && user.phoneNumber !== input.phoneNumber){
-    await this.isExistedPhoneNumber(input.phoneNumber);
-}
-Object.assign(user,input);
-return this.userRepo.save(user);
-}
-async deleteUser(userId:number){
+  async updateUser(userId: number, input: UpdateUserDTO) {
     const user = await this.userRepo.findUserById(userId);
-    if(!user){
-        throw new NotFoundResponseError("User not found");
+    if (!user) {
+      throw new NotFoundResponseError("User not found");
     }
+    if (user.email !== input.email) {
+      await this.isExistedEmail(input.email);
+    }
+    if (input.phoneNumber && user.phoneNumber !== input.phoneNumber) {
+      await this.isExistedPhoneNumber(input.phoneNumber);
+    }
+    Object.assign(user, input);
+    return this.userRepo.save(user);
+  }
+  async deleteUser(userId: number) {
+    const user = await this.userRepo.findUserById(userId);
+    if (!user) {
+      throw new NotFoundResponseError("User not found");
+    }
+    const isAdminUser = user.roles.some((r) => r.code === RoleCode.ADMIN)
+    if(isAdminUser) {   
     const adminUsers = await this.userRepo.findUsersByRoles([RoleCode.ADMIN]);
-    if(!adminUsers.length){
-        throw new BadRequestResponseError("At least one admin user must exist");
+    if (!adminUsers.length) {
+      throw new BadRequestResponseError("At least one admin user must exist");
     }
+  }
     return this.userRepo.remove(user);
-}
+  }
 }
