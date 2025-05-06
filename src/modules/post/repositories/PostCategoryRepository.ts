@@ -19,4 +19,10 @@ export default class PostCategoryRepository extends Repository<PostCategory> imp
     deletePost(postCategory: PostCategory): Promise<PostCategory> {
         return this.remove(postCategory);
     }
+    findByName(name: string): Promise<PostCategory | null> {
+        return this.findOneBy({ name });
+    }
+    findByFriendlySlug(friendlySlug: string): Promise<PostCategory | null> {
+        return this.findOneBy({ friendlySlug });
+    }
 }

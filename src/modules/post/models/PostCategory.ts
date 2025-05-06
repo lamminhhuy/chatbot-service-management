@@ -32,7 +32,7 @@ export class PostCategory {
     @OneToMany(() => Post, (post) => post.category)
     posts: Post[];
 
-    static create(name: string, friendlySlug: string, parentId: number | null): PostCategory {
+    static create(name: string, friendlySlug: string| null, parentId: number | null): PostCategory {
         const postCategory = new PostCategory();
         postCategory.name = name;
         postCategory.friendlySlug = friendlySlug || generateSlug(name);

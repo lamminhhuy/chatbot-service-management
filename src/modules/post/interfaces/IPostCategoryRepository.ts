@@ -5,4 +5,6 @@ export interface IPostCategoryRepository {
     findById(id: number): Promise<PostCategory | null>;
     save(postCategory: PostCategory): Promise<PostCategory>;
     deletePost(postCategory: PostCategory): Promise<PostCategory>;
+    findByName(name: string): Promise<PostCategory| null>;
+    findByFriendlySlug(friendlySlug: string): Promise<PostCategory| null>;
 }

@@ -1,20 +1,17 @@
 import { inject, injectable } from "tsyringe";
-import { CreatePostCategoryPayloadDTOType } from "../dtos/CreatePostCategory.dto";
+import { CreatePostCategoryDTOType } from "../dtos/CreatePostCategory.dto";
 import { IPostCategoryRepository } from "../interfaces/IPostCategoryRepository";
 import {PostCategory} from "../models/PostCategory";
 import { BadRequestResponseError } from "@/shared/response/errors.response";
-import { UpdatePostCategoryPayloadDTOType } from "../dtos/UpdatePostCategory.dto";
+import { UpdatePostCategoryDTOType } from "../dtos/UpdatePostCategory.dto";
 
 @injectable()
 class PostCategoryService {
     constructor(@inject('IPostCategoryRepository') private readonly postCategoryRepo: IPostCategoryRepository) {
         this.postCategoryRepo = postCategoryRepo;
     }
-    async createPostCategory(input: CreatePostCategoryPayloadDTOType): Promise<PostCategory> {
-        if(input.parentId) {
-            const parent = await this.findParent(input.parentId);
-            input.parentId = parent.id;
-        }
+    async createPostCategory(input: CreatePostCategoryDTOType): Promise<PostCategory> {
+        await this.inputValidation(input);
         const postCategory = await this.postCategoryRepo.save(PostCategory.create(input.name, input.friendlySlug, input.parentId));
         return postCategory;
     }
@@ -28,11 +25,12 @@ class PostCategoryService {
         }
         return this.postCategoryRepo.deletePost(postCategory);
     }
-    async updatePostCategory(id: number, input: UpdatePostCategoryPayloadDTOType): Promise<PostCategory> {
+    async updatePostCategory(id: number, input: UpdatePostCategoryDTOType): Promise<PostCategory> {
         const postCategory = await this.postCategoryRepo.findById(id);
         if(!postCategory) {
             throw new BadRequestResponseError('Post category not found');
         }
+        await this.inputValidation(input);
         if(input.parentId) {
             const parent = await this.findParent(input.parentId);
             postCategory.parentId = parent.id;
@@ -58,6 +56,26 @@ class PostCategoryService {
     }
     async getAllPostCategory(): Promise<PostCategory[]> {
         return this.postCategoryRepo.findAll();
+    }
+    private async inputValidation(input: CreatePostCategoryDTOType | UpdatePostCategoryDTOType): Promise<void> {
+        const isExsitedByName = await this.postCategoryRepo.findByName(input.name);
+        if(isExsitedByName) {
+            throw new BadRequestResponseError('Post category name already exists');
+        }
+        if(input.friendlySlug){
+        const isExsitedByFriendlySlug = await this.postCategoryRepo.findByFriendlySlug(input.friendlySlug);
+        if(isExsitedByFriendlySlug) {
+            throw new BadRequestResponseError('Post category friendly slug already exists');
+        }
+        }
+       
+        if(input.parentId) {
+            const parent = await this.findParent(input.parentId);
+            if(parent.parentId) {
+                throw new BadRequestResponseError('Parent post category not found');
+            }
+            input.parentId = parent.id;
+        }
     }
 }
 
