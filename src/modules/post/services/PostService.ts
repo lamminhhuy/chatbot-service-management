@@ -10,16 +10,23 @@ import { PostWithMedia } from "../types/post.type";
 import { Transactional } from "typeorm-transactional";
 import { PostQueryParamsDTO } from "../dtos/PostQueryParams.dto";
 import { MediaReferenceType } from "@/modules/media/enums/MediaType";
+import PostCategoryService from "./PostCategoryService";
 @injectable()
 class PostService {
   constructor(
     @inject("IPostRepository") private postRepo: IPostRepository,
-    @inject(MediaService) private mediaService: MediaService
+    @inject(MediaService) private mediaService: MediaService,
+    @inject(PostCategoryService) private postCategoryService: PostCategoryService
   ) {}
   @Transactional()
   async createPost(input: CreatePostPayloadDTO): Promise<PostWithMedia> {
+    const category = await this.postCategoryService.getById(input.categoryId);
+    if(!category)
+    {
+      throw new BadRequestResponseError("Category not found");
+    }
     const post = await this.postRepo.save(
-      Post.create(input.title, input.content)
+      Post.create(input.title, input.content,category)
     );
     const media = await this.mediaService.updateByReference({
       referenceType: MediaReferenceType.POST,

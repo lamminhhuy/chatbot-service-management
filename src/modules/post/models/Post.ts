@@ -6,7 +6,7 @@ export class Post {
     @Column({type: 'int', primary: true, generated: 'increment'})
     id: number;
 
-    @ManyToOne(() => PostCategory, (postCategory) => postCategory.posts)
+    @ManyToOne(() => PostCategory, (postCategory) => postCategory.posts,{eager: true, cascade:true})
     category: PostCategory;
 
     @Column({type: 'int', nullable: true})
@@ -24,10 +24,11 @@ export class Post {
     @CreateDateColumn({type: 'timestamp', nullable: false})
     updatedAt: Date;
     
-    static create (title: string, content: string) {
+    static create (title: string, content: string, category: PostCategory) {
         const post = new Post();
         post.title = title;
         post.content = content;
+        post.category = category;
         return post;
     }
 }
