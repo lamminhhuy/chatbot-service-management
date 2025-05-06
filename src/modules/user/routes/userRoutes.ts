@@ -32,7 +32,7 @@ export const userModule: ModuleConfig = {
         },
         {
             method: "PUT",
-            path: "/me",
+            path: "/me/profile",
             handler: { controller: 'user',
                 action:  userController.updateMe.bind(userController)},
             middlewares: [validateRequest(UpdateUserDTOSchema)]

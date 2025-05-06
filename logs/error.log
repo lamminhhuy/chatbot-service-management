@@ -54,3 +54,6 @@
 {"duration":399,"level":"error","message":"Server error","method":"PUT","requestId":"0e7beac0-c003-4496-9e68-25f3a4b5d85b","service":"api-service","status":500,"timestamp":"2025-05-06 12:19:19","url":"/api/v1/users/me"}
 {"duration":511,"level":"error","message":"Server error","method":"PUT","requestId":"78703011-adae-411c-b373-8bb3f0b218fe","service":"api-service","status":500,"timestamp":"2025-05-06 12:19:59","url":"/api/v1/users/me"}
 {"duration":816,"level":"error","message":"Server error","method":"POST","requestId":"9f34154a-07de-403b-ada6-c7b7844cab8c","service":"api-service","status":500,"timestamp":"2025-05-06 12:33:31","url":"/api/v1/post-categories"}
+{"duration":505,"level":"error","message":"Server error","method":"DELETE","requestId":"6b639196-c9de-4f86-9153-ba2ea954b70e","service":"api-service","status":500,"timestamp":"2025-05-06 12:44:49","url":"/api/v1/post-categories/1"}
+{"duration":409,"level":"error","message":"Server error","method":"PUT","requestId":"37779bd8-2954-44e7-975e-7762b835e54d","service":"api-service","status":500,"timestamp":"2025-05-06 12:46:15","url":"/api/v1/users/me"}
+{"duration":205,"level":"error","message":"Server error","method":"PUT","requestId":"09cbf536-8cd4-4388-89bc-6dd613a1cfc8","service":"api-service","status":500,"timestamp":"2025-05-06 12:46:19","url":"/api/v1/users/me"}

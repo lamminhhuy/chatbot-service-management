@@ -27,7 +27,7 @@ export class UserController {
         new SuccessResponse({ data: CreateUserResponseSchema.parse(result) }).send(res);
     }
 
-    async updateMe(req: CustomRequest<{id:number},{},UpdateUserDTO>, res: Response, next: NextFunction): Promise<void> {
+    async updateMe(req: CustomRequest<{},{},UpdateUserDTO>, res: Response, next: NextFunction): Promise<void> {
         const result = await this.userService.updateMe(req.user.id, req.body);
         new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
       }

@@ -52,8 +52,10 @@ export class UserService {
     phoneNumber,
     roleId
   }: CreateUserDTO): Promise<User> {
-    await this.validateUserInput({ email, phoneNumber });
-
+    await this.isExistedEmail(email);
+    if(phoneNumber){
+        await this.isExistedPhoneNumber(phoneNumber);
+    }
     const roles = []
     const basicUserRole = await this.roleService.findRoleByCode(
       RoleCode.BASIC_USER
@@ -96,10 +98,13 @@ export class UserService {
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
-   if(user.email !== input.email || user.phoneNumber !== input.phoneNumber){
-    await this.validateUserInput({ email: input.email, phoneNumber: input.phoneNumber });
-   }
-    
+ 
+    if(user.email !== input.email){
+        await this.isExistedEmail(input.email);
+    }
+    if(input.phoneNumber && user.phoneNumber !== input.phoneNumber){
+        await this.isExistedPhoneNumber(input.phoneNumber);
+    }
     Object.assign(user, input);
     return this.userRepo.save(user);
   }
@@ -210,19 +215,21 @@ export class UserService {
     user.password = await hashPassword(newPassword)
     return this.userRepo.save(user)
   }
-private async validateUserInput({ email, phoneNumber }: { email: string; phoneNumber: string | null }): Promise<void> {
-  const emailExists = await this.userRepo.isExistedByEmail(email);
-  if (emailExists) {
-    throw new BadRequestResponseError('Email is already taken');
+
+
+private async isExistedEmail(email: string): Promise<void> {
+    const emailExists = await this.userRepo.isExistedByEmail(email);
+    if (emailExists) {
+      throw new BadRequestResponseError('Email is already taken');
+    }
   }
 
-  if (phoneNumber) {
+private async isExistedPhoneNumber(phoneNumber: string): Promise<void> {
     const phoneNumberExists = await this.userRepo.isExistedByPhoneNumber(phoneNumber);
     if (phoneNumberExists) {
       throw new BadRequestResponseError('Phone number is already taken');
     }
   }
-}
 
 async getAll(): Promise<User[]> {
     return this.userRepo.findAll();
@@ -231,6 +238,12 @@ async updateUser(userId:number,input:UpdateUserDTO){
 const user = await this.userRepo.findUserById(userId);
 if(!user){
     throw new NotFoundResponseError("User not found");
+}
+if(user.email !== input.email){
+    await this.isExistedEmail(input.email);
+}
+if(input.phoneNumber && user.phoneNumber !== input.phoneNumber){
+    await this.isExistedPhoneNumber(input.phoneNumber);
 }
 Object.assign(user,input);
 return this.userRepo.save(user);
