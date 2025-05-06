@@ -58,3 +58,4 @@
 {"duration":409,"level":"error","message":"Server error","method":"PUT","requestId":"37779bd8-2954-44e7-975e-7762b835e54d","service":"api-service","status":500,"timestamp":"2025-05-06 12:46:15","url":"/api/v1/users/me"}
 {"duration":205,"level":"error","message":"Server error","method":"PUT","requestId":"09cbf536-8cd4-4388-89bc-6dd613a1cfc8","service":"api-service","status":500,"timestamp":"2025-05-06 12:46:19","url":"/api/v1/users/me"}
 {"duration":456,"level":"error","message":"Server error","method":"GET","requestId":"781e3bf7-b08d-46ae-8591-6633465f6d41","service":"api-service","status":500,"timestamp":"2025-05-06 13:19:37","url":"/api/v1/users"}
+{"duration":692,"level":"error","message":"Server error","method":"POST","requestId":"5275b284-f383-4ebf-bd51-cd0592262a25","service":"api-service","status":500,"timestamp":"2025-05-06 21:04:34","url":"/api/v1/subscriptions"}
