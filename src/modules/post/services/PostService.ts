@@ -43,15 +43,28 @@ class PostService {
     }
     await this.postRepo.deletePost(post);
   }
-  async updatePost(id: number, input: UpdatePostPayloadDTO): Promise<Post> {
+  async updatePost(id: number, input: UpdatePostPayloadDTO): Promise<PostWithMedia> {
     const post = await this.postRepo.findById(id);
     if (!post) {
       throw new BadRequestResponseError("Post not found");
     }
+    const category = await this.postCategoryService.getById(input.categoryId);
+    if(!category)
+    {
+      throw new BadRequestResponseError("Category not found");
+    }
+    post.category = category;
     post.title = input.title;
     post.content = input.content;
-    return this.postRepo.save(post);
+    const media = await this.mediaService.updateByReference({
+      referenceType: MediaReferenceType.POST,
+      referenceId: String(post.id),
+      id: input.mediaId,
+    });
+    const savedPost = await this.postRepo.save(post)
+    return { ...savedPost, media };
   }
+
   async getAll(): Promise<PostWithMedia[]> {
     const posts = await this.postRepo.findAll();
     const mediaIds = posts.map((post) => String(post.id));

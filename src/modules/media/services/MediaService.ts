@@ -37,4 +37,5 @@ const media = Media.create({
     async getByReferenceId(id: string): Promise<Media | null> {
         return this.mediaRepository.findByReferenceId(id);
     }
+  
 }       

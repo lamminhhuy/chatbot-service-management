@@ -9,7 +9,11 @@ class PostRepository extends Repository<Post> implements IPostRepository {
         super(Post, AppDataSource.manager);
     }
     findAll(): Promise<Post[]> {
-        return this.find();
+        return this.find({
+            relations: {
+                category: true
+            }
+        });
     }
     deletePost(post: Post): Promise<Post> {
         return this.remove(post);

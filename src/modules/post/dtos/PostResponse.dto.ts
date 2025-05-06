@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { PostCategoryResponseDTOSchema } from "./PostCategory.dto";
 
 export const PostResponseDTOSchema = z.object({
     id: z.number(),
@@ -12,6 +13,7 @@ export const PostResponseDTOSchema = z.object({
         createdAt: z.date(),
         updatedAt: z.date()
     }).nullable(),
+    category: PostCategoryResponseDTOSchema,
     content: z.string(),
     createdAt: z.date(),
     updatedAt: z.date()

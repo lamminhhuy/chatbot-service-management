@@ -6,8 +6,8 @@ export class Post {
     @Column({type: 'int', primary: true, generated: 'increment'})
     id: number;
 
-    @ManyToOne(() => PostCategory, (postCategory) => postCategory.posts,{eager: true, cascade:true})
-    category: PostCategory;
+    @ManyToOne(() => PostCategory, (postCategory) => postCategory.posts, { eager: true })
+category: PostCategory;
 
     @Column({type: 'int', nullable: true})
     categoryId: number;
