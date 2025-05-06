@@ -43,16 +43,9 @@ const PaymentModule : ModuleConfig = {
         },
         {
             method: 'GET',
-            path: '/weekly-revenue',
+            path: '/revenue',
             handler: { controller: 'payment',
-                action:  paymentController.getWeeklyRevenue.bind(paymentController)},
-            middlewares: [validateRequestQueryParams(RevenueQueryParamsSchema)]
-        },
-        {
-            method: 'GET',
-            path: '/monthly-revenue',
-            handler: { controller: 'payment',
-                action:  paymentController.getMonthlyRevenue.bind(paymentController)},
+                action:  paymentController.getRevenue.bind(paymentController)},
             middlewares: [validateRequestQueryParams(RevenueQueryParamsSchema)]
         }
     ]

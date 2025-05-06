@@ -9,7 +9,6 @@ import {
 } from "@/shared/response/errors.response";
 import { UpdateSubscriptionDTO } from "../dtos/UpdateSubscription.dto";
 import { SubscriptionCode } from "../enums/SubscriptionCode";
-import { Transactional } from "typeorm-transactional";
 
 @injectable()
 class SubscriptionService {
@@ -36,14 +35,14 @@ class SubscriptionService {
     if (!subscription) {
       throw new BadRequestResponseError("Subscription not found");
     }
-    
-    if(payload.name !== subscription.name) {
+
+    if (payload.name !== subscription.name) {
       const isNameExist = await this.subscriptionRepository.existsByName(
         payload.name
       );
       if (isNameExist) {
         throw new ConflictResponseError("Subscription name already exists");
-    }
+      }
     }
 
     subscription.updateFromDTO(payload);
@@ -57,8 +56,7 @@ class SubscriptionService {
       throw new BadRequestResponseError("Subscription not found");
     }
 
-    if(existingById.code ===SubscriptionCode.BASIC)
-    {
+    if (existingById.code === SubscriptionCode.BASIC) {
       throw new BadRequestResponseError("Basic subscription cannot be deleted");
     }
 
@@ -81,7 +79,6 @@ class SubscriptionService {
     const subscription = await this.subscriptionRepository.findByCode(code);
     return subscription;
   }
-  
 }
 
 export default SubscriptionService;

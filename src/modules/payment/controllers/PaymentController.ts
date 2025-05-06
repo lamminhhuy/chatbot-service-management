@@ -48,19 +48,11 @@ message: 'Create payment successfully'
         }).send(res);
     }
 
-    async getWeeklyRevenue(req: CustomRequest<{},{},RevenueQueryParams>, res: Response) {
-        const result = await this.revenueService.getWeeklyRevenue(req.query.startDate, req.query.endDate);
+    async getRevenue(req: CustomRequest<{},{},RevenueQueryParams>, res: Response) {
+        const result = await this.revenueService.getRevenue(req.query);
         new SuccessResponse({
             data: result,
-            message: 'Get weekly revenue successfully'
-        }).send(res);
-    }
-
-    async getMonthlyRevenue(req: CustomRequest<{},{},RevenueQueryParams>, res: Response) {
-        const result = await this.revenueService.getMonthlyRevenue(req.query.startDate, req.query.endDate);
-        new SuccessResponse({
-            data: result,
-            message: 'Get monthly revenue successfully'
+            message: 'Get revenue successfully'
         }).send(res);
     }
 }

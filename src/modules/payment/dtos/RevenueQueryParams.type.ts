@@ -7,6 +7,7 @@ const dateQueryParam = z.preprocess((val) => {
     return val;
   }, z.date());
 export const RevenueQueryParamsSchema = z.object({
+    type: z.enum(['weekly', 'monthly', 'yearly']),
     startDate: dateQueryParam,
     endDate: dateQueryParam
 }).strict();

@@ -1,29 +1,28 @@
-
-
-import { inject, injectable } from 'tsyringe';
-import { BadRequestResponseError } from '@/shared/response/errors.response';
-import { PermissionService } from '@/modules/authorization/services/PermissionService';
-import { Role } from '@/modules/authorization/models/RoleModel';;
-import { RoleCode } from '@/modules/user/enums/Role';
-import { IRoleRepository } from '@/modules/user/interfaces/IRoleRepository';
-import { CreateRoleDTO } from '@/modules/authorization/dtos/CreateRole.dto';
-import { UpdateRoleDTO } from '../dtos/UpdateRole.dto';
-import { Permission } from '../models/PermissionModel';
+import { inject, injectable } from "tsyringe";
+import { BadRequestResponseError } from "@/shared/response/errors.response";
+import { PermissionService } from "@/modules/authorization/services/PermissionService";
+import { Role } from "@/modules/authorization/models/RoleModel";
+import { RoleCode } from "@/modules/user/enums/Role";
+import { IRoleRepository } from "@/modules/user/interfaces/IRoleRepository";
+import { CreateRoleDTO } from "@/modules/authorization/dtos/CreateRole.dto";
+import { UpdateRoleDTO } from "../dtos/UpdateRole.dto";
+import { Permission } from "../models/PermissionModel";
 @injectable()
 export class RoleService {
   constructor(
-    @inject('IRoleRepository') private readonly roleRepository: IRoleRepository, 
-    @inject(PermissionService) private readonly permissionService: PermissionService
+    @inject("IRoleRepository") private readonly roleRepository: IRoleRepository,
+    @inject(PermissionService)
+    private readonly permissionService: PermissionService
   ) {}
   async createRole(roleData: CreateRoleDTO): Promise<Role> {
     const role = Role.createRole(roleData);
     const isRoleExists = await this.roleRepository.findRoleByCode(role.code);
-    if (isRoleExists) throw new BadRequestResponseError('Role already exists');
+    if (isRoleExists) throw new BadRequestResponseError("Role already exists");
     return this.roleRepository.createRole(role);
   }
   async updateRole(roleId: number, roleData: UpdateRoleDTO): Promise<Role> {
     const role = await this.findRolebyId(roleId);
-    if (!role) throw new BadRequestResponseError('Role not found');
+    if (!role) throw new BadRequestResponseError("Role not found");
     role.name = roleData.name;
     role.description = roleData.description;
     return this.roleRepository.save(role);
@@ -33,39 +32,58 @@ export class RoleService {
   }
 
   async findRolebyId(roleId: number): Promise<Role | null> {
-      return this.roleRepository.findRoleById(roleId);
+    return this.roleRepository.findRoleById(roleId);
   }
-  
-  async assignPermission(roleId: number, permissionIds: number[]): Promise<Role> {
+
+  async assignPermission(
+    roleId: number,
+    permissionIds: number[]
+  ): Promise<Role> {
     const role = await this.findRolebyId(roleId);
-    if (!role) throw new BadRequestResponseError('Role not found');
-    const permissions = await this.permissionService.findPermissionByIds(permissionIds);
-    const isPermissionIdsValid = permissions && permissions.length !== permissionIds.length;
+    if (!role) throw new BadRequestResponseError("Role not found");
+    const permissions = await this.permissionService.findPermissionByIds(
+      permissionIds
+    );
+    const isPermissionIdsValid =
+      permissions && permissions.length !== permissionIds.length;
     if (isPermissionIdsValid) {
-      const foundIds = permissions.map(p => p.id);
-      const missingIds = permissionIds.filter(id => !foundIds.includes(id));
-      throw new BadRequestResponseError(`Permissions with IDs ${missingIds.join(', ')} not found`);
+      const foundIds = permissions.map((p) => p.id);
+      const missingIds = permissionIds.filter((id) => !foundIds.includes(id));
+      throw new BadRequestResponseError(
+        `Permissions with IDs ${missingIds.join(", ")} not found`
+      );
     }
-    const newPermissions = permissions?.filter(p => !role.permissions.some(rp => rp.id === p.id));
+    const newPermissions = permissions?.filter(
+      (p) => !role.permissions.some((rp) => rp.id === p.id)
+    );
     if (newPermissions) {
       role.permissions.push(...newPermissions);
     }
     const updatedRole = await this.roleRepository.save(role);
     return updatedRole;
   }
-  
-  async revokePermission(roleId: number, permissionIds: number[]): Promise<Role> {
+
+  async revokePermission(
+    roleId: number,
+    permissionIds: number[]
+  ): Promise<Role> {
     const role = await this.findRolebyId(roleId);
-    if (!role) throw new BadRequestResponseError('Role not found');
-    const permissions = await this.permissionService.findPermissionByIds(permissionIds);
-    if (!permissions) throw new BadRequestResponseError('Permission not found');
+    if (!role) throw new BadRequestResponseError("Role not found");
+    const permissions = await this.permissionService.findPermissionByIds(
+      permissionIds
+    );
+    if (!permissions) throw new BadRequestResponseError("Permission not found");
     const isPermissionIdsValid = permissions.length === permissionIds.length;
-    if ( !isPermissionIdsValid) {
-      const foundIds = permissions.map(p => p.id);
-      const missingIds = permissionIds.filter(id => !foundIds.includes(id));
-      throw new BadRequestResponseError(`Permissions with IDs ${missingIds.join(', ')} not found`);
+    if (!isPermissionIdsValid) {
+      const foundIds = permissions.map((p) => p.id);
+      const missingIds = permissionIds.filter((id) => !foundIds.includes(id));
+      throw new BadRequestResponseError(
+        `Permissions with IDs ${missingIds.join(", ")} not found`
+      );
     }
-    const newPermissions = role.permissions?.filter(rp => permissions.some(p => p.id !== rp.id));
+    const newPermissions = role.permissions?.filter((rp) =>
+      permissions.some((p) => p.id !== rp.id)
+    );
     if (newPermissions) {
       role.permissions = newPermissions;
     }
@@ -77,7 +95,7 @@ export class RoleService {
   }
   async deleteRole(roleId: number): Promise<void> {
     const role = await this.findRolebyId(roleId);
-    if (!role) throw new BadRequestResponseError('Role not found');
+    if (!role) throw new BadRequestResponseError("Role not found");
     await this.roleRepository.delete(roleId);
   }
 }

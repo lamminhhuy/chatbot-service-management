@@ -4,3 +4,9 @@ export enum MediaType {
     DOCUMENT = 'document',
     AUDIO = 'audio'
 }
+
+export enum MediaReferenceType {
+    POST = 'post',
+    COMMENT = 'comment',
+    USER = 'user'
+}

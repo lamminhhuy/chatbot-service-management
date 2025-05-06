@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 import { BadRequestResponseError } from '@/shared/response/errors.response';
 import { format } from 'date-fns';
 import { IPaymentRepository } from '../interfaces/IPaymentRepository';
+import { RevenueQueryParams } from '../dtos/RevenueQueryParams.type';
 
 interface RevenueResponse {
     total: number;
@@ -51,6 +52,14 @@ class RevenueService {
     const total = breakdown.reduce((sum, item) => sum + item.amount, 0);
 
     return { total, breakdown };
+  }
+  async getRevenue(input: RevenueQueryParams): Promise<RevenueResponse> {
+    if (input.type === 'weekly') {
+      return this.getWeeklyRevenue(input.startDate, input.endDate);
+    } else if (input.type === 'monthly') {
+      return this.getMonthlyRevenue(input.startDate, input.endDate);
+    }
+    throw new BadRequestResponseError('Invalid type');
   }
 }
 
