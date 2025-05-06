@@ -77,7 +77,12 @@ export const userModule: ModuleConfig = {
             path: '/',
             handler: { controller: 'user',
                 action:  userController.getAll.bind(userController)}
+        },
+        {
+            method: 'DELETE',
+            path: '/:id',
+            handler: { controller: 'user',
+                action:  userController.deleteUser.bind(userController)}
         }
-      
     ]
 }

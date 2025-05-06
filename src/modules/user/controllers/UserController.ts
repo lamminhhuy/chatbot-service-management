@@ -53,4 +53,8 @@ export class UserController {
         const result = await this.userService.updateUser(req.params.id, req.body);
         new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
       }
+      async deleteUser(req: CustomRequest<{id:number},{},{}>, res: Response, next: NextFunction): Promise<void> {
+        await this.userService.deleteUser(req.params.id);
+        new SuccessResponse({ data: null }).send(res);
+      }
 }

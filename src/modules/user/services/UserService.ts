@@ -36,11 +36,9 @@ export class UserService {
     @inject("IUserRepository") userRepo: IUserRepository,
     @inject(RoleService) roleService: RoleService,
     @inject("UserSessionRepository") userSessionRepo: Repository<UserSession>,
-    @inject(SubscriptionService) private subscriptionService: SubscriptionService, 
     @inject(UserSubscriptionService) private userSubscriptionService: UserSubscriptionService
   ) {
     this.userRepo = userRepo;
-    this.subscriptionService = subscriptionService;
     this.roleService = roleService;
     this.userSessionRepo = userSessionRepo;
   }
@@ -247,5 +245,16 @@ if(input.phoneNumber && user.phoneNumber !== input.phoneNumber){
 }
 Object.assign(user,input);
 return this.userRepo.save(user);
+}
+async deleteUser(userId:number){
+    const user = await this.userRepo.findUserById(userId);
+    if(!user){
+        throw new NotFoundResponseError("User not found");
+    }
+    const isAdminUser = user.roles.some(r => r.code === RoleCode.ADMIN);
+    if(isAdminUser){
+        throw new BadRequestResponseError("Admin user cannot be deleted");
+    }
+    return this.userRepo.remove(user);
 }
 }
