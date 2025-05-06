@@ -40,7 +40,14 @@ class PostCategoryService {
     if (!postCategory) {
       throw new BadRequestResponseError("Post category not found");
     }
-    await this.inputValidation(input);
+    if(input.name !== postCategory.name)
+    {
+      await this.inputValidation(input);
+    }
+    if(input.friendlySlug !== postCategory.friendlySlug)
+    {
+      await this.inputValidation(input);
+    }
     if (input.parentId) {
       const parent = await this.findParent(input.parentId);
       postCategory.parentId = parent.id;
