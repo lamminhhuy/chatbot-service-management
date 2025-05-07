@@ -125,15 +125,15 @@ export class ConversationService {
     getAllConversations(): Promise<Conversation[]> {
         return this.conversationRepository.find();
     }
-    async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<PaginatedResponse<any>> {
-        const conversations = await this.conversationRepository.getPaginatedConversations(queryParams);
+    async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<PaginatedResponse<ConversationReponseDTO>> {
+        const {items, total} = await this.conversationRepository.getPaginatedConversations(queryParams);
         return PaginatedResponseSchema(ConversationReponseDTOSchema).parse({
-            items: conversations,
-            total: conversations.length,
+            items: items,
+            total: total,
             limit: queryParams.limit,
             offset: queryParams.offset,
-            page: queryParams.offset / queryParams.limit + 1,
-            totalPages: Math.ceil(conversations.length / queryParams.limit),
+            page: Math.floor(queryParams.offset / queryParams.limit) + 1,
+            totalPages: Math.ceil(total / queryParams.limit),
         });
     }
 }

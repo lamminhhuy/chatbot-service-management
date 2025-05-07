@@ -4,5 +4,5 @@ import { ConversationQueryParamsDTO } from "../dtos/ConsersationQueryParams";
 
 export interface IConversationRepository extends Repository<Conversation> {
     createConversation: (data: any) => Promise<any>;
-    getPaginatedConversations: (queryParams: ConversationQueryParamsDTO) => Promise<Conversation[]>;
+    getPaginatedConversations: (queryParams: ConversationQueryParamsDTO) => Promise<{ items: Conversation[], total: number }>;
 }

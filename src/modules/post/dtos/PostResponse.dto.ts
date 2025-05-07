@@ -47,8 +47,11 @@ export const DetailPostResponseDTOSchema = PostResponseDTOSchema.extend({
     content: z.string(),
     createdAt: z.date(),
     updatedAt: z.date(),
+    shortDescription: z.string(),
+    slug: z.string(),
     relatedPosts: PostResponseDTOsSchema
 })
 
 export type DetailPostResponseDTO = z.infer<typeof DetailPostResponseDTOSchema>;
 export type PostResponseDTOs = z.infer<typeof PostResponseDTOsSchema>;
+export type PostResponseDTO = z.infer<typeof PostResponseDTOSchema>;

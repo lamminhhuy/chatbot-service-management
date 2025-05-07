@@ -5,61 +5,68 @@ import { Not, Repository } from "typeorm";
 import { PostQueryParamsDTO } from "../dtos/PostQueryParams.dto";
 
 class PostRepository extends Repository<Post> implements IPostRepository {
-    constructor() {
-        super(Post, AppDataSource.manager);
+  constructor() {
+    super(Post, AppDataSource.manager);
+  }
+
+  async findAll(): Promise<Post[]> {
+    return this.find();
+  }
+
+  async findById(id: number): Promise<Post | null> {
+    return this.findOne({ where: { id } });
+  }
+
+  async findBySlug(slug: string): Promise<Post | null> {
+    return this.findOne({ where: { slug } });
+  }
+
+
+
+  async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<{ items: Post[]; total: number }> {
+    const { offset, limit, search, categoryId, sort, order } = queryParams;
+
+    const queryBuilder = this.createQueryBuilder("post");
+
+    if (search) {
+      queryBuilder.andWhere("post.title ILIKE :search", { search: `%${search}%` });
     }
-    findAll(): Promise<Post[]> {
-        return this.find({
-            relations: {
-                category: true
-            }
-        });
+
+    if (categoryId) {
+      queryBuilder.andWhere("post.category = :categoryId", { categoryId });
     }
-    deletePost(post: Post): Promise<Post> {
-        return this.remove(post);
+
+    if (sort && order) {
+      const allowedSortFields = ["title", "createdAt", "updatedAt"];
+      if (allowedSortFields.includes(sort)) {
+        queryBuilder.orderBy(`post.${sort}`, order);
+      }
     }
-    findById(id: number): Promise<Post | null> {
-        return this.findOne({ where: { id } });
-    }
-    async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<Post[]> {
-        const { offset, limit, search, categoryId, sort, order } = queryParams;
-    
-        const queryBuilder = this.createQueryBuilder('post')
-            .skip(offset)
-            .take(limit);
-    
-        if (search) {
-            queryBuilder.andWhere('post.title ILIKE :search', { search: `%${search}%` });
-        }
-    
-        if (categoryId) {
-            queryBuilder.andWhere('post.categoryId = :categoryId', { categoryId });
-        }
-    
-        if (sort && order) {
-            const allowedSortFields = ['title', 'createdAt', 'updatedAt']; 
-            if (allowedSortFields.includes(sort)) {
-                queryBuilder.orderBy(`post.${sort}`, order);
-            }
-        }
-    
-        return await queryBuilder.getMany();
-    }
-    async getRelatedPosts(id: number): Promise<Post[]> {
-        return this.find({
-            where: {
-                id: Not(id)
-            },
-            relations: {
-                category: true
-            },
-            order: {
-                createdAt: 'DESC'
-            },
-            take: 5
-        });
-    }
-    
+
+    queryBuilder.skip(offset).take(limit);
+
+    const [items, total] = await queryBuilder.getManyAndCount();
+    return { items, total };
+  }
+
+
+  async getRelatedPosts(id: number): Promise<Post[]> {
+    return this.find({
+        where: {
+            id: Not(id)
+        },
+        relations: {
+            category: true
+        },
+        order: {
+            createdAt: 'DESC'
+        },
+        take: 5
+    });
+  }
+  deletePost(post: Post): Promise<Post> {
+    return this.remove(post);
+  }
 }
 
 export default PostRepository;

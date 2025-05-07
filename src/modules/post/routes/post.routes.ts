@@ -28,6 +28,7 @@ export const postModule: ModuleConfig = {
     {
       method: 'PUT',
       path: '/:id',
+      
       handler: { controller: 'post',
                   action:  postController.handleUpdate.bind(postController)}
     },
@@ -40,12 +41,21 @@ export const postModule: ModuleConfig = {
     {
       method: 'GET',
       path: '/:id',
+      isPublic: true,
       handler: { controller: 'post',
                   action:  postController.handleGetById.bind(postController)}
     },
     {
       method: 'GET',
+      path: '/*',
+      isPublic: true,
+      handler: { controller: 'post',
+                  action:  postController.handleGetBySlug.bind(postController)}
+    },
+    {
+      method: 'GET',
       path: '/paginated',
+      isPublic: true,
       handler: { controller: 'post',
                   action:  postController.handleGetPaginatedPosts.bind(postController)},
      middlewares: [validateRequestQueryParams(PostQueryParamsDTOSchema)]

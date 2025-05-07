@@ -8,10 +8,12 @@ export class ConversationRepository extends Repository<Conversation> implements 
     constructor() {
         super(Conversation, AppDataSource.manager); 
     }
-    async  createConversation(data: Conversation): Promise<Conversation>{
-       return this.save(data);
+
+    async createConversation(data: Conversation): Promise<Conversation> {
+        return this.save(data);
     }
-    async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<Conversation[]> {
+
+    async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<{ items: Conversation[], total: number }> {
         const { limit, offset, search, sort } = queryParams;
         const queryBuilder = this.createQueryBuilder('conversation');
         
@@ -23,14 +25,15 @@ export class ConversationRepository extends Repository<Conversation> implements 
             queryBuilder.orderBy('conversation.createdAt', sort as 'ASC' | 'DESC');
         }
         
-        return queryBuilder
-            .skip(offset)
-            .take(limit)
+        queryBuilder
             .leftJoinAndSelect('conversation.users', 'user')
             .leftJoinAndSelect('conversation.messages', 'message')
             .leftJoinAndSelect('message.sender', 'sender')
             .skip(offset)
-            .take(limit)
-            .getMany();
+            .take(limit);
+
+        const [items, total] = await queryBuilder.getManyAndCount();
+        
+        return { items, total };
     }
 }

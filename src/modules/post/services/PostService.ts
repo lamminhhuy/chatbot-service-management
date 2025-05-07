@@ -9,10 +9,12 @@ import { Transactional } from "typeorm-transactional";
 import { PostQueryParamsDTO } from "../dtos/PostQueryParams.dto";
 import { MediaReferenceType } from "@/modules/media/enums/MediaType";
 import PostCategoryService from "./PostCategoryService";
-import { DetailPostResponseDTO } from "../dtos/PostResponse.dto";
+import { DetailPostResponseDTO, PostResponseDTO, PostResponseDTOSchema } from "../dtos/PostResponse.dto";
 import { PostWithMedia } from "../types/post.type";
 import { Media } from "@/modules/media/models/MediaModel";
 import { aggregateData } from "@/shared/utils/aggregateData";
+import { buildPaginatedResponse } from "@/shared/utils/buildPaginatedResponse";
+import { PaginatedResponse, PaginatedResponseSchema } from "@/shared/dtos/PaginatedResponse.dto";
 
 @injectable()
 class PostService {
@@ -24,6 +26,7 @@ class PostService {
 
   @Transactional()
   async createPost(input: CreatePostPayloadDTO): Promise<PostWithMedia> {
+   
     const category = await this.postCategoryService.getById(input.categoryId);
     if (!category) {
       throw new BadRequestResponseError(`Category with ID ${input.categoryId} not found`);
@@ -55,25 +58,27 @@ class PostService {
   @Transactional()
   async updatePost(id: number, input: UpdatePostPayloadDTO): Promise<PostWithMedia> {
     const post = await this.postRepo.findById(id);
-    if (!post) {
+      if (!post) {
       throw new BadRequestResponseError(`Post with ID ${id} not found`);
     }
 
+  
     const category = await this.postCategoryService.getById(input.categoryId);
     if (!category) {
       throw new BadRequestResponseError(`Category with ID ${input.categoryId} not found`);
     }
 
-    Object.assign(post, {
-      category,
-      title: input.title,
-      content: input.content,
-      shortDescription: input.shortDescription
-    });
     let media = await this.mediaService.getByReferenceId(String(post.id))
     if(!media){
       throw new BadRequestResponseError(`Media with reference ID ${post.id} not found`);
     }
+
+    post.category = category;
+    post.updateTitle(input.title);
+    post.content = input.content;
+    post.shortDescription = input.shortDescription;
+    
+  
     if(String(input.mediaId) !== media.id)
     {
       media = await this.mediaService.updateByReference({
@@ -91,31 +96,19 @@ class PostService {
     return this.attachMediaToPosts(posts);
   }
 
-  async getById(id: number): Promise<DetailPostResponseDTO> {
+  async getById(id: number): Promise<PostWithMedia> {
     const post = await this.postRepo.findById(id);
     if (!post) {
       throw new BadRequestResponseError(`Post with ID ${id} not found`);
     }
-
-    const [media, relatedPosts] = await Promise.all([
-      this.mediaService.getByReferenceId(String(post.id)),
-      this.postRepo.getRelatedPosts(id),
-    ]);
-
-    const relatedPostsWithMedia = await this.attachMediaToPosts(relatedPosts);
-
-    return aggregateData<
-      Post,
-      { media: Media | null; relatedPosts: PostWithMedia[] }
-    >(post, {
-      media: media || null,
-      relatedPosts: relatedPostsWithMedia,
-    });
+    const posts= await this.attachMediaToPosts([post]);
+    return posts[0];
   }
 
-  async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<PostWithMedia[]> {
-    const posts = await this.postRepo.getPaginatedPosts(queryParams);
-    return this.attachMediaToPosts(posts);
+  async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<PaginatedResponse<PostResponseDTO>> {
+    const {items, total} = await this.postRepo.getPaginatedPosts(queryParams);
+  const paginatedPosts = buildPaginatedResponse({items, total, limit: queryParams.limit, offset: queryParams.offset});
+  return PaginatedResponseSchema(PostResponseDTOSchema).parse(paginatedPosts);
   }
 
   private async attachMediaToPosts(posts: Post[]): Promise<PostWithMedia[]> {
@@ -130,6 +123,29 @@ class PostService {
       })
     );
   }
+
+  async getBySlug(slug: string): Promise<DetailPostResponseDTO> {
+    const post = await this.postRepo.findBySlug(slug);
+    if (!post) {
+      throw new BadRequestResponseError(`Post with slug ${slug} not found`);
+    }
+  
+    const [media, relatedPosts] = await Promise.all([
+      this.mediaService.getByReferenceId(String(post.id)),
+      this.postRepo.getRelatedPosts(post.id),
+    ]);
+
+    const relatedPostsWithMedia = await this.attachMediaToPosts(relatedPosts);
+
+    return aggregateData<
+      Post,
+      { media: Media | null; relatedPosts: PostWithMedia[] }
+    >(post, {
+      media: media || null,
+      relatedPosts: relatedPostsWithMedia,
+    });
+  }
+
 }
 
 export default PostService;
