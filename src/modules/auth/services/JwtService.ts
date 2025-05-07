@@ -1,7 +1,7 @@
 
 import jwt from 'jsonwebtoken';
 import { IJwtService } from '@/modules/auth/interfaces/JwtService';
-import { BadRequestResponseError } from '@/shared/response/errors.response';
+import { AuthFailureResponseError } from '@/shared/response/errors.response';
 import { env } from '@/configs/envConfig';
 
 export class JwtService implements IJwtService {
@@ -9,7 +9,7 @@ export class JwtService implements IJwtService {
   private refreshTokenSecret = process.env.JWT_REFRESH_SECRET ||  'mysecretToken123' ;
   
   generateAccessToken(userId: number, email: string): string {
-    if (!userId || !email) throw new BadRequestResponseError('Invalid user data!');
+    if (!userId || !email) throw new AuthFailureResponseError('Invalid user data!');
     
     return jwt.sign(
       { userId, email },
@@ -19,11 +19,11 @@ export class JwtService implements IJwtService {
   }
 
   generateRefreshToken(userId: number): string {
-    if (!userId) throw new BadRequestResponseError('Invalid user data!');
+    if (!userId) throw new AuthFailureResponseError('Invalid user data!');
 
     return jwt.sign(
       { userId },
-      this.refreshTokenSecret,
+      this.refreshTokenSecret,  
       { expiresIn: '7d' }
     );
   }
@@ -32,14 +32,14 @@ export class JwtService implements IJwtService {
     try {
       return jwt.verify(token, this.accessTokenSecret);
     } catch (error) {
-      throw new BadRequestResponseError('Access token is not valid!');
+      throw new AuthFailureResponseError('Access token is not valid!');
     }
   }
   verifyRefreshToken(token: string): any {
     try {
       return jwt.verify(token, this.refreshTokenSecret);
     } catch (error) {
-      throw new BadRequestResponseError('Refresh token is not valid!');
+      throw new AuthFailureResponseError('Refresh token is not valid!');
     }
 
   }

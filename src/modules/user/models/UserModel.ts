@@ -3,7 +3,6 @@ import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, J
 import { UserSession } from './UserSessionModel';
 import { Message } from '@/modules/conversation/models/Message';
 import { Conversation } from '@/modules/conversation/models/Conversation';
-import Payment from '@/modules/payment/models/Payment';
 import { UserSubscription } from '@/modules/subscription/models/UserSubscription';
 import { Role } from '@/modules/authorization/models/RoleModel';
 
@@ -98,16 +97,17 @@ export class User {
   return {
     id: 999999,
     username: 'chatbot',
-      roles: [{
-        id: 1,
-        name: 'assistant',
-        code: 'ASSISTANT',
-        description: 'Chatbot Assistant',
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }],
-    } as User;
+    roles: [{
+      id: 1,
+      name: 'assistant',
+      code: 'ASSISTANT',
+      description: 'Chatbot Assistant',
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }],
+  } as unknown as User;
   }
+  
   public assginRole(role: Role): User {
     this.roles.push(role)
     return this
