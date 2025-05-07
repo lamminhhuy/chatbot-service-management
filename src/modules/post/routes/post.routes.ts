@@ -40,6 +40,14 @@ export const postModule: ModuleConfig = {
     },
     {
       method: 'GET',
+      path: '/paginated',
+      isPublic: true,
+      handler: { controller: 'post',
+                  action:  postController.handleGetPaginatedPosts.bind(postController)},
+     middlewares: [validateRequestQueryParams(PostQueryParamsDTOSchema)]
+    },
+    {
+      method: 'GET',
       path: '/:id',
       isPublic: true,
       handler: { controller: 'post',
@@ -52,13 +60,6 @@ export const postModule: ModuleConfig = {
       handler: { controller: 'post',
                   action:  postController.handleGetBySlug.bind(postController)}
     },
-    {
-      method: 'GET',
-      path: '/paginated',
-      isPublic: true,
-      handler: { controller: 'post',
-                  action:  postController.handleGetPaginatedPosts.bind(postController)},
-     middlewares: [validateRequestQueryParams(PostQueryParamsDTOSchema)]
-    }
+  
   ]
 }

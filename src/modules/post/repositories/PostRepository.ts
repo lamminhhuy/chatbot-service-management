@@ -22,29 +22,32 @@ class PostRepository extends Repository<Post> implements IPostRepository {
   }
 
 
-
   async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<{ items: Post[]; total: number }> {
     const { offset, limit, search, categoryId, sort, order } = queryParams;
-
+  
     const queryBuilder = this.createQueryBuilder("post");
-
+  
+    queryBuilder.leftJoinAndSelect("post.category", "category");
+  
     if (search) {
       queryBuilder.andWhere("post.title ILIKE :search", { search: `%${search}%` });
     }
-
+  
     if (categoryId) {
       queryBuilder.andWhere("post.category = :categoryId", { categoryId });
     }
-
+  
     if (sort && order) {
       const allowedSortFields = ["title", "createdAt", "updatedAt"];
       if (allowedSortFields.includes(sort)) {
         queryBuilder.orderBy(`post.${sort}`, order);
       }
     }
-
+  
+    queryBuilder.orderBy("post.createdAt", "DESC");
+  
     queryBuilder.skip(offset).take(limit);
-
+  
     const [items, total] = await queryBuilder.getManyAndCount();
     return { items, total };
   }

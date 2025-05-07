@@ -107,7 +107,8 @@ class PostService {
 
   async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<PaginatedResponse<PostResponseDTO>> {
     const {items, total} = await this.postRepo.getPaginatedPosts(queryParams);
-  const paginatedPosts = buildPaginatedResponse({items, total, limit: queryParams.limit, offset: queryParams.offset});
+    const posts = await this.attachMediaToPosts(items);
+    const paginatedPosts = buildPaginatedResponse({items: posts, total, limit: queryParams.limit, offset: queryParams.offset});
   return PaginatedResponseSchema(PostResponseDTOSchema).parse(paginatedPosts);
   }
 
