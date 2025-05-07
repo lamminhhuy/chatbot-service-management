@@ -1,8 +1,15 @@
 import { z } from "zod";
 
 export const PostQueryParamsDTOSchema = z.object({
-    offset: z.number().default(0),
-    limit: z.number().default(10),
+    limit: z.string()
+       .transform((val) => parseInt(val, 10))
+       .default('10')
+       .pipe(z.number()),
+     
+     offset: z.string()
+       .transform((val) => parseInt(val, 10))
+       .default('0')
+       .pipe(z.number()),
     search: z.string().optional(),
     categoryId: z.string().optional(),
     sort: z.enum(['title', 'createdAt', 'updatedAt']).optional(),
