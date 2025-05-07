@@ -7,4 +7,5 @@ export interface IPostCategoryRepository {
     deletePost(postCategory: PostCategory): Promise<PostCategory>;
     findByName(name: string): Promise<PostCategory| null>;
     findByFriendlySlug(friendlySlug: string): Promise<PostCategory| null>;
+    findAllParentsRecursive(childParentId: number): Promise<PostCategory[]>;
 }

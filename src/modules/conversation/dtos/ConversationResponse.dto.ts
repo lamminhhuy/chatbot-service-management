@@ -23,3 +23,5 @@ export const CreateConversationReponseDTOSchema = ConversationReponseDTOSchema.t
 export const ConversationsReponseDTOSchema  =  z.array(ConversationReponseDTOSchema).transform((conversations) => {
     return _.groupBy(conversations, (c) => dayjs(c.createdAt).format('YYYY-MM-DD'));
   });
+
+export type ConversationReponseDTO = z.infer<typeof ConversationReponseDTOSchema>;

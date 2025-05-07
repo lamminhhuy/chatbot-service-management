@@ -1,7 +1,7 @@
 import { AppDataSource } from "@/database/PostgresDB";
 import { IPostRepository } from "../interfaces/IPostRepository";
 import { Post } from "../models/Post";
-import { Repository } from "typeorm";
+import { Not, Repository } from "typeorm";
 import { PostQueryParamsDTO } from "../dtos/PostQueryParams.dto";
 
 class PostRepository extends Repository<Post> implements IPostRepository {
@@ -44,6 +44,20 @@ class PostRepository extends Repository<Post> implements IPostRepository {
         }
     
         return await queryBuilder.getMany();
+    }
+    async getRelatedPosts(id: number): Promise<Post[]> {
+        return this.find({
+            where: {
+                id: Not(id)
+            },
+            relations: {
+                category: true
+            },
+            order: {
+                createdAt: 'DESC'
+            },
+            take: 5
+        });
     }
     
 }

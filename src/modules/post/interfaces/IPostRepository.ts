@@ -7,4 +7,5 @@ export interface IPostRepository {
     findById: (id: number) => Promise<Post | null>;
     deletePost: (post: Post) => Promise<Post>;
     getPaginatedPosts: (queryParams: PostQueryParamsDTO) => Promise<Post[]>;
+    getRelatedPosts: (id: number) => Promise<Post[]>;
 }

@@ -22,7 +22,8 @@ export function validateRequest<T extends ZodSchema>(schema: T) {
 export function validateRequestQueryParams<T extends ZodSchema>(schema: T) {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
-      schema.parse(req.query);
+    const parsedQuery = schema.parse(req.query);
+    req.query = parsedQuery;
       next();
     } catch (error) {
       if (error instanceof z.ZodError) {

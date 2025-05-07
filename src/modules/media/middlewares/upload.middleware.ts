@@ -18,12 +18,12 @@ export const upload = multer({
 export const UploadFileMiddleware = (req: any, res: any, next: NextFunction) => {
   upload.single('file')(req, res, (err: any) => {
     if (err instanceof multer.MulterError) {
-      return res.status(400).json(new ErrorsResponse(err.message, 400));
+     next(new ErrorsResponse(err.message, 400));
     } else if (err) {
-      return res.status(err.status || 400).json(err);
+      next(new ErrorsResponse(err.message, 400));
     }
     if (!req.file) {
-      return res.status(400).json(new ErrorsResponse('Không có file được upload', 400));
+      next(new ErrorsResponse('Không có file được upload', 400));
     } 
     next();
   });

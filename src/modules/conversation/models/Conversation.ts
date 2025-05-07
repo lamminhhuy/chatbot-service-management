@@ -29,7 +29,7 @@ export class Conversation {
     })
     users: User[];
 
-    @OneToMany(() => Message, (message) => message.conversation, { cascade: ['remove'] })
+    @OneToMany(() => Message, (message) => message.conversation, { cascade: ['remove'],eager:true })
     messages: Message[];
 
     static createConversation(title: string, user: User[]): Conversation {

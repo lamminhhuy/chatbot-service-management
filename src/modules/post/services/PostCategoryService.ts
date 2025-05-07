@@ -16,9 +16,17 @@ class PostCategoryService {
   async createPostCategory(
     input: CreatePostCategoryDTOType
   ): Promise<PostCategory> {
-    await this.inputValidation(input);
+    let parents: PostCategory[] | null = [];
+    let childParent: PostCategory | null = null;
+    if(input.parentId)
+    {
+   await this.findParent(input.parentId);
+   childParent = await this.findParent(input.parentId);
+    parents = await this.postCategoryRepo.findAllParentsRecursive(input.parentId);
+    parents.push(childParent);
+    }
     const postCategory = await this.postCategoryRepo.save(
-      PostCategory.create(input.name, input.friendlySlug, input.parentId)
+      PostCategory.create(input.name, input.friendlySlug, parents)
     );
     return postCategory;
   }
@@ -48,12 +56,15 @@ class PostCategoryService {
     {
       await this.inputValidation(input);
     }
+   let parentCategories: PostCategory[] = []
     if (input.parentId) {
       const parent = await this.findParent(input.parentId);
+      parentCategories = await this.postCategoryRepo.findAllParentsRecursive(input.parentId);
       postCategory.parentId = parent.id;
     }
     postCategory.name = input.name;
     postCategory.friendlySlug = input.friendlySlug;
+    postCategory.updateSlug(input.friendlySlug,parentCategories);
     return this.postCategoryRepo.save(postCategory);
   }
 
@@ -99,6 +110,7 @@ class PostCategoryService {
       input.parentId = parent.id;
     }
   }
+  
 }
 
 export default PostCategoryService;

@@ -7,6 +7,7 @@ import { CreateMessageDTO } from "../dtos/CreateMessage.dto";
 import { ConversationReponseDTOSchema, ConversationsReponseDTOSchema, CreateConversationReponseDTOSchema } from "../dtos/ConversationResponse.dto";
 import { CustomRequest } from "@/shared/interfaces/CustomRequest";
 import { CreateMessageResponseDTOSchema } from "../dtos/MessageResponse.dto";
+import { ConversationQueryParamsDTO } from "../dtos/ConsersationQueryParams";
 
 @injectable()
 export class ConversationController {
@@ -35,5 +36,9 @@ export class ConversationController {
     async handleGetAllConversations (req: CustomRequest, res: Response) {
     const result = await this.conversationService.getAllConversations();
     return new SuccessResponse({ data: ConversationsReponseDTOSchema.parse(result) }).send(res);
+    }
+    async handleGetPaginatedConversations (req: CustomRequest<{}, {}, {},ConversationQueryParamsDTO>, res: Response) {
+    const result = await this.conversationService.getPaginatedConversations(req.query);
+    return new SuccessResponse({ data:result }).send(res);
     }
 }

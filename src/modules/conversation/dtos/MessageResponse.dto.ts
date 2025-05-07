@@ -6,7 +6,7 @@ import { z } from "zod";
 export const MessageResponseDTOSchema = z.object({
     id: z.number(),
     content: z.string(),
-    sender: UserResponseDTOSchema.omit({userSubscription: true}),
+    sender: UserResponseDTOSchema.omit({userSubscription: true, roles: true}),
     role: z.enum(["user", "assistant"]),
     createdAt: z.date()
 });

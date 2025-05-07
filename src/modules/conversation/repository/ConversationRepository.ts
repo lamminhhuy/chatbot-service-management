@@ -2,6 +2,7 @@ import { Repository } from "typeorm";
 import { Conversation } from "../models/Conversation";
 import { IConversationRepository } from "../interfaces/IConversationRepository";
 import { AppDataSource } from "@/database/PostgresDB";
+import { ConversationQueryParamsDTO } from "../dtos/ConsersationQueryParams";
 
 export class ConversationRepository extends Repository<Conversation> implements IConversationRepository {
     constructor() {
@@ -9,5 +10,27 @@ export class ConversationRepository extends Repository<Conversation> implements 
     }
     async  createConversation(data: Conversation): Promise<Conversation>{
        return this.save(data);
+    }
+    async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<Conversation[]> {
+        const { limit, offset, search, sort } = queryParams;
+        const queryBuilder = this.createQueryBuilder('conversation');
+        
+        if (search) {
+            queryBuilder.andWhere('conversation.title ILIKE :search', { search: `%${search}%` });
+        }
+        
+        if (sort) {
+            queryBuilder.orderBy('conversation.createdAt', sort as 'ASC' | 'DESC');
+        }
+        
+        return queryBuilder
+            .skip(offset)
+            .take(limit)
+            .leftJoinAndSelect('conversation.users', 'user')
+            .leftJoinAndSelect('conversation.messages', 'message')
+            .leftJoinAndSelect('message.sender', 'sender')
+            .skip(offset)
+            .take(limit)
+            .getMany();
     }
 }

@@ -16,6 +16,9 @@ import { env } from "@/configs/envConfig";
 import { groupBy } from 'lodash';
 import dayjs from 'dayjs'; 
 import { ITokenLimiter } from "../interfaces/ITokenLimiter";
+import { ConversationQueryParamsDTO } from "../dtos/ConsersationQueryParams";
+import { PaginatedResponse, PaginatedResponseSchema } from "@/shared/dtos/PaginatedResponse.dto";
+import { ConversationReponseDTO, ConversationReponseDTOSchema } from "../dtos/ConversationResponse.dto";
 
 @injectable()
 export class ConversationService {
@@ -121,5 +124,16 @@ export class ConversationService {
     }
     getAllConversations(): Promise<Conversation[]> {
         return this.conversationRepository.find();
+    }
+    async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<PaginatedResponse<any>> {
+        const conversations = await this.conversationRepository.getPaginatedConversations(queryParams);
+        return PaginatedResponseSchema(ConversationReponseDTOSchema).parse({
+            items: conversations,
+            total: conversations.length,
+            limit: queryParams.limit,
+            offset: queryParams.offset,
+            page: queryParams.offset / queryParams.limit + 1,
+            totalPages: Math.ceil(conversations.length / queryParams.limit),
+        });
     }
 }

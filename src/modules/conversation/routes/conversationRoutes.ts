@@ -1,10 +1,11 @@
-import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
+import { validateRequest, validateRequestQueryParams } from "@/shared/middlewares/validateRequest/validateRequest";
 import { CreateConversationDTOSchema } from "../dtos/CreateConversation.dto";
 import { ConversationController } from "../controllers/ConversationController";
 import { container } from "tsyringe";
 import { CreateMessageDTOSchema } from "../dtos/CreateMessage.dto";
 import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
 import { validateQueryToken } from "../middlewares/validateQueryToken.middleware";
+import { ConversationQueryParamsDTO, ConversationQueryParamsDTOSchema } from "../dtos/ConsersationQueryParams";
 
 const conversationController = container.resolve(ConversationController)
 
@@ -40,15 +41,24 @@ export const conversationModule: ModuleConfig = {
         },
         {
             method: 'GET',
+            path: '/paginated',
+            handler: { controller: 'conversation',
+                action:  conversationController.handleGetPaginatedConversations.bind(conversationController)},
+            middlewares: [validateRequestQueryParams(ConversationQueryParamsDTOSchema)]
+        },
+        {
+            method: 'GET',
             path: '/:id',
             handler: { controller: 'conversation',
                 action:  conversationController.handleGetConversationById.bind(conversationController)}
         },
+     
         {
             method: 'DELETE',
             path: '/:id',
             handler: { controller: 'conversation',
                 action:  conversationController.handleDeleteConversation.bind(conversationController)}
-        }
+        },
+      
     ]
 } ;

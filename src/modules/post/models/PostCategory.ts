@@ -7,14 +7,17 @@ export class PostCategory {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column({ type: "varchar", length: 255, unique: true, nullable: false })
+    @Column({ type: "varchar", length: 255, nullable: false })
     name: string;
 
     @ManyToOne(() => PostCategory, (parent) => parent.children, { nullable: true })
-    parent: PostCategory;
+    parent: PostCategory | null;
 
-    @Column({ type: "varchar", length: 255, name: "friendly_slug", unique: true, nullable: true })
+    @Column({ type: "varchar", length: 255, name: "friendly_slug", nullable: true })
     friendlySlug: string;
+
+    @Column({ type: "varchar", length: 255, name: "full_slug", nullable: true,unique: true  })
+     fullSlug: string;
 
     @Column({ type: "int", nullable: true })
     @Index()
@@ -32,11 +35,31 @@ export class PostCategory {
     @OneToMany(() => Post, (post) => post.category)
     posts: Post[];
 
-    static create(name: string, friendlySlug: string| null, parentId: number | null): PostCategory {
+    static create(name: string, friendlySlug: string | null, parents: PostCategory[] | null): PostCategory {
         const postCategory = new PostCategory();
         postCategory.name = name;
         postCategory.friendlySlug = friendlySlug || generateSlug(name);
-        postCategory.parentId = parentId;
+
+        postCategory.parent = parents && parents.length > 0 ? parents[parents.length - 1] : null;
+
+        if (parents && parents.length > 0) {
+            const parentSlugs = parents.map(parent => parent.friendlySlug).join('/');
+            postCategory.fullSlug = `${parentSlugs}/${postCategory.friendlySlug}`;
+        } else {
+            postCategory.fullSlug = postCategory.friendlySlug;
+        }
+
         return postCategory;
+    }
+
+    updateSlug(friendlySlug: string, parents: PostCategory[] | null): void {
+        this.friendlySlug = friendlySlug;
+
+        if (parents && parents.length > 0) {
+            const parentSlugs = parents.map(parent => parent.friendlySlug).join('/');
+            this.fullSlug = `${parentSlugs}/${this.friendlySlug}`;
+        } else {
+            this.fullSlug = this.friendlySlug;
+        }
     }
 }

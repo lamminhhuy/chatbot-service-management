@@ -21,7 +21,7 @@ class PostController {
     const result = await  this.postService.updatePost(req.params.id,req.body);
      new SuccessResponse({
          message: 'Post updated successfully',
-         data: result
+         data: PostResponseDTOSchema.parse(result)
      }).send(res);
  }
  async handleDelete(req: Request<{id: number}>, res: Response, next: NextFunction) {
