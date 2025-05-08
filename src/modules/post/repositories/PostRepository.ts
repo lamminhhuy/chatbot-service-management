@@ -60,7 +60,7 @@ class PostRepository extends Repository<Post> implements IPostRepository {
           queryBuilder.andWhere("1 = 0");
         }
       } catch (error) {
-        throw new Error(`Failed to fetch category hierarchy: ${error.message}`);
+        throw new Error(`Failed to fetch category hierarchy: ${error}`);
       }
     }
 
@@ -75,7 +75,7 @@ class PostRepository extends Repository<Post> implements IPostRepository {
       }
     }
 
-    queryBuilder.orderBy("post.createdAt", "DESC");
+    queryBuilder.orderBy(`post.${sort ? sort : "createdAt"}`, order ? order : "DESC");
 
     queryBuilder.skip(offset).take(limit);
 
@@ -83,7 +83,7 @@ class PostRepository extends Repository<Post> implements IPostRepository {
       const [items, total] = await queryBuilder.getManyAndCount();
       return { items, total };
     } catch (error) {
-      throw new Error(`Failed to fetch paginated posts: ${error.message}`);
+      throw new Error(`Failed to fetch paginated posts: ${error}`);
     }
   }
 
