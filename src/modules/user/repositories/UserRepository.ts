@@ -31,4 +31,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
   async findUsersByRoles(roleCodes:RoleCode[]): Promise<User[]> {
     return await this.find({ where: { roles: { code:In(roleCodes) } } });
   }
+  // async getNewUsersFromLastMonth(): Promise<User[]> {
+  //   return await this.find({ where: { createdAt: { : new Date(new Date().setMonth(new Date().getMonth() - 1)) } } });
+  // }
 }
