@@ -2,6 +2,7 @@ import { registerInfraDependencies } from "./infrastructure/infra.container";
 import { registerAuthDependencies } from "./modules/auth/auth.container";
 import { registerRoleDependencies } from "./modules/authorization/authorization.container";
 import { registerChatbotDependencies } from "./modules/chatbot/chatbot.container";
+import { registerCommunicationDependencies } from "./modules/Communication/communication.container";
 import { registerConversationDependencies } from "./modules/conversation/conversation.container";
 import { registerMediaContainer } from "./modules/media/media.container";
 import { registerPaymentDependencies } from "./modules/payment/payment.container";
@@ -20,6 +21,7 @@ export function setUpContainers (){
   registerPaymentDependencies()
   registerMediaContainer()
   registerPostDependencies()
+  registerCommunicationDependencies()
 }
 
 
