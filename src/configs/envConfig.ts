@@ -88,4 +88,5 @@ export const env = cleanEnv(process.env, {
   AWS_SECRET_ACCESS_KEY: str(),
   S3_BUCKET_NAME: str(),
   S3_REGION: str(),
+  GOOGLE_CLIENT_ID: str()
 });

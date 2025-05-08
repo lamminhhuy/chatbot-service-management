@@ -7,6 +7,7 @@ import { LoginRequestDTOSchema } from "../dtos/LoginRequest.dto";
 import { verifyRefreshToken } from "../middlewares/requireRefreshToken.middleware";
 import { ModuleConfig } from "../interfaces/ModuleConfig";
 import { RequestResetPasswordDTOSchema, VerifyResetPasswordDTOSchema } from "../dtos/ResetPassword.dto";
+import { LoginGoogleDTOSchema } from "../dtos/LoginGoogle.dto";
 
 const authController = container.resolve(AuthController)
 
@@ -68,6 +69,13 @@ export const authModule: ModuleConfig = {
             handler: { controller: 'auth',
                 action:  authController.logout.bind(authController)},
             middlewares: [verifyRefreshToken]
+        },
+        {
+            method: "POST",
+            path: "/login/google",
+            handler: { controller: 'auth',
+                action:  authController.loginWithGoogle.bind(authController)},
+            middlewares: [validateRequest(LoginGoogleDTOSchema)]
         }
     ]
 }

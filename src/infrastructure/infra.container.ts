@@ -9,6 +9,7 @@ import { TypeOrmUnitOfWork } from "./uow/TypeOrmUnitOfWork"
 import { OtpService } from "@/shared/services/otp/OtpService"
 import { EmailService } from "./email/EmailService"
 import CacheProvider from "./cache/CacheProvider"
+import { OAuth2Provider } from "./oauth2/OAuth2Provider"
 
 
 export const registerInfraDependencies = () => {
@@ -19,5 +20,6 @@ export const registerInfraDependencies = () => {
     container.register('IUnitOfWorkService', {useValue: new TypeOrmUnitOfWork()})
     container.register('ICacheProvider', {useClass: CacheProvider})
     container.register('IEmailService', { useClass: EmailService });
-    container.register('IOtpService', {useClass: OtpService})
+    container.register('IOtpService', {useClass: OtpService});
+    container.register('IOAuth2Provider', {useClass: OAuth2Provider});
 }

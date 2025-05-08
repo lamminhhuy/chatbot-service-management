@@ -10,6 +10,7 @@ import { LoginResDTOSchema } from '../dtos/LoginResponse.dto';
 import { RegisterResponseDTOSchema } from '../dtos/RegisterReponse.dto';
 import { UpdatePasswordDTO } from '@/modules/user/dtos/UpdateUser.dto';
 import { RequestResetPasswordDTO, VerifyResetPasswordDTO } from '../dtos/ResetPassword.dto';
+import { LoginGoogleDTO } from '../dtos/LoginGoogle.dto';
 
 @singleton()
 export class AuthController {
@@ -74,6 +75,16 @@ export class AuthController {
     res.clearCookie('refreshToken');
     new SuccessResponse({
       message: 'User logged out successfully!',
+    }).send(res);
+  }
+  async loginWithGoogle(req: Request<{}, {}, LoginGoogleDTO>, res: Response): Promise<void> {
+    const loginResult = await this.authService.loginWithGoogle(req.body.token);
+    const { user, accessToken, refreshToken } = loginResult;
+    res.cookie('refreshToken', refreshToken, getCookieOptions(env.REFRESH_TOKEN_MAX_AGE));
+
+    new SuccessResponse({
+      message: 'User logged in successfully!',
+      data: LoginResDTOSchema.parse({ user, accessToken }),
     }).send(res);
   }
 }

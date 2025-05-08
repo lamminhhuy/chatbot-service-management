@@ -2,7 +2,6 @@
 import { UserService } from '@/modules/user/services/UserService';
 import { BadRequestResponseError, ErrorsResponse } from '@/shared/response/errors.response';
 import { RegisterRequestDTO } from '../dtos/RegisterRequest.dto';
-import { User } from '@/modules/user/models/UserModel';
 import { IJwtService } from '../interfaces/JwtService';
 import { inject, injectable } from 'tsyringe';
 import * as argon2 from "argon2";
@@ -16,6 +15,7 @@ import { UserResponseDTO, UserResponseDTOSchema } from '@/modules/user/dtos/User
 import SubscriptionService from '@/modules/subscription/services/SubscriptionService';
 import { SubscriptionCode } from '@/modules/subscription/enums/SubscriptionCode';
 import { UserSession } from '@/modules/user/models/UserSessionModel';
+import { IOAuth2Provider } from '../interfaces/IOAuth2Provider';
 
 @injectable()
 export class AuthService   {
@@ -24,10 +24,12 @@ export class AuthService   {
               @inject(UserService) private userService: UserService,
               @inject(SubscriptionService) private subscriptionService: SubscriptionService,
               @inject(UserSubscriptionService) private userSubscriptionService: UserSubscriptionService,
-              @inject('IJwtService') private jwtService: IJwtService) {
+              @inject('IJwtService') private jwtService: IJwtService,
+              @inject('IOAuth2Provider') private oauth2Client: IOAuth2Provider) {
     this.userService = userService;
     this.otpService = otpService;
     this.jwtService = jwtService;
+    this.oauth2Client = oauth2Client;
   }
   @Transactional()
   async login({ email, password }: LoginReqDTO): Promise<{ user: UserResponseDTO; accessToken: string; refreshToken: string }
@@ -154,4 +156,33 @@ export class AuthService   {
     }
     return userSession;
   }
+  async loginWithGoogle(token: string): Promise<{ user: UserResponseDTO; accessToken: string; refreshToken: string }> {
+    const ticket = await this.oauth2Client.verifyIdToken(token);
+    const payload = ticket.getPayload();
+    if (!payload) {
+      throw new BadRequestResponseError('Invalid token!');
+    }
+    let user = await this.userService.findByEmail(payload.email);
+    if (!user) {
+     user = await this.userService.createUser({
+      email: payload.email,
+      username: payload.given_name,
+      password: payload.sub,
+      phoneNumber: payload.phone_number
+     })
+    }
+    const { accessToken, refreshToken } = this.jwtService.generateTokenPair(user.id, user.email);
+    await this.userService.createUserSession({
+      accessToken,
+      refreshToken,
+      user
+    });
+    const sanitizedUser = UserResponseDTOSchema.parse({...user})
+    return {
+      user: sanitizedUser,
+      accessToken,
+      refreshToken,
+    };
+  }
+    
 }
