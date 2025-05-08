@@ -4,6 +4,7 @@ import { PostCategoryResponseDTOSchema } from "./PostCategory.dto";
 export const PostResponseDTOSchema = z.object({
     id: z.number(),
     title: z.string(),
+    slugWithSpace: z.string().nullable(),
     media: z.object({
         id: z.string(),
         fileUrl: z.string(),
