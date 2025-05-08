@@ -72,6 +72,7 @@ export const authModule: ModuleConfig = {
         },
         {
             method: "POST",
+            isPublic: true,
             path: "/login/google",
             handler: { controller: 'auth',
                 action:  authController.loginWithGoogle.bind(authController)},
