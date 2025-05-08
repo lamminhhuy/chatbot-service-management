@@ -177,7 +177,11 @@ export class AuthService   {
       refreshToken,
       user
     });
-    const sanitizedUser = UserResponseDTOSchema.parse({...user})
+    const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(user.id);
+    if(!userSubscription) {
+       throw new ErrorsResponse('User subscription not found!',408);
+     }
+    const sanitizedUser = UserResponseDTOSchema.parse({...user,userSubscription})
     return {
       user: sanitizedUser,
       accessToken,
