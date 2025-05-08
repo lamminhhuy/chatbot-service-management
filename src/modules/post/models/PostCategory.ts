@@ -19,7 +19,7 @@ export class PostCategory {
     @Column({ type: "varchar", length: 255, name: "full_slug", nullable: true,unique: true  })
      fullSlug: string;
 
-    @Column({ type: "int", nullable: true, default: null,name: "parent_id" })
+    @Column({ type: "int", nullable: true, default: null })
     @Index()
     parentId: number | null;
 

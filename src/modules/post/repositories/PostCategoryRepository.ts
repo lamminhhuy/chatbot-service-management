@@ -50,4 +50,11 @@ export default class PostCategoryRepository extends Repository<PostCategory> imp
 
         return parents;
     }
+    async findFullSlug(slug: string): Promise<PostCategory | null> {
+        return this.findOneBy({ fullSlug: slug });
+    }
+
+    existedByName(name: string): Promise<boolean> {
+        return this.existsBy({ name });
+    }
 }

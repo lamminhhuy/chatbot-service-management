@@ -18,6 +18,12 @@ class PostCategoryService {
   ): Promise<PostCategory> {
     let parents: PostCategory[] | null = [];
     let childParent: PostCategory | null = null;
+    const isExsitedByName = await this.postCategoryRepo.existedByName(input.name);
+    if(isExsitedByName)
+    {
+      throw new BadRequestResponseError("Post category name already exists");
+    }
+    
     if(input.parentId)
     {
    await this.findParent(input.parentId);
@@ -25,6 +31,7 @@ class PostCategoryService {
     parents = await this.postCategoryRepo.findAllParentsRecursive(input.parentId);
     parents.push(childParent);
     }
+    
     const postCategory = await this.postCategoryRepo.save(
       PostCategory.create(input.name, input.friendlySlug, parents)
     );
