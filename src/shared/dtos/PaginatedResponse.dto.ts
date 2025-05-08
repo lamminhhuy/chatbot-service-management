@@ -5,11 +5,11 @@ export const PaginatedResponseSchema = <T extends z.ZodTypeAny>(itemSchema: T) =
     items: z.array(itemSchema),
     meta: z
       .object({
-        total: z.number().int().nonnegative(),
-        limit: z.number().int().positive(),
-        offset: z.number().int().nonnegative(),
-        page: z.number().int().positive(),
-        totalPages: z.number().int().positive(),
+        total: z.number(),
+        limit: z.number(),
+        offset: z.number(),
+        page: z.number(),
+        totalPages: z.number(),
       })
       .passthrough()
   });
