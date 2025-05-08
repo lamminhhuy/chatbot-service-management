@@ -1976,3 +1976,5 @@
 {"duration":14243,"level":"error","message":"Server error","method":"POST","requestId":"dcae9cfa-83a1-4915-8e45-78ae4b56f90e","service":"api-service","status":500,"timestamp":"2025-05-09 02:04:15","url":"/api/v1/posts"}
 {"ip":"::1","level":"info","message":"Incoming request","method":"POST","requestId":"ad8d73d0-4835-4fc2-92df-0ca367bfadfd","service":"api-service","timestamp":"2025-05-09 02:06:12","url":"/api/v1/posts","userAgent":"PostmanRuntime/7.43.4"}
 {"duration":12481,"level":"info","message":"Request completed","method":"POST","requestId":"ad8d73d0-4835-4fc2-92df-0ca367bfadfd","service":"api-service","status":200,"timestamp":"2025-05-09 02:06:24","url":"/api/v1/posts"}
+{"ip":"::1","level":"info","message":"Incoming request","method":"POST","requestId":"300d9304-1944-4be7-a6a4-368f514681eb","service":"api-service","timestamp":"2025-05-09 02:09:03","url":"/api/v1/posts","userAgent":"PostmanRuntime/7.43.4"}
+{"duration":850,"level":"info","message":"Request completed","method":"POST","requestId":"300d9304-1944-4be7-a6a4-368f514681eb","service":"api-service","status":200,"timestamp":"2025-05-09 02:09:04","url":"/api/v1/posts"}
