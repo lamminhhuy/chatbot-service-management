@@ -106,11 +106,11 @@ class PostService {
   }
 
   async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<PaginatedResponse<PostResponseDTO>> {
-    if(queryParams.slugCategory)
+    if(queryParams.categorySlug)
     {
-      const category = await this.postCategoryService.getBySlug(queryParams.slugCategory);
+      const category = await this.postCategoryService.getBySlug(queryParams.categorySlug);
       if (!category) {
-        throw new BadRequestResponseError(`Category with slug ${queryParams.slugCategory} not found`);
+        throw new BadRequestResponseError(`Category with slug ${queryParams.categorySlug} not found`);
       }
       queryParams.categoryId = String(category.id);
     }
