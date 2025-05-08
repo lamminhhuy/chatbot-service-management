@@ -10,5 +10,8 @@ export interface IUserRepository extends IGenericRepository<User> {
     isExistedByEmail(email: string): Promise<boolean>,
     isExistedByPhoneNumber(phoneNumber: string): Promise<boolean>,
     remove(user: User): Promise<User>,
-    findUsersByRoles(roleCodes:RoleCode[]): Promise<User[]>
+    findUsersByRoles(roleCodes:RoleCode[]): Promise<User[]>,
+    getNewUsersFromLastMonthCount(includeDeleted?: boolean): Promise<number>,
+    softDeleteUser(id: number): Promise<void>,
+    restoreUser(id: number): Promise<void>
 }

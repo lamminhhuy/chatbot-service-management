@@ -265,6 +265,6 @@ export class UserService {
         throw new BadRequestResponseError("At least one admin user must exist");
       }
     }
-    return this.userRepo.remove(user);
+    return this.userRepo.softDeleteUser(user.id);
   }
 }
