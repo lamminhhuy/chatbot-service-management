@@ -123,26 +123,30 @@ class PostService {
     queryParams: PostQueryParamsDTO
   ): Promise<PaginatedResponse<PostResponseDTO>> {
     let category: PostCategory | null = null;
+    const extraData: any = {};
     if (queryParams.categoryId) {
       category = await this.postCategoryService.getById(queryParams.categoryId);
+      extraData.categoryName = category.name;
     }
     if (queryParams.categorySlug) {
       category = await this.postCategoryService.getBySlug(
         queryParams.categorySlug
       );
+      if (!category) {
+        throw new BadRequestResponseError(
+          `Category with slug ${queryParams.categorySlug} not found`
+        );
+      }
+      queryParams.categoryId = category.id;
+      extraData.categoryName = category.name;
     }
-    if (!category) {
-      throw new BadRequestResponseError(
-        `Category with slug ${queryParams.categorySlug} not found`
-      );
-    }
-    queryParams.categoryId = category.id;
+    
     const { items, total } = await this.postRepo.getPaginatedPosts(queryParams);
     const posts = await this.attachMediaToPosts(items);
     const paginatedPosts = buildPaginatedResponse({
       items: posts,
     meta:{
-        categoryName: category.name,
+        ...extraData,
         total,
         limit: queryParams.limit,
         offset: queryParams.offset
