@@ -1,20 +1,30 @@
+export interface PaginationMeta {
+  total: number;
+  limit: number;
+  offset: number;
+  [key: string]: any; 
+}
 export function buildPaginatedResponse<T>(data: {
     items: T[];
-    total: number;
-    limit: number;
-    offset: number;
-  }) {
-    const { items, total, limit, offset } = data;
-    const page = Math.floor(offset / limit) + 1;
-    const totalPages = Math.ceil(total / limit);
+    meta: PaginationMeta 
+  }): {
+    items: T[];
+    meta: PaginationMeta &{
+        page: number;
+        totalPages: number;
+    }
+  } {
+    const { items, meta } = data;
+    const page = Math.floor(meta.offset / meta.limit) + 1;
+    const totalPages = Math.ceil(meta.total / meta.limit);
   
     return {
       items,
-      total,
-      limit,
-      offset,
-      page,
-      totalPages,
+      meta:{
+        ...meta,
+        page,
+        totalPages,
+      },
     };
   }
   
