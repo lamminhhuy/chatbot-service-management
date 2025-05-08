@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne } from "typeorm";
 import { PostCategory } from "./PostCategory";
-import { generateSlug } from "../utils/generateSlug";
+import { transformToSlug } from "../utils/transformToSlug";
 
 @Entity('posts')
 export class Post {
@@ -33,7 +33,7 @@ export class Post {
     
     public updateTitle(title: string): void {
         this.title = title;
-        this.slug =  `${this.category.fullSlug}/${generateSlug(title)}`;
+        this.slug =  `${this.category.fullSlug}/${transformToSlug(title)}`;
     }
     static create (title: string, content: string,shortDescription:string, category: PostCategory) {
         const post = new Post();
@@ -41,7 +41,7 @@ export class Post {
         post.content = content;
         post.category = category;
         post.shortDescription = shortDescription;
-        post.slug =  `${category.fullSlug}/${generateSlug(title)}`;
+        post.slug =  `${category.fullSlug}/${transformToSlug(title)}`;
         return post;
     }
 }

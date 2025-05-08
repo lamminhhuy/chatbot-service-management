@@ -1,4 +1,4 @@
-export const generateSlug = (title: string): string => {
+export const transformToSlug = (title: string): string => {
     const removeVietnameseTones = (str: string): string => {
         return str
             .normalize('NFD') 

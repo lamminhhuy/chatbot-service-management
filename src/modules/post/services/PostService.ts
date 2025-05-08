@@ -106,6 +106,14 @@ class PostService {
   }
 
   async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<PaginatedResponse<PostResponseDTO>> {
+    if(queryParams.slugCategory)
+    {
+      const category = await this.postCategoryService.getBySlug(queryParams.slugCategory);
+      if (!category) {
+        throw new BadRequestResponseError(`Category with slug ${queryParams.slugCategory} not found`);
+      }
+      queryParams.categoryId = String(category.id);
+    }
     const {items, total} = await this.postRepo.getPaginatedPosts(queryParams);
     const posts = await this.attachMediaToPosts(items);
     const paginatedPosts = buildPaginatedResponse({items: posts, total, limit: queryParams.limit, offset: queryParams.offset});

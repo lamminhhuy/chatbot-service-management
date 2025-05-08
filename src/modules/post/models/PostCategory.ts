@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, Index } from "typeorm";
 import { Post } from "./Post";
-import { generateSlug } from "../utils/generateSlug";
+import { transformToSlug } from "../utils/transformToSlug";
 
 @Entity('post_categories')
 export class PostCategory {
@@ -19,17 +19,17 @@ export class PostCategory {
     @Column({ type: "varchar", length: 255, name: "full_slug", nullable: true,unique: true  })
      fullSlug: string;
 
-    @Column({ type: "int", nullable: true })
+    @Column({ type: "int", nullable: true, default: null,name: "parent_id" })
     @Index()
     parentId: number | null;
 
     @OneToMany(() => PostCategory, (child) => child.parent, { onDelete: 'CASCADE' })
     children: PostCategory[];
 
-    @CreateDateColumn()
+    @CreateDateColumn({name: "created_at"})
     createdAt: Date;
 
-    @UpdateDateColumn()
+    @UpdateDateColumn({name: "updated_at"})
     updatedAt: Date;
 
     @OneToMany(() => Post, (post) => post.category)
@@ -38,7 +38,7 @@ export class PostCategory {
     static create(name: string, friendlySlug: string | null, parents: PostCategory[] | null): PostCategory {
         const postCategory = new PostCategory();
         postCategory.name = name;
-        postCategory.friendlySlug = friendlySlug || generateSlug(name);
+        postCategory.friendlySlug = friendlySlug || transformToSlug(name);
 
         postCategory.parent = parents && parents.length > 0 ? parents[parents.length - 1] : null;
 

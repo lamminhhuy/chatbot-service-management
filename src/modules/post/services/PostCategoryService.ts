@@ -75,6 +75,10 @@ class PostCategoryService {
     }
     return parent;
   }
+  getBySlug(slug: string): Promise<PostCategory|null> {
+    const category = this.postCategoryRepo.findByFriendlySlug(slug);
+    return category;
+  }
   async getById(id: number): Promise<PostCategory> {
     const postCategory = await this.postCategoryRepo.findById(id);
     if (!postCategory) {

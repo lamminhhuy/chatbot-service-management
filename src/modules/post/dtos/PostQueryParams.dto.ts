@@ -11,6 +11,7 @@ export const PostQueryParamsDTOSchema = z.object({
        .default('0')
        .pipe(z.number()),
     search: z.string().optional(),
+    slugCategory: z.string().optional(),
     categoryId: z.string().optional(),
     sort: z.enum(['title', 'createdAt', 'updatedAt']).optional(),
     order: z.enum(['ASC', 'DESC']).optional(),

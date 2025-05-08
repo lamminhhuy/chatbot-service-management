@@ -6,6 +6,9 @@ import { PostQueryParamsDTO } from "../dtos/PostQueryParams.dto";
 
 class PostRepository extends Repository<Post> implements IPostRepository {
   constructor() {
+    if (!AppDataSource.isInitialized) {
+      throw new Error("AppDataSource is not initialized");
+    }
     super(Post, AppDataSource.manager);
   }
 
@@ -21,53 +24,85 @@ class PostRepository extends Repository<Post> implements IPostRepository {
     return this.findOne({ where: { slug } });
   }
 
-
   async getPaginatedPosts(queryParams: PostQueryParamsDTO): Promise<{ items: Post[]; total: number }> {
     const { offset, limit, search, categoryId, sort, order } = queryParams;
-  
+
     const queryBuilder = this.createQueryBuilder("post");
-  
+
     queryBuilder.leftJoinAndSelect("post.category", "category");
-  
+
+    if (categoryId) {
+      let recursiveQuery: string;
+      let queryParamsArray: any[];
+
+      recursiveQuery = `
+        WITH RECURSIVE category_hierarchy AS (
+          SELECT id
+          FROM post_categories
+          WHERE id = $1
+          UNION ALL
+          SELECT c.id
+          FROM post_categories c
+          INNER JOIN category_hierarchy ch ON c."parentId" = ch.id
+        )
+        SELECT id FROM category_hierarchy
+      `;
+      queryParamsArray = [categoryId];
+
+      try {
+        const categoryIds = await this.manager
+          .query(recursiveQuery, queryParamsArray)
+          .then((results) => results.map((row: { id: number }) => row.id));
+
+        if (categoryIds.length > 0) {
+          queryBuilder.andWhere("post.categoryId IN (:...categoryIds)", { categoryIds });
+        } else {
+          queryBuilder.andWhere("1 = 0");
+        }
+      } catch (error) {
+        throw new Error(`Failed to fetch category hierarchy: ${error.message}`);
+      }
+    }
+
     if (search) {
       queryBuilder.andWhere("post.title ILIKE :search", { search: `%${search}%` });
     }
-  
-    if (categoryId) {
-      queryBuilder.andWhere("post.category = :categoryId", { categoryId });
-    }
-  
+
     if (sort && order) {
       const allowedSortFields = ["title", "createdAt", "updatedAt"];
       if (allowedSortFields.includes(sort)) {
         queryBuilder.orderBy(`post.${sort}`, order);
       }
     }
-  
-    queryBuilder.orderBy("post.createdAt", "DESC");
-  
-    queryBuilder.skip(offset).take(limit);
-  
-    const [items, total] = await queryBuilder.getManyAndCount();
-    return { items, total };
-  }
 
+    queryBuilder.orderBy("post.createdAt", "DESC");
+
+    queryBuilder.skip(offset).take(limit);
+
+    try {
+      const [items, total] = await queryBuilder.getManyAndCount();
+      return { items, total };
+    } catch (error) {
+      throw new Error(`Failed to fetch paginated posts: ${error.message}`);
+    }
+  }
 
   async getRelatedPosts(id: number): Promise<Post[]> {
     return this.find({
-        where: {
-            id: Not(id)
-        },
-        relations: {
-            category: true
-        },
-        order: {
-            createdAt: 'DESC'
-        },
-        take: 5
+      where: {
+        id: Not(id),
+      },
+      relations: {
+        category: true,
+      },
+      order: {
+        createdAt: "DESC",
+      },
+      take: 5,
     });
   }
-  deletePost(post: Post): Promise<Post> {
+
+  async deletePost(post: Post): Promise<Post> {
     return this.remove(post);
   }
 }
