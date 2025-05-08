@@ -42,7 +42,7 @@ async handleGetById(req: Request<{id: number}>, res: Response, next: NextFunctio
     const post = await this.postService.getById(req.params.id);
     new SuccessResponse({
         message: 'Post fetched successfully',
-        data: DetailPostResponseDTOSchema.parse(post)
+        data: PostResponseDTOSchema.parse(post)
     }).send(res);
 }
 async handleGetPaginatedPosts(
