@@ -6,7 +6,8 @@ export const UpdateSubscriptionDTOSchema = z.object({
   price: z.number().min(0),
   description: z.string(),
   metadata: z.any().optional(),
-  queryTokenLimit: z.number().nullable()
+  queryTokenLimit: z.number().nullable(),
+  canChatWithAgent: z.boolean()
 });
 
 export type UpdateSubscriptionDTO = z.infer<typeof UpdateSubscriptionDTOSchema>;

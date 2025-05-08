@@ -8,7 +8,17 @@ import { BillingCycle } from "../enums/BillingCycle";
 class SubscriptionFactory {
 
   public create(data: CreateSubscriptionDTO): Subscription{
-    return new Subscription(data.name, formatCode(data.name), data.price, BillingCycle.MONTHLY, data.queryTokenLimit, data.description, data.metadata);
+    const subscription = new Subscription();
+    subscription.name = data.name;
+    subscription.code = formatCode(data.name);
+    subscription.price = data.price;
+    subscription.billingCycle = BillingCycle.MONTHLY;
+    subscription.description = data.description;
+    subscription.metadata = data.metadata;
+    subscription.queryTokenLimit = data.queryTokenLimit;
+    subscription.canChatWithAgent = data.canChatWithAgent;
+
+    return subscription;
   }
 }
 

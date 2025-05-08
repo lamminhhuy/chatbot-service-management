@@ -24,15 +24,6 @@ import { SubscriptionType } from '../enums/SubscriptionType';
 
 export class Subscription {
 
-  constructor(name: string, code: string, price: number, billingCycle: BillingCycle, queryTokenLimit: number| null, description: string, metadata?: Record<string, any>) {
-    this.name = name;
-    this.code = code;
-    this.price = price;
-    this.billingCycle = billingCycle;
-    this.description = description;
-    this.metadata = metadata;
-    this.queryTokenLimit = queryTokenLimit;
-  }
 
   @PrimaryGeneratedColumn('increment')
   id: number;
@@ -55,7 +46,9 @@ export class Subscription {
       },
   }, })
     price: number;
-  
+  @Column({ type: 'boolean', name: 'can_chat_with_agent', default: false })
+    canChatWithAgent: boolean;
+
     @Column({ type: 'varchar', name: 'billing_cycle', length: 20 })
     billingCycle: BillingCycle;
   
@@ -102,6 +95,7 @@ export class Subscription {
       this.description = dto.description;
       this.metadata = dto.metadata;
       this.queryTokenLimit = dto.queryTokenLimit;
+      this.canChatWithAgent = dto.canChatWithAgent;
     }
     
 
