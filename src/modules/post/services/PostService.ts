@@ -109,10 +109,14 @@ class PostService {
     if(queryParams.categorySlug)
     {
       const category = await this.postCategoryService.getBySlug(queryParams.categorySlug);
+      if(queryParams.categoryId)
+      {
+     await this.postCategoryService.getById(queryParams.categoryId);
+      }
       if (!category) {
         throw new BadRequestResponseError(`Category with slug ${queryParams.categorySlug} not found`);
       }
-      queryParams.categoryId = String(category.id);
+      queryParams.categoryId = category.id;
     }
     const {items, total} = await this.postRepo.getPaginatedPosts(queryParams);
     const posts = await this.attachMediaToPosts(items);
