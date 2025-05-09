@@ -4,6 +4,7 @@ import { validateRequest, validateRequestQueryParams } from "@/shared/middleware
 import { container } from "tsyringe";
 import { CreatePostDTOSchema } from "../dtos/CreatePost.dto";
 import { PostQueryParamsDTOSchema } from "../dtos/PostQueryParams.dto";
+import { UpdatePostDTOSchema } from "../dtos/UpdatePost.dto";
 
 
 const postController = container.resolve(PostController);
@@ -30,7 +31,8 @@ export const postModule: ModuleConfig = {
       path: '/:id',
       
       handler: { controller: 'post',
-                  action:  postController.handleUpdate.bind(postController)}
+                  action:  postController.handleUpdate.bind(postController)},
+      middlewares: [validateRequest(UpdatePostDTOSchema)]
     },
     {
       method: 'DELETE',
