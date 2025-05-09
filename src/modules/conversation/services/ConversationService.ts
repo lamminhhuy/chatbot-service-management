@@ -19,6 +19,7 @@ import { ITokenLimiter } from "../interfaces/ITokenLimiter";
 import { ConversationQueryParamsDTO } from "../dtos/ConsersationQueryParams";
 import { PaginatedResponse, PaginatedResponseSchema } from "@/shared/dtos/PaginatedResponse.dto";
 import { ConversationReponseDTO, ConversationReponseDTOSchema } from "../dtos/ConversationResponse.dto";
+import { buildPaginatedResponse } from "@/shared/utils/buildPaginatedResponse";
 
 @injectable()
 export class ConversationService {
@@ -127,13 +128,14 @@ export class ConversationService {
     }
     async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<PaginatedResponse<ConversationReponseDTO>> {
         const {items, total} = await this.conversationRepository.getPaginatedConversations(queryParams);
-        return PaginatedResponseSchema(ConversationReponseDTOSchema).parse({
-            items: items,
-            total: total,
-            limit: queryParams.limit,
-            offset: queryParams.offset,
-            page: Math.floor(queryParams.offset / queryParams.limit) + 1,
-            totalPages: Math.ceil(total / queryParams.limit),
+        const panigatedData =buildPaginatedResponse({
+            items,
+            meta:{
+                total,
+                limit: queryParams.limit,
+                offset: queryParams.offset
+            }
         });
+        return PaginatedResponseSchema(ConversationReponseDTOSchema).parse(panigatedData);
     }
 }

@@ -2,6 +2,7 @@ import { IGenericRepository } from "@/shared/interfaces/IGenericRepository";
 import { User } from "../models/UserModel";
 import { Role } from "@/modules/authorization/models/RoleModel";
 import { RoleCode } from "../enums/Role";
+import { UserQueryParamsDTO } from "../dtos/UserQueryParamss.dto";
 
 export interface IUserRepository extends IGenericRepository<User> {
     findByEmail(email: string): Promise<User | null>,
@@ -14,5 +15,6 @@ export interface IUserRepository extends IGenericRepository<User> {
     getNewUsersFromLastMonthCount(includeDeleted?: boolean): Promise<number>,
     softDeleteUser(id: number): Promise<void>,
     restoreUser(id: number): Promise<void>,
-    getUserCountWithMonthlyGrowth(): Promise<{total: number; currentMonth: number; previousMonth: number; growthRate: number}>
+    getUserCountWithMonthlyGrowth(): Promise<{total: number; currentMonth: number; previousMonth: number; growthRate: number}>,
+    getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<{items: User[], total: number}>
 }

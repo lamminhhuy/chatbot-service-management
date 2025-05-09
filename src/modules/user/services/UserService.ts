@@ -23,6 +23,9 @@ import {
   UserResponseDTOSchema,
 } from "../dtos/UserResponse.dto";
 import { RoleService } from "@/modules/authorization/services/RoleService";
+import { PaginatedResponse, PaginatedResponseSchema } from "@/shared/dtos/PaginatedResponse.dto";
+import { UserQueryParamsDTO } from "../dtos/UserQueryParamss.dto";
+import { buildPaginatedResponse } from "@/shared/utils/buildPaginatedResponse";
 
 @injectable()
 export class UserService {
@@ -275,4 +278,16 @@ export class UserService {
   }> {
     return this.userRepo.getUserCountWithMonthlyGrowth();
   }
+  async getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<PaginatedResponse<UserResponseDTO>> {
+    const {items, total} = await this.userRepo.getPaginatedUsers(queryParams);
+    const panigatedData =buildPaginatedResponse({
+        items,
+        meta:{
+            total,
+            limit: queryParams.limit,
+            offset: queryParams.offset
+        }
+    });
+    return PaginatedResponseSchema(UserResponseDTOSchema).parse(panigatedData);
+}
 }

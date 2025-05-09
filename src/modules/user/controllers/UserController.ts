@@ -9,6 +9,7 @@ import { CreateUserDTO, CreateUserResponseSchema } from "../dtos/CreateUser.dto"
 import { UpdatePasswordDTO, UpdateUserDTO, UpdateUserResponseDTOSchema } from "../dtos/UpdateUser.dto";
 import { AssignRoleDTO } from "../dtos/AssignRole.dto";
 import { RemoveRoleDTO } from "../dtos/RemoveRole.dto";
+import { UserQueryParamsDTO } from "../dtos/UserQueryParamss.dto";
 
 @injectable()
 export class UserController {
@@ -56,5 +57,11 @@ export class UserController {
       async deleteUser(req: CustomRequest<{id:number},{},{}>, res: Response, next: NextFunction): Promise<void> {
         await this.userService.deleteUser(req.params.id);
         new SuccessResponse({ data: null }).send(res);
+      }
+      async getPaginatedUsers(req: CustomRequest<{},{},UserQueryParamsDTO>, res: Response, next: NextFunction): Promise<void> {
+        const result = await this.userService.getPaginatedUsers(req.query);
+        new SuccessResponse({ data: result,
+          message: "Get paginated users successfully",
+         }).send(res);
       }
 }

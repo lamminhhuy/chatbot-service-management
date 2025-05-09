@@ -3,6 +3,7 @@ import { User } from "../models/UserModel";
 import { AppDataSource } from "@/database/PostgresDB";
 import { IUserRepository } from "../interfaces/IUserRepository";
 import { RoleCode } from "../enums/Role";
+import { UserQueryParamsDTO } from "../dtos/UserQueryParamss.dto";
 
 export class UserRepository extends Repository<User> implements IUserRepository {
   constructor() {
@@ -112,5 +113,18 @@ export class UserRepository extends Repository<User> implements IUserRepository 
       previousMonth,
       growthRate: parseFloat(growthRate.toFixed(2)),
     };
+  }
+  async getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<{items: User[], total: number}> {
+    const queryBuilder = this.createQueryBuilder("user")
+    .skip(queryParams.offset)
+    .take(queryParams.limit);
+
+    if (queryParams.search) {
+      queryBuilder.andWhere("user.username ILIKE :search", { search: `%${queryParams.search}%` });
+    }
+
+    const [items, total] = await queryBuilder.getManyAndCount();
+
+    return { items, total };
   }
 }

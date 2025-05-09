@@ -2,11 +2,12 @@ import { Request, Router } from "express";
 import { container } from "tsyringe";
 import { UserController } from "../controllers/UserController";
 import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
-import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
+import { validateRequest, validateRequestQueryParams } from "@/shared/middlewares/validateRequest/validateRequest";
 import { UpdatePasswordDTOSchema, UpdateUserDTOSchema } from "../dtos/UpdateUser.dto";
 import { CreateUserDTOSchema } from "../dtos/CreateUser.dto";
 import { AssignRoleDTOSchema } from "../dtos/AssignRole.dto";
 import { RemoveRoleDTOSchema } from "../dtos/RemoveRole.dto";
+import { UserQueryParamsDTOSchema } from "../dtos/UserQueryParamss.dto";
 
 export const userRouter = Router()
 
@@ -83,6 +84,13 @@ export const userModule: ModuleConfig = {
             path: '/:id',
             handler: { controller: 'user',
                 action:  userController.deleteUser.bind(userController)}
+        },
+        {
+            method: 'GET',
+            path: '/paginated',
+            handler: { controller: 'user',
+                action:  userController.getPaginatedUsers.bind(userController)},
+            middlewares: [validateRequestQueryParams(UserQueryParamsDTOSchema)]
         }
     ]
 }
