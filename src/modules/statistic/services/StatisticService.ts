@@ -30,7 +30,7 @@ class StatisticService {
     }>> {
         const userData =  await this.getNewUsersWithGrowthFromLastMonth();
         const revenueData = await this.getTotalRevenueWithGrowthFromLastMonth();
-        const subscriptionData = await this.getTotalUserSubscriptionWithGrowthFromLastMonth();
+        const userSubscriptionData = await this.getTotalUserSubscriptionWithGrowthFromLastMonth();
         const postCountData = await this.getTotalPostWithMonthlyGrowth();
         return {
             user: {total:userData.total,
@@ -40,9 +40,9 @@ class StatisticService {
                 total:revenueData.total,
                 growthRate:revenueData.growthRate
             },
-            subscription: {
-                total:subscriptionData.total,
-                growthRate:subscriptionData.growthRate
+            userSubscription: {
+                total:userSubscriptionData.total,
+                growthRate:userSubscriptionData.growthRate
             },
             postCount: {
                 total:postCountData.total,
