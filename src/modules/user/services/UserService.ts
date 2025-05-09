@@ -177,7 +177,7 @@ export class UserService {
     if (isRoleExists) {
       throw new BadRequestResponseError("Role already exists");
     }
-    user.roles.push(role);
+    user.assginRole(role);
     return this.userRepo.save(user);
   }
   async removeRole(input: RemoveRoleDTO) {
