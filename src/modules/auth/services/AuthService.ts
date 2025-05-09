@@ -16,6 +16,8 @@ import SubscriptionService from '@/modules/subscription/services/SubscriptionSer
 import { SubscriptionCode } from '@/modules/subscription/enums/SubscriptionCode';
 import { UserSession } from '@/modules/user/models/UserSessionModel';
 import { IOAuth2Provider } from '../interfaces/IOAuth2Provider';
+import { User, User } from 'aws-sdk/clients/appstream';
+import { UserDTO } from '@/modules/user/dtos/User.dto';
 
 @injectable()
 export class AuthService   {

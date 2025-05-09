@@ -155,20 +155,9 @@ async createUser({
     return sanitizedUser;
   }
 
-  async findByEmail(email: string): Promise<UserDTO> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await this.userRepo.findByEmail(email);
-    if (!user) {
-      throw new NotFoundResponseError("User not found");
-    }
-    const userSubscription =
-      await this.userSubscriptionService.getActiveUserSubsription(user.id);
-    if (!userSubscription) {
-      throw new NotFoundResponseError("User subscription not found");
-    }
-    return UserDTOSchema.parse({
-      ...user,
-      userSubscription,
-    });
+    return user;
   }
 
   async handleUpdateTokens(

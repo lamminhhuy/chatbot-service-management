@@ -117,5 +117,6 @@ export class User {
     this.roles = this.roles.filter(r => r.id !== role.id)
     return this
   }
+  
   userSubscription: UserSubscription;
 }
