@@ -7,7 +7,7 @@ export class Post {
     @Column({type: 'int', primary: true, generated: 'increment'})
     id: number;
 
-    @ManyToOne(() => PostCategory, (postCategory) => postCategory.posts, { eager: true })
+    @ManyToOne(() => PostCategory, (postCategory) => postCategory.posts, { eager: true, onDelete: 'CASCADE' })
     category: PostCategory;
 
     @Column({type: 'int', nullable: true})

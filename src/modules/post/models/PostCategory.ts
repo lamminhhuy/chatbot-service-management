@@ -10,10 +10,7 @@ export class PostCategory {
     @Column({ type: "varchar", length: 255, nullable: false })
     name: string;
 
-    @ManyToOne(() => PostCategory, (category) => category.posts, {
-        onDelete: 'CASCADE',
-        nullable: false
-    })
+    @ManyToOne(() => PostCategory, (parent) => parent.children, { nullable: true })
     parent: PostCategory | null;
 
     @Column({ type: "varchar", length: 255, name: "friendly_slug", nullable: true })
