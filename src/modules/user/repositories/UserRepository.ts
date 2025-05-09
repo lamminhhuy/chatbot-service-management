@@ -30,12 +30,6 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     });
   }
 
-  async findAll(): Promise<User[]> {
-    return this.find({
-      where: {},
-      relations: ["roles"],
-    });
-  }
 
   async isExistedByPhoneNumber(phoneNumber: string): Promise<boolean> {
     return this.existsBy({ phoneNumber });
@@ -116,15 +110,24 @@ export class UserRepository extends Repository<User> implements IUserRepository 
   }
   async getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<{items: User[], total: number}> {
     const queryBuilder = this.createQueryBuilder("user")
-    .skip(queryParams.offset)
-    .take(queryParams.limit);
+        .leftJoinAndSelect("user.roles", "role")
+        .where("user.email != :email", { email: "chatbot@gmail.com" })
+        .skip(queryParams.offset)
+        .take(queryParams.limit);
 
     if (queryParams.search) {
-      queryBuilder.andWhere("user.username ILIKE :search", { search: `%${queryParams.search}%` });
+        queryBuilder.andWhere("user.username ILIKE :search", { search: `%${queryParams.search}%` });
     }
 
     const [items, total] = await queryBuilder.getManyAndCount();
 
     return { items, total };
-  }
+}
+
+async findAll(): Promise<User[]> {
+    return this.createQueryBuilder("user")
+        .leftJoinAndSelect("user.roles", "role")
+        .where("user.email != :email", { email: "chatbot@gmail.com" })
+        .getMany();
+}
 }

@@ -106,3 +106,5 @@
 {"duration":830,"level":"error","message":"Server error","method":"POST","requestId":"9be398f5-6ba5-41f1-934b-a5c0eb86313c","service":"api-service","status":500,"timestamp":"2025-05-09 02:01:11","url":"/api/v1/posts"}
 {"duration":11011,"level":"error","message":"Server error","method":"POST","requestId":"c224df1f-eb73-45d2-8bd5-0e32e9955528","service":"api-service","status":500,"timestamp":"2025-05-09 02:02:35","url":"/api/v1/posts"}
 {"duration":14243,"level":"error","message":"Server error","method":"POST","requestId":"dcae9cfa-83a1-4915-8e45-78ae4b56f90e","service":"api-service","status":500,"timestamp":"2025-05-09 02:04:15","url":"/api/v1/posts"}
+{"duration":432,"level":"error","message":"Server error","method":"GET","requestId":"229b36db-e29e-456e-9a6a-64b6264013e2","service":"api-service","status":500,"timestamp":"2025-05-09 18:57:44","url":"/api/v1/conversations/paginated&page=1&limit=10"}
+{"duration":345,"level":"error","message":"Server error","method":"POST","requestId":"d5a52f1b-be4c-48f9-a8c8-fd594c4aa80b","service":"api-service","status":500,"timestamp":"2025-05-09 21:00:30","url":"/api/v1/auth/login/google"}

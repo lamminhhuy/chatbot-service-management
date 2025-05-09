@@ -51,7 +51,7 @@ export class AuthService   {
     await this.userService.createUserSession({
         accessToken,
         refreshToken,
-        user:existingUser
+        userId:existingUser.id
       });
     const sanitizedUser = UserResponseDTOSchema.parse({...existingUser,userSubscription})
     return {
@@ -88,7 +88,7 @@ export class AuthService   {
     await this.userService.createUserSession({
       accessToken,
       refreshToken,
-      user
+      userId:user.id  
     });
      const subscription= await   this.subscriptionService.findByCode(SubscriptionCode.BASIC);
   
@@ -163,30 +163,27 @@ export class AuthService   {
       throw new BadRequestResponseError('Invalid token!');
     }
     let user = await this.userService.findByEmail(payload.email);
+
     if (!user) {
      user = await this.userService.createUser({
       email: payload.email,
       username: payload.given_name,
       password: payload.sub,
       phoneNumber: payload.phone_number
-     })
+     }) 
     }
     const { accessToken, refreshToken } = this.jwtService.generateTokenPair(user.id, user.email);
     await this.userService.createUserSession({
       accessToken,
       refreshToken,
-      user
+      userId:user.id
     });
-    const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(user.id);
-    if(!userSubscription) {
-       throw new ErrorsResponse('User subscription not found!',408);
-     }
-    const sanitizedUser = UserResponseDTOSchema.parse({...user,userSubscription})
+
+    const sanitizedUser = UserResponseDTOSchema.parse(user)
     return {
       user: sanitizedUser,
       accessToken,
       refreshToken,
     };
-  }
-    
+  }   
 }

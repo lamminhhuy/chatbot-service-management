@@ -71,7 +71,7 @@ export class Subscription {
     isActive: boolean;
   
     @Column({ type: 'text', nullable: true })
-    description?: string;
+    description: string;
   
     @Column({ type: 'jsonb', nullable: true })
     metadata?: Record<string, any>;

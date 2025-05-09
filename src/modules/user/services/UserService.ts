@@ -26,6 +26,10 @@ import { RoleService } from "@/modules/authorization/services/RoleService";
 import { PaginatedResponse, PaginatedResponseSchema } from "@/shared/dtos/PaginatedResponse.dto";
 import { UserQueryParamsDTO } from "../dtos/UserQueryParamss.dto";
 import { buildPaginatedResponse } from "@/shared/utils/buildPaginatedResponse";
+import { UserSubscription } from "@/modules/subscription/models/UserSubscription";
+import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
+import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
+import { UserDTO, UserDTOSchema } from "../dtos/User.dto";
 
 @injectable()
 export class UserService {
@@ -38,55 +42,67 @@ export class UserService {
     @inject(RoleService) roleService: RoleService,
     @inject("UserSessionRepository") userSessionRepo: Repository<UserSession>,
     @inject(UserSubscriptionService)
-    private userSubscriptionService: UserSubscriptionService
+    private userSubscriptionService: UserSubscriptionService,
+    @inject(SubscriptionService)
+    private subscriptionService: SubscriptionService
   ) {
     this.userRepo = userRepo;
     this.roleService = roleService;
     this.userSessionRepo = userSessionRepo;
   }
+async createUser({
+  password,
+  email,
+  username,
+  phoneNumber,
+  roleId,
+}: CreateUserDTO): Promise<UserDTO> {
+  await this.isExistedEmail(email);
+  if (phoneNumber) {
+    await this.isExistedPhoneNumber(phoneNumber);
+  }
 
-  async createUser({
+  const roles = [];
+  const basicUserRole = await this.roleService.findRoleByCode(RoleCode.BASIC_USER);
+  if (!basicUserRole) {
+    throw new ErrorsResponse("Role Basic is not existed", 408);
+  }
+  roles.push(basicUserRole);
+
+  if (roleId) {
+    const role = await this.roleService.findRolebyId(roleId);
+    if (!role) {
+      throw new NotFoundResponseError("Role not found");
+    }
+    roles.push(role);
+  }
+
+  const user = await UserFactory.create({
     password,
     email,
     username,
     phoneNumber,
-    roleId,
-  }: CreateUserDTO): Promise<User> {
-    await this.isExistedEmail(email);
-    if (phoneNumber) {
-      await this.isExistedPhoneNumber(phoneNumber);
-    }
-    const roles = [];
-    const basicUserRole = await this.roleService.findRoleByCode(
-      RoleCode.BASIC_USER
-    );
+    avatarUrl: null,
+    roles,
+  });
+  const savedUser = await this.userRepo.save(user);
 
-    if (!basicUserRole) {
-      throw new ErrorsResponse("Role Basic is not existed", 408);
-    }
-
-    roles.push(basicUserRole);
-
-    if (roleId) {
-      const role = await this.roleService.findRolebyId(roleId);
-      if (!role) {
-        throw new NotFoundResponseError("Role not found");
-      }
-      roles.push(role);
-    }
-
-    const user = await UserFactory.create({
-      password,
-      email,
-      username,
-      phoneNumber,
-      avatarUrl: null,
-      roles,
-    });
-    const savedUser = await this.userRepo.save(user);
-
-    return savedUser;
+  const subscription = await this.subscriptionService.findByCode(SubscriptionCode.BASIC);
+  if (!subscription) {
+    throw new ErrorsResponse("Basic subscription is not existed", 408);
   }
+
+  const userSubscription = await this.userSubscriptionService.create({
+    userId: user.id,
+    subscriptionId: subscription.id,
+  });
+
+ 
+  return UserDTOSchema.parse({
+    ...savedUser,
+    userSubscription,
+  });
+}
 
   async findUserById(userId: number): Promise<User | null> {
     return this.userRepo.findUserById(userId);
@@ -109,11 +125,16 @@ export class UserService {
     return this.userRepo.save(user);
   }
   async createUserSession(
-    createUserSession: Pick<
-      UserSession,
-      "accessToken" | "refreshToken" | "user"
-    >
+    createUserSession: {
+      accessToken: string;
+      refreshToken: string;
+      userId: number;
+    }
   ): Promise<UserSession> {
+    const user = await this.userRepo.findUserById(createUserSession.userId);
+    if (!user) {
+      throw new NotFoundResponseError("User not found");
+    }
     return await this.userSessionRepo.save(createUserSession);
   }
 
@@ -134,8 +155,20 @@ export class UserService {
     return sanitizedUser;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
-    return this.userRepo.findByEmail(email);
+  async findByEmail(email: string): Promise<UserDTO> {
+    const user = await this.userRepo.findByEmail(email);
+    if (!user) {
+      throw new NotFoundResponseError("User not found");
+    }
+    const userSubscription =
+      await this.userSubscriptionService.getActiveUserSubsription(user.id);
+    if (!userSubscription) {
+      throw new NotFoundResponseError("User subscription not found");
+    }
+    return UserDTOSchema.parse({
+      ...user,
+      userSubscription,
+    });
   }
 
   async handleUpdateTokens(
@@ -280,14 +313,25 @@ export class UserService {
   }
   async getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<PaginatedResponse<UserResponseDTO>> {
     const {items, total} = await this.userRepo.getPaginatedUsers(queryParams);
+    const usersWithSubscription = await Promise.all(items.map((user) => this.attatchUserSubscription(user)));
     const panigatedData =buildPaginatedResponse({
-        items,
+        items: usersWithSubscription,
         meta:{
             total,
             limit: queryParams.limit,
             offset: queryParams.offset
         }
     });
-    return PaginatedResponseSchema(UserResponseDTOSchema).parse(panigatedData);
+        return PaginatedResponseSchema(UserResponseDTOSchema).parse(panigatedData);
+}
+
+private async attatchUserSubscription(user: User): Promise<User & { userSubscription: UserSubscription }> {
+    const userSubscription =
+    await this.userSubscriptionService.getActiveUserSubsription(user.id);
+    if (!userSubscription) {
+      throw new NotFoundResponseError("User subscription not found");
+    }
+    user.userSubscription = userSubscription;
+    return user;
 }
 }
