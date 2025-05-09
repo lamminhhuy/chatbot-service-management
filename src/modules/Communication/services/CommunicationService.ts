@@ -13,7 +13,7 @@ class CommunicationService {
         from: `"${contact.name}" <${env.EMAIL_USER}>`,
         replyTo: contact.email,
         to: env.EMAIL_USER,
-        subject: `<h2 style="color: #333;">DƯƠNG MINH LOGISTIC</h2>`,
+        subject: `DƯƠNG MINH LOGISTIC`,
         text: `
           Tên: ${contact.name}
           Email: ${contact.email}
@@ -22,7 +22,7 @@ class CommunicationService {
         `,
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px;">
-            <h3 style="color: #333;">Thông báo từ khách hàng ${contact.name}</h3>
+            <h3 style="color: #333;">THÔNG BÁO TỪ KHÁCH HÀNG</h3>
             <p><strong>Tên:</strong> ${contact.name}</p>
             <p><strong>Email:</strong> ${contact.email}</p>
             <p><strong>Số điện thoại:</strong> ${contact.phone}</p>
