@@ -135,7 +135,12 @@ async createUser({
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
-    return await this.userSessionRepo.save(createUserSession);
+    const userSession = UserSession.create({
+      accessToken: createUserSession.accessToken,
+      refreshToken: createUserSession.refreshToken,
+      user,
+    });
+    return await this.userSessionRepo.save(userSession);
   }
 
   async getProfile(userId: number): Promise<UserResponseDTO> {

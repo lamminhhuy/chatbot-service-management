@@ -36,4 +36,8 @@ export class UserSession {
     
     @Column({ type: 'boolean', name: 'is_revoked', default: false })
     isRevoked: boolean;
+
+    static create(data: {accessToken: string, refreshToken: string, user: User} ): UserSession {
+        return this.create(data);
+    }
 }
