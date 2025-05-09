@@ -160,9 +160,22 @@ async createUser({
     return sanitizedUser;
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<UserDTO | null> {
     const user = await this.userRepo.findByEmail(email);
-    return user;
+  
+    if (!user) {
+      return null;
+    }
+  
+    const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(user.id);
+    
+    const parsed = UserDTOSchema.safeParse({ ...user, userSubscription });
+    
+    if (!parsed.success) {
+      return null;
+    }
+  
+    return parsed.data;
   }
 
   async handleUpdateTokens(

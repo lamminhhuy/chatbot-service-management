@@ -27,8 +27,6 @@ class CommunicationService {
             <p><strong>Email:</strong> ${contact.email}</p>
             <p><strong>Số điện thoại:</strong> ${contact.phone}</p>
             <p><strong>Tin nhắn:</strong> ${contact.message}</p>
-            <hr style="border-top: 1px solid #e0e0e0; margin: 20px 0;">
-            <p style="font-size: 12px; color: #777;">Đây là email tự động, vui lòng không trả lời.</p>
           </div>
         `,
       };

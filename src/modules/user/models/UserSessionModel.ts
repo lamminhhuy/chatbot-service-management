@@ -38,6 +38,10 @@ export class UserSession {
     isRevoked: boolean;
 
     static create(data: {accessToken: string, refreshToken: string, user: User} ): UserSession {
-        return this.create(data);
+        const userSession = new UserSession();
+        userSession.accessToken = data.accessToken;
+        userSession.refreshToken = data.refreshToken;
+        userSession.user = data.user;
+        return userSession;
     }
 }
