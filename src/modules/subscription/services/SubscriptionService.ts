@@ -79,6 +79,10 @@ class SubscriptionService {
     const subscription = await this.subscriptionRepository.findByCode(code);
     return subscription;
   }
+
+  async getAllActiveSubscription(): Promise<Subscription[]> {
+    return this.subscriptionRepository.getAllActiveSubscription();
+  }
 }
 
 export default SubscriptionService;

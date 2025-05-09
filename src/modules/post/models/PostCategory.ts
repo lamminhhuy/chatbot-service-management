@@ -38,7 +38,7 @@ export class PostCategory {
     static create(name: string, friendlySlug: string | null, parents: PostCategory[] | null): PostCategory {
         const postCategory = new PostCategory();
         postCategory.name = name;
-        postCategory.friendlySlug = friendlySlug || transformToSlug(name);
+        postCategory.friendlySlug = friendlySlug || transformToSlug(name).slug;
 
         postCategory.parent = parents && parents.length > 0 ? parents[parents.length - 1] : null;
 

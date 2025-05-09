@@ -6,4 +6,7 @@ export interface IPaymentRepository {
     findOneByCode(code: string): Promise<Payment | null>;
     getWeeklyRevenue(startDate: Date, endDate: Date): Promise<Array<RevenueAggrerateDTO>>;
     getMonthlyRevenue(startDate: Date, endDate: Date): Promise<Array<RevenueAggrerateDTO>>;
+    getMonthlyRevenueWithGrowth(): Promise<{currentMonth: number; previousMonth: number; growthRate: number;
+        total: number;
+    }>;
 }

@@ -61,6 +61,14 @@ class RevenueService {
     }
     throw new BadRequestResponseError('Invalid type');
   }
+  async getTotalRevenueWithGrowthFromLastMonth(): Promise<{
+    currentMonth: number;
+    previousMonth: number;
+    growthRate: number;
+    total: number;
+  }> {
+    return this.paymentRepository.getMonthlyRevenueWithGrowth();
+  }
 }
 
 export default RevenueService;

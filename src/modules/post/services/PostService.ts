@@ -190,6 +190,15 @@ class PostService {
       relatedPosts: relatedPostsWithMedia,
     });
   }
+
+  async getTotalPostWithMonthlyGrowth(): Promise<{
+    total: number;
+    currentMonth: number;
+    previousMonth: number;
+    growthRate: number;
+  }> {
+    return this.postRepo.getTotalPostWithMonthlyGrowth();
+  }
 }
 
 export default PostService;

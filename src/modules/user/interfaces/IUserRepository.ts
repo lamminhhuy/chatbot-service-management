@@ -13,5 +13,6 @@ export interface IUserRepository extends IGenericRepository<User> {
     findUsersByRoles(roleCodes:RoleCode[]): Promise<User[]>,
     getNewUsersFromLastMonthCount(includeDeleted?: boolean): Promise<number>,
     softDeleteUser(id: number): Promise<void>,
-    restoreUser(id: number): Promise<void>
+    restoreUser(id: number): Promise<void>,
+    getUserCountWithMonthlyGrowth(): Promise<{total: number; currentMonth: number; previousMonth: number; growthRate: number}>
 }

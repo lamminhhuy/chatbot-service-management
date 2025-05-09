@@ -109,7 +109,7 @@ export class User {
   }
   
   public assginRole(role: Role): User {
-    this.roles.push(role)
+    this.roles= [role]
     return this
   }
 

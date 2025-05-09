@@ -70,4 +70,47 @@ export class UserRepository extends Repository<User> implements IUserRepository 
   async restoreUser(id: number): Promise<void> {
     await this.restore({ id });
   }
+
+  async getUserCountWithMonthlyGrowth(): Promise<{
+    total: number;
+    currentMonth: number;
+    previousMonth: number;
+    growthRate: number;
+  }> {
+    const now = new Date();
+  
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  
+    const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const previousMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+  
+    const [total, currentMonth, previousMonth] = await Promise.all([
+      this.createQueryBuilder("user").getCount(),
+      this.createQueryBuilder("user")
+        .where("user.createdAt BETWEEN :start AND :end", {
+          start: currentMonthStart,
+          end: currentMonthEnd,
+        })
+        .getCount(),
+      this.createQueryBuilder("user")
+        .where("user.createdAt BETWEEN :start AND :end", {
+          start: previousMonthStart,
+          end: previousMonthEnd,
+        })
+        .getCount(),
+    ]);
+  
+    const growthRate =
+      previousMonth === 0
+        ? currentMonth > 0 ? 100 : 0
+        : ((currentMonth - previousMonth) / previousMonth) * 100;
+  
+    return {
+      total,
+      currentMonth,
+      previousMonth,
+      growthRate: parseFloat(growthRate.toFixed(2)),
+    };
+  }
 }

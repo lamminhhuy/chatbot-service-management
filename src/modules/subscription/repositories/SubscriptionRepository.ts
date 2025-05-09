@@ -25,6 +25,11 @@ class SubscriptionRepository extends Repository<Subscription> implements ISubscr
         const subscription = await this.findOneBy({code});
         return subscription;
     }
+    
+    async getAllActiveSubscription(): Promise<Subscription[]> {
+        const subscriptions = await this.find({where: {isActive: true}});
+        return subscriptions;
+    }
 }  
 
 export default SubscriptionRepository;

@@ -9,4 +9,5 @@ export interface IPostRepository {
     getPaginatedPosts: (queryParams: PostQueryParamsDTO) => Promise<{items: Post[], total: number}>;
     getRelatedPosts: (id: number) => Promise<Post[]>;
     findBySlug: (slug: string) => Promise<Post | null>;
+    getTotalPostWithMonthlyGrowth: () => Promise<{total: number; currentMonth: number; previousMonth: number; growthRate: number}>;
 }

@@ -267,4 +267,12 @@ export class UserService {
     }
     return this.userRepo.softDeleteUser(user.id);
   }
+  async getUserCountWithMonthlyGrowth(): Promise<{
+    total: number;
+    currentMonth: number;
+    previousMonth: number;
+    growthRate: number;
+  }> {
+    return this.userRepo.getUserCountWithMonthlyGrowth();
+  }
 }

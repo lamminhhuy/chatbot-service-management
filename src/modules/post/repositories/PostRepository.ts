@@ -105,6 +105,58 @@ class PostRepository extends Repository<Post> implements IPostRepository {
   async deletePost(post: Post): Promise<Post> {
     return this.remove(post);
   }
+  async getTotalPostWithMonthlyGrowth(): Promise<{
+    total: number;
+    currentMonth: number;
+    previousMonth: number;
+    growthRate: number;
+  }> {
+    const now = new Date();
+  
+    const currentMonthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+    const currentMonthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  
+    const previousMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const previousMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0, 23, 59, 59, 999);
+  
+    const [totalResult, currentResult, previousResult] = await Promise.all([
+      this.createQueryBuilder('post')
+        .select('COUNT(*)', 'count')
+        .getRawOne(),
+  
+      this.createQueryBuilder('post')
+        .select('COUNT(*)', 'count')
+        .where('post."createdAt" BETWEEN :start AND :end', {
+          start: currentMonthStart,
+          end: currentMonthEnd,
+        })
+        .getRawOne(),
+  
+      this.createQueryBuilder('post')
+        .select('COUNT(*)', 'count')
+        .where('post."createdAt" BETWEEN :start AND :end', {
+          start: previousMonthStart,
+          end: previousMonthEnd,
+        })
+        .getRawOne(),
+    ]);
+  
+    const total = Number(totalResult?.count ?? 0);
+    const currentMonth = Number(currentResult?.count ?? 0);
+    const previousMonth = Number(previousResult?.count ?? 0);
+  
+    const growthRate =
+      previousMonth === 0
+        ? currentMonth > 0 ? 100 : 0
+        : ((currentMonth - previousMonth) / previousMonth) * 100;
+  
+    return {
+      total,
+      currentMonth,
+      previousMonth,
+      growthRate: parseFloat(growthRate.toFixed(2)),
+    };
+  }
 }
 
 export default PostRepository;
