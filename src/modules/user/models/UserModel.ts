@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, JoinTable } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Index, OneToMany, ManyToMany, JoinTable, DeleteDateColumn } from 'typeorm';
 
 import { UserSession } from './UserSessionModel';
 import { Message } from '@/modules/conversation/models/Message';
@@ -117,6 +117,8 @@ export class User {
     this.roles = this.roles.filter(r => r.id !== role.id)
     return this
   }
+  @DeleteDateColumn()
+  deletedAt: Date | null;
   
   userSubscription: UserSubscription;
 }

@@ -67,7 +67,6 @@ async createUser({
   if (!basicUserRole) {
     throw new ErrorsResponse("Role Basic is not existed", 408);
   }
-  roles.push(basicUserRole);
 
   if (roleId) {
     const role = await this.roleService.findRolebyId(roleId);
@@ -75,6 +74,8 @@ async createUser({
       throw new NotFoundResponseError("Role not found");
     }
     roles.push(role);
+  }else {
+    roles.push(basicUserRole);
   }
 
   const user = await UserFactory.create({
