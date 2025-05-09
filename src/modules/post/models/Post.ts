@@ -34,7 +34,7 @@ export class Post {
     public updateTitle(title: string): void {
         this.title = title;
         this.slug =  transformToSlug(title,this.category.fullSlug).slug;
-        this.categoryPath = transformToSlug(title,this.category.fullSlug).spacedString || '';
+        this.categoryPath = this.category.fullSlug;
     }
     static create (title: string, content: string,shortDescription:string, category: PostCategory) {
         const post = new Post();
@@ -43,7 +43,7 @@ export class Post {
         post.category = category;
         post.shortDescription = shortDescription;
         post.slug =  transformToSlug(title,category.fullSlug).slug;
-        post.categoryPath = transformToSlug(title,category.fullSlug).spacedString || '';
+        post.categoryPath = category.fullSlug;
         return post;
     }
     @Column({type: 'varchar', nullable: true,name: 'category_path'})

@@ -43,10 +43,10 @@ export class PostCategory {
         postCategory.parent = parents && parents.length > 0 ? parents[parents.length - 1] : null;
 
         if (parents && parents.length > 0) {
-            const parentSlugs = parents.map(parent => parent.friendlySlug).join('/');
-            postCategory.fullSlug = `${parentSlugs}/${postCategory.friendlySlug}`;
+            const parentSlugs = parents.map(parent => parent.name).join('/');
+            postCategory.fullSlug = `${parentSlugs}/${postCategory.name}`;
         } else {
-            postCategory.fullSlug = postCategory.friendlySlug;
+            postCategory.fullSlug = postCategory.name;
         }
 
         return postCategory;
