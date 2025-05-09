@@ -13,15 +13,16 @@ class CommunicationService {
         from: `"${contact.name}" <${env.EMAIL_USER}>`,
         replyTo: contact.email,
         to: env.EMAIL_USER,
-        subject: `Dương minh logistic có thông báo từ khách hàng ${contact.name}`,
+        subject: `<h2 style="color: #333;">DƯƠNG MINH LOGISTIC</h2>`,
         text: `
           Tên: ${contact.name}
           Email: ${contact.email}
+          Số điện thoại: ${contact.phone}
           Tin nhắn: ${contact.message}
         `,
         html: `
           <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: auto; border: 1px solid #e0e0e0; border-radius: 8px;">
-            <h2 style="color: #333;">Dương minh logistic có thông báo từ khách hàng ${contact.name}</h2>
+            <h3 style="color: #333;">Thông báo từ khách hàng ${contact.name}</h3>
             <p><strong>Tên:</strong> ${contact.name}</p>
             <p><strong>Email:</strong> ${contact.email}</p>
             <p><strong>Số điện thoại:</strong> ${contact.phone}</p>
