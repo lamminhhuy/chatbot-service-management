@@ -35,7 +35,7 @@ export class User {
   @Column({ type: 'varchar', length: 50, unique: false})
   username: string; 
 
-  @Column({ type: 'varchar', length: 15, unique: true, nullable: true, name:'phone_number' })
+  @Column({ type: 'varchar', length: 15, unique: false, nullable: true, name:'phone_number' })
   phoneNumber: string| null; 
 
   @Column({ type: 'varchar', length: 255 })
@@ -119,6 +119,6 @@ export class User {
   }
   @DeleteDateColumn()
   deletedAt: Date | null;
-  
+
   userSubscription: UserSubscription;
 }
