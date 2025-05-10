@@ -15,24 +15,24 @@ export class ConversationRepository extends Repository<Conversation> implements 
     async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<{ items: Conversation[], total: number }> {
         const { limit, offset, search, sort } = queryParams;
         const queryBuilder = this.createQueryBuilder('conversation');
-        
+    
         if (search) {
             queryBuilder.andWhere('conversation.title ILIKE :search', { search: `%${search}%` });
         }
-        
+    
         if (sort) {
             queryBuilder.orderBy('conversation.createdAt', sort as 'ASC' | 'DESC');
         }
-        
+    
         queryBuilder
-            .leftJoinAndSelect('conversation.users', 'user', 'user.deletedAt IS NULL') // Exclude soft-deleted users
-            .leftJoinAndSelect('conversation.messages', 'message')
-            .leftJoinAndSelect('message.sender', 'sender', 'sender.deletedAt IS NULL') // Exclude soft-deleted senders
+            .leftJoinAndSelect('conversation.users', 'user', 'user.deletedAt IS NULL')
+            .innerJoinAndSelect('conversation.messages', 'message') 
+            .innerJoinAndSelect('message.sender', 'sender', 'sender.deletedAt IS NULL') 
             .skip(offset)
             .take(limit);
-
+    
         const [items, total] = await queryBuilder.getManyAndCount();
-        
+    
         return { items, total };
     }
 }
