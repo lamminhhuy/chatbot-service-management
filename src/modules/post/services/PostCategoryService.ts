@@ -4,6 +4,7 @@ import { IPostCategoryRepository } from "../interfaces/IPostCategoryRepository";
 import { PostCategory } from "../models/PostCategory";
 import { BadRequestResponseError } from "@/shared/response/errors.response";
 import { UpdatePostCategoryDTOType } from "../dtos/UpdatePostCategory.dto";
+import { transformToSlug } from "../utils/transformToSlug";
 
 @injectable()
 class PostCategoryService {
@@ -70,8 +71,8 @@ class PostCategoryService {
       postCategory.parentId = parent.id;
     }
     postCategory.name = input.name;
-    postCategory.friendlySlug = input.friendlySlug;
-    postCategory.updateSlug(input.friendlySlug,parentCategories);
+    postCategory.friendlySlug = input.friendlySlug || transformToSlug(input.name).slug;
+    postCategory.updateSlug(postCategory.friendlySlug,parentCategories);
     return this.postCategoryRepo.save(postCategory);
   }
 
