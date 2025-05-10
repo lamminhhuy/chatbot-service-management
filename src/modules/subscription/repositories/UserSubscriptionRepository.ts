@@ -12,13 +12,13 @@ class UserSubscriptionRepository extends Repository<UserSubscription> implements
     constructor() {
         super(UserSubscription, AppDataSource.manager);
     }
+
     async createUserSubscription(userSubscription: UserSubscription): Promise<UserSubscription> {
-       
-        await this.createQueryBuilder("userSubscription")
+        await this.createQueryBuilder()
             .update(UserSubscription)
             .set({ status: SubscriptionStatus.CANCELLED })
-            .where("userSubscription.userId = :userId", { userId: userSubscription.userId })
-            .andWhere("userSubscription.status = :status", { status: SubscriptionStatus.ACTIVE })
+            .where("user_subscriptions.user_id = :userId", { userId: userSubscription.userId })
+            .andWhere("user_subscriptions.status = :status", { status: SubscriptionStatus.ACTIVE })
             .execute();
 
         return await this.save(userSubscription);
@@ -33,9 +33,9 @@ class UserSubscriptionRepository extends Repository<UserSubscription> implements
     }
 
     async hasActiveUsersForSubscription(subscriptionId: number): Promise<boolean> {
-      const count = await this.count({ where: { subscription: { id: subscriptionId }, status: SubscriptionStatus.ACTIVE, user: { deletedAt: IsNull() } } });
-      return count > 0;
-  }
+        const count = await this.count({ where: { subscription: { id: subscriptionId }, status: SubscriptionStatus.ACTIVE, user: { deletedAt: IsNull() } } });
+        return count > 0;
+    }
 
     async getTotalUserSubscriptionWithGrowthFromLastMonth(): Promise<{
         total: number;
