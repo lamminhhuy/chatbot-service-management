@@ -50,7 +50,7 @@ export class UserSubscription {
   @Column({ name: "deleted_at", type: "timestamptz", nullable: true })
   deletedAt?: Date;
 
-  @ManyToOne(() => User,{ onDelete: "RESTRICT", cascade: true })
+  @ManyToOne(() => User,{ onDelete: "CASCADE", cascade: true })
   @JoinColumn({ name: "user_id", referencedColumnName: "id" })
   user: User;
 

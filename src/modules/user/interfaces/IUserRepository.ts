@@ -16,5 +16,7 @@ export interface IUserRepository extends IGenericRepository<User> {
     softDeleteUser(id: number): Promise<void>,
     restoreUser(id: number): Promise<void>,
     getUserCountWithMonthlyGrowth(): Promise<{total: number; currentMonth: number; previousMonth: number; growthRate: number}>,
-    getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<{items: User[], total: number}>
+    getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<{items: User[], total: number}>,
+    saveOrReplaceSoftDeletedUser(newUser: User): Promise<User>,
+    restoreAndUpdateSoftDeletedUser(data: User): Promise<User>
 }

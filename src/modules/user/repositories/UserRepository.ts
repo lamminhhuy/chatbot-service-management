@@ -130,4 +130,36 @@ async findAll(): Promise<User[]> {
         .where("user.email != :email", { email: "chatbot@gmail.com" })
         .getMany();
 }
+
+async saveOrReplaceSoftDeletedUser(newUser: User): Promise<User> {
+  const existingSoftDeleted = await this.createQueryBuilder("user")
+    .withDeleted()
+    .where("user.email = :email", { email: newUser.email })
+    .andWhere("user.deletedAt IS NOT NULL")
+    .getOne();
+
+  if (existingSoftDeleted) {
+    await this.remove(existingSoftDeleted);
+  }
+
+  const created = this.create(newUser);
+  return await this.save(created);
+}
+
+async restoreAndUpdateSoftDeletedUser(data: User): Promise<User> {
+  const existingSoftDeleted = await this.createQueryBuilder("user")
+    .withDeleted()
+    .where("user.email = :email", { email: data.email })
+    .andWhere("user.deletedAt IS NOT NULL")
+    .getOne();
+
+  if (existingSoftDeleted) {
+    await this.restore(existingSoftDeleted.id);
+    Object.assign(existingSoftDeleted, data);
+    return await this.save(existingSoftDeleted);
+  }
+  const newUser = this.create(data);
+  return await this.save(newUser);
+}
+ 
 }

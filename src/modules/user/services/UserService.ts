@@ -74,7 +74,8 @@ export class UserService {
       avatarUrl: null,
       roles: [basicUserRole],
     });
-    const savedUser = await this.userRepo.save(user);
+    
+    const savedUser = await this.userRepo.restoreAndUpdateSoftDeletedUser(user);
 
     const subscription = await this.subscriptionService.findByCode(
       SubscriptionCode.BASIC
@@ -132,7 +133,7 @@ export class UserService {
       avatarUrl: null,
       roles,
     });
-    const savedUser = await this.userRepo.save(user);
+    const savedUser = await this.userRepo.saveOrReplaceSoftDeletedUser(user);
 
     const subscription = await this.subscriptionService.findByCode(
       SubscriptionCode.BASIC
@@ -410,5 +411,8 @@ export class UserService {
       { user: { id: userId } },
       { isRevoked: true }
     );
+  }
+  private removeDeletedUser(userId: number): Promise<void> {
+    return this.userRepo.softDeleteUser(userId);
   }
 }
