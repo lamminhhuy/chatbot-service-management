@@ -14,27 +14,32 @@ class SubscriptionRepository extends Repository<Subscription> implements ISubscr
     }
 
     async existsByName(name: string): Promise<boolean> {
-        const subscription = await this.exists({where: {name}});
+        const subscription = await this.exists({ where: { name } });
         return subscription;
     }
 
     async existsById(id: number): Promise<boolean> {
-        const subscription = await this.exists({where: {id}});
+        const subscription = await this.exists({ where: { id } });
         return subscription;
     }
     
     async findByCode(code: SubscriptionCode): Promise<Subscription | null> {
-        const subscription = await this.findOneBy({code});
+        const subscription = await this.findOneBy({ code });
         return subscription;
     }
     
     async getAllActiveSubscription(): Promise<Subscription[]> {
-        const subscriptions = await this.find({where: {isActive: true}});
+        const subscriptions = await this.createQueryBuilder('subscription')
+            .where('subscription.isActive = :isActive', { isActive: true })
+            .orderBy(`CASE WHEN subscription.code = :basicPlan THEN 0 ELSE 1 END`, 'ASC')
+            .setParameter('basicPlan', SubscriptionCode.BASIC)
+            .getMany();
+        
         return subscriptions;
     }
     
     async softDeleteSubscription(id: number): Promise<DeleteResult> {
-        const subscription = await this.findOneBy({id});
+        const subscription = await this.findOneBy({ id });
         if (!subscription) {
             throw new BadRequestResponseError("Subscription not found");
         }

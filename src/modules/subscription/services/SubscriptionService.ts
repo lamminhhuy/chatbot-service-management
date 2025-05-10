@@ -65,7 +65,7 @@ class SubscriptionService {
   }
 
   async findAll() {
-    return this.subscriptionRepository.find();
+    return this.subscriptionRepository.getAllActiveSubscription();
   }
 
   async findById(id: number) {
