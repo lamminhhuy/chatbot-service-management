@@ -9,6 +9,8 @@ import {
 } from "@/shared/response/errors.response";
 import { UpdateSubscriptionDTO } from "../dtos/UpdateSubscription.dto";
 import { SubscriptionCode } from "../enums/SubscriptionCode";
+import UserSubscriptionRepository from "../repositories/UserSubscriptionRepository";
+import { IUserSubscriptionRepository } from "../interfaces/IUserSubscriptionRepository";
 
 @injectable()
 class SubscriptionService {
@@ -16,16 +18,12 @@ class SubscriptionService {
     @inject("ISubscriptionRepository")
     private subscriptionRepository: ISubscriptionRepository,
     @inject(SubscriptionFactory)
-    private subscriptionFactory: SubscriptionFactory
+    private subscriptionFactory: SubscriptionFactory,
+    @inject('IUserSubscriptionRepository')
+    private userSubscriptionRepository: IUserSubscriptionRepository
   ) {}
 
   async create(payload: CreateSubscriptionDTO) {
-    const existingSubscription = await this.subscriptionRepository.existsByName(
-      payload.name
-    );
-    if (existingSubscription) {
-      throw new BadRequestResponseError("Subscription already exists");
-    }
     const subscription = await this.subscriptionFactory.create(payload);
     return this.subscriptionRepository.save(subscription);
   }
@@ -59,7 +57,10 @@ class SubscriptionService {
     if (existingById.code === SubscriptionCode.BASIC) {
       throw new BadRequestResponseError("Basic subscription cannot be deleted");
     }
-
+    
+    if(await this.userSubscriptionRepository.hasActiveUsersForSubscription(id)){
+      throw new BadRequestResponseError("The Subscription has active users");
+    }
     return this.subscriptionRepository.softDeleteSubscription(id);
   }
 
@@ -83,7 +84,7 @@ class SubscriptionService {
   async getAllActiveSubscription(): Promise<Subscription[]> {
     return this.subscriptionRepository.getAllActiveSubscription();
   }
-
+  
 }
 
 

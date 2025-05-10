@@ -44,6 +44,9 @@ class UserSubscriptionService {
   async getTotalUserSubscriptionWithGrowthFromLastMonth(): Promise<{total: number, currentMonth: number, previousMonth: number, growthRate: number}> {
     return this.userSubscriptionRepository.getTotalUserSubscriptionWithGrowthFromLastMonth();
   }
+  async hasActiveUsersForSubscription(subscriptionId: number): Promise<boolean> {
+    return this.userSubscriptionRepository.hasActiveUsersForSubscription(subscriptionId);
+  }
 }
 
 export default UserSubscriptionService;
