@@ -280,8 +280,10 @@ async createUser({
     }
   }
 
-  async getAll(): Promise<User[]> {
-    return this.userRepo.findAll();
+  async getAll(): Promise<UserDTO[]> {
+    const users = await this.userRepo.findAll();
+    const usersWithSubscription = await Promise.all(users.map((user) => this.attatchUserSubscription(user)));
+    return usersWithSubscription.map((user) => UserDTOSchema.parse(user));
   }
   async updateUser(userId: number, input: UpdateUserDTO) {
     const user = await this.userRepo.findUserById(userId);

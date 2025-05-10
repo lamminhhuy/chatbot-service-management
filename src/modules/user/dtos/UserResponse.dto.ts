@@ -19,10 +19,8 @@ export const UserResponseDTOSchema = z.object({
     subscription: SubscriptionResponseDTOSchema
   })
 })
-export const UserResponseDTOSchemaWithoutSubscription = UserResponseDTOSchema.omit({
-  userSubscription: true
-})
 
-export const UserResponseDTOSchemaArray = z.array(UserResponseDTOSchemaWithoutSubscription)
+
+export const UserResponseDTOSchemaArray = z.array(UserResponseDTOSchema)
 
 export type UserResponseDTO = z.infer<typeof UserResponseDTOSchema>

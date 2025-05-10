@@ -136,6 +136,6 @@ export class ConversationService {
                 offset: queryParams.offset
             }
         });
-        return panigatedData;
+        return PaginatedResponseSchema(ConversationReponseDTOSchema).parse(panigatedData);
     }
 }

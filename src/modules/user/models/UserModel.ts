@@ -29,7 +29,7 @@ export class User {
   @PrimaryGeneratedColumn('increment')
   id: number;
 
-  @Column({ type: 'varchar', length: 255, unique: true})
+  @Column({ type: 'varchar', length: 255, unique: false})
   email: string;
 
   @Column({ type: 'varchar', length: 50, unique: false})

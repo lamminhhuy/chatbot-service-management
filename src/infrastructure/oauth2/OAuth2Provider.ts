@@ -1,3 +1,4 @@
+import { env } from "@/configs/envConfig";
 import { IOAuth2Provider } from "@/modules/auth/interfaces/IOAuth2Provider";
 import { OAuth2Client } from "google-auth-library";
 import { injectable } from "tsyringe";
@@ -11,7 +12,7 @@ export class OAuth2Provider implements IOAuth2Provider {
     verifyIdToken(token: string): Promise<any> {
         return this.client.verifyIdToken({
             idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID
+            audience: env.GOOGLE_CLIENT_ID
         });
     }
 }
