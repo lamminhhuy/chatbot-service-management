@@ -50,6 +50,44 @@ export class UserService {
     this.roleService = roleService;
     this.userSessionRepo = userSessionRepo;
   }
+ 
+  async createUserThroughGoogleLogin({
+    password,
+    email,
+    username,
+    phoneNumber,
+  }: CreateUserDTO): Promise<UserDTO> {
+    
+    const basicUserRole = await this.roleService.findRoleByCode(RoleCode.BASIC_USER);
+    if (!basicUserRole) {
+      throw new ErrorsResponse("Role Basic is not existed", 408);
+    }
+    const user = await UserFactory.create({
+      password,
+      email,
+      username,
+      phoneNumber,
+      avatarUrl: null,
+      roles:[basicUserRole],
+    });
+    const savedUser = await this.userRepo.save(user);
+  
+    const subscription = await this.subscriptionService.findByCode(SubscriptionCode.BASIC);
+    if (!subscription) {
+      throw new ErrorsResponse("Basic subscription is not existed", 408);
+    }
+  
+    const userSubscription = await this.userSubscriptionService.create({
+      userId: user.id,
+      subscriptionId: subscription.id,
+    });
+  
+    return UserDTOSchema.parse({
+      ...savedUser,
+      userSubscription,
+    });
+  }
+
 async createUser({
   password,
   email,

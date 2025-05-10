@@ -166,7 +166,7 @@ export class AuthService   {
     let user = await this.userService.findByEmail(payload.email);
 
     if (!user) {
-     user = await this.userService.createUser({
+     user = await this.userService.createUserThroughGoogleLogin({
       email: payload.email,
       username: payload.given_name,
       password: payload.sub,
