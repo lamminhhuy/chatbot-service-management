@@ -96,6 +96,8 @@ export class RoleService {
   async deleteRole(roleId: number): Promise<void> {
     const role = await this.findRolebyId(roleId);
     if (!role) throw new BadRequestResponseError("Role not found");
+    if(role.code  === RoleCode.ASSISTANT) throw new BadRequestResponseError("Role Assistant cannot be deleted");
+    if(role.code  === RoleCode.BASIC_USER) throw new BadRequestResponseError("Role Basic User cannot be deleted");
     await this.roleRepository.delete(roleId);
   }
 }
