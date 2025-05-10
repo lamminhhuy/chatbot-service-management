@@ -144,3 +144,4 @@
 {"duration":1591,"level":"error","message":"Server error","method":"GET","requestId":"56d5c022-1e25-4cb5-9fa2-572033a194c3","service":"api-service","status":500,"timestamp":"2025-05-10 15:39:34","url":"/api/v1/conversations/paginated"}
 {"duration":8602,"level":"error","message":"Server error","method":"GET","requestId":"b77c6647-e56e-4a61-9185-cdd4ca29de41","service":"api-service","status":500,"timestamp":"2025-05-10 15:42:24","url":"/api/v1/conversations/paginated"}
 {"duration":705,"level":"error","message":"Server error","method":"GET","requestId":"c85e893c-f709-4c4d-bc0c-de35e334e26a","service":"api-service","status":500,"timestamp":"2025-05-10 15:55:55","url":"/api/v1/conversations/paginated"}
+{"duration":7727,"level":"error","message":"Server error","method":"POST","requestId":"28edf2e8-8b76-4848-a428-41bb94afda68","service":"api-service","status":500,"timestamp":"2025-05-10 16:32:42","url":"/api/v1/auth/login/google"}

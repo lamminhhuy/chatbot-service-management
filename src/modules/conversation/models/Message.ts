@@ -21,7 +21,7 @@ export class Message {
     })
     role: ChatRole;
 
-    @ManyToOne(() => User, (user) => user.messages, { nullable: true })
+    @ManyToOne(() => User, (user) => user.messages, { nullable: true,eager:true })
     @JoinColumn({
         name: 'sender_id',
         referencedColumnName: 'id',

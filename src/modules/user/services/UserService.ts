@@ -23,7 +23,10 @@ import {
   UserResponseDTOSchema,
 } from "../dtos/UserResponse.dto";
 import { RoleService } from "@/modules/authorization/services/RoleService";
-import { PaginatedResponse, PaginatedResponseSchema } from "@/shared/dtos/PaginatedResponse.dto";
+import {
+  PaginatedResponse,
+  PaginatedResponseSchema,
+} from "@/shared/dtos/PaginatedResponse.dto";
 import { UserQueryParamsDTO } from "../dtos/UserQueryParamss.dto";
 import { buildPaginatedResponse } from "@/shared/utils/buildPaginatedResponse";
 import { UserSubscription } from "@/modules/subscription/models/UserSubscription";
@@ -50,15 +53,16 @@ export class UserService {
     this.roleService = roleService;
     this.userSessionRepo = userSessionRepo;
   }
- 
+
   async createUserThroughGoogleLogin({
     password,
     email,
     username,
     phoneNumber,
   }: CreateUserDTO): Promise<UserDTO> {
-    
-    const basicUserRole = await this.roleService.findRoleByCode(RoleCode.BASIC_USER);
+    const basicUserRole = await this.roleService.findRoleByCode(
+      RoleCode.BASIC_USER
+    );
     if (!basicUserRole) {
       throw new ErrorsResponse("Role Basic is not existed", 408);
     }
@@ -68,80 +72,85 @@ export class UserService {
       username,
       phoneNumber,
       avatarUrl: null,
-      roles:[basicUserRole],
+      roles: [basicUserRole],
     });
     const savedUser = await this.userRepo.save(user);
-  
-    const subscription = await this.subscriptionService.findByCode(SubscriptionCode.BASIC);
+
+    const subscription = await this.subscriptionService.findByCode(
+      SubscriptionCode.BASIC
+    );
     if (!subscription) {
       throw new ErrorsResponse("Basic subscription is not existed", 408);
     }
-  
+
     const userSubscription = await this.userSubscriptionService.create({
       userId: user.id,
       subscriptionId: subscription.id,
     });
-  
+
     return UserDTOSchema.parse({
       ...savedUser,
       userSubscription,
     });
   }
 
-async createUser({
-  password,
-  email,
-  username,
-  phoneNumber,
-  roleId,
-}: CreateUserDTO): Promise<UserDTO> {
-  await this.isExistedEmail(email);
-  if (phoneNumber) {
-    await this.isExistedPhoneNumber(phoneNumber);
-  }
-
-  const roles = [];
-  const basicUserRole = await this.roleService.findRoleByCode(RoleCode.BASIC_USER);
-  if (!basicUserRole) {
-    throw new ErrorsResponse("Role Basic is not existed", 408);
-  }
-
-  if (roleId) {
-    const role = await this.roleService.findRolebyId(roleId);
-    if (!role) {
-      throw new NotFoundResponseError("Role not found");
-    }
-    roles.push(role);
-  }else {
-    roles.push(basicUserRole);
-  }
-
-  const user = await UserFactory.create({
+  async createUser({
     password,
     email,
     username,
     phoneNumber,
-    avatarUrl: null,
-    roles,
-  });
-  const savedUser = await this.userRepo.save(user);
+    roleId,
+  }: CreateUserDTO): Promise<UserDTO> {
+    await this.isExistedEmail(email);
+    if (phoneNumber) {
+      await this.isExistedPhoneNumber(phoneNumber);
+    }
 
-  const subscription = await this.subscriptionService.findByCode(SubscriptionCode.BASIC);
-  if (!subscription) {
-    throw new ErrorsResponse("Basic subscription is not existed", 408);
+    const roles = [];
+    const basicUserRole = await this.roleService.findRoleByCode(
+      RoleCode.BASIC_USER
+    );
+    if (!basicUserRole) {
+      throw new ErrorsResponse("Role Basic is not existed", 408);
+    }
+
+    if (roleId) {
+      const role = await this.roleService.findRolebyId(roleId);
+      if (!role) {
+        throw new NotFoundResponseError("Role not found");
+      }
+      roles.push(role);
+    } else {
+      roles.push(basicUserRole);
+    }
+
+    const user = await UserFactory.create({
+      password,
+      email,
+      username,
+      phoneNumber,
+      avatarUrl: null,
+      roles,
+    });
+    const savedUser = await this.userRepo.save(user);
+
+    const subscription = await this.subscriptionService.findByCode(
+      SubscriptionCode.BASIC
+    );
+    if (!subscription) {
+      throw new ErrorsResponse("Basic subscription is not existed", 408);
+    }
+
+    const userSubscription = await this.userSubscriptionService.create({
+      userId: user.id,
+      subscriptionId: subscription.id,
+    });
+
+    return UserDTOSchema.parse({
+      ...savedUser,
+      userSubscription,
+    });
   }
-
-  const userSubscription = await this.userSubscriptionService.create({
-    userId: user.id,
-    subscriptionId: subscription.id,
-  });
-
- 
-  return UserDTOSchema.parse({
-    ...savedUser,
-    userSubscription,
-  });
-}
 
   async findUserById(userId: number): Promise<User | null> {
     return this.userRepo.findUserById(userId);
@@ -163,13 +172,11 @@ async createUser({
     Object.assign(user, input);
     return this.userRepo.save(user);
   }
-  async createUserSession(
-    createUserSession: {
-      accessToken: string;
-      refreshToken: string;
-      userId: number;
-    }
-  ): Promise<UserSession> {
+  async createUserSession(createUserSession: {
+    accessToken: string;
+    refreshToken: string;
+    userId: number;
+  }): Promise<UserSession> {
     const user = await this.userRepo.findUserById(createUserSession.userId);
     if (!user) {
       throw new NotFoundResponseError("User not found");
@@ -201,19 +208,20 @@ async createUser({
 
   async findByEmail(email: string): Promise<UserDTO | null> {
     const user = await this.userRepo.findByEmail(email);
-  
+
     if (!user) {
       return null;
     }
-  
-    const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(user.id);
-    
+
+    const userSubscription =
+      await this.userSubscriptionService.getActiveUserSubsription(user.id);
+
     const parsed = UserDTOSchema.safeParse({ ...user, userSubscription });
-    
+
     if (!parsed.success) {
       return null;
     }
-  
+
     return parsed.data;
   }
 
@@ -320,7 +328,9 @@ async createUser({
 
   async getAll(): Promise<UserDTO[]> {
     const users = await this.userRepo.findAll();
-    const usersWithSubscription = await Promise.all(users.map((user) => this.attatchUserSubscription(user)));
+    const usersWithSubscription = await Promise.all(
+      users.map((user) => this.attatchUserSubscription(user))
+    );
     return usersWithSubscription.map((user) => UserDTOSchema.parse(user));
   }
   async updateUser(userId: number, input: UpdateUserDTO) {
@@ -342,6 +352,11 @@ async createUser({
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
+   
+    const isChatbot = user.roles.every(r => r.code === RoleCode.ASSISTANT);
+    if (isChatbot) {
+      throw new BadRequestResponseError("You can not delete chatbot");
+    }
     const isAdminUser = user.roles.some((r) => r.code === RoleCode.ADMIN);
     if (isAdminUser) {
       const adminUsers = await this.userRepo.findUsersByRoles([RoleCode.ADMIN]);
@@ -349,6 +364,7 @@ async createUser({
         throw new BadRequestResponseError("At least one admin user must exist");
       }
     }
+
     await this.revokeUserTokens(user.id);
     return this.userRepo.softDeleteUser(user.id);
   }
@@ -360,30 +376,39 @@ async createUser({
   }> {
     return this.userRepo.getUserCountWithMonthlyGrowth();
   }
-  async getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<PaginatedResponse<UserResponseDTO>> {
-    const {items, total} = await this.userRepo.getPaginatedUsers(queryParams);
-    const usersWithSubscription = await Promise.all(items.map((user) => this.attatchUserSubscription(user)));
-    const panigatedData =buildPaginatedResponse({
-        items: usersWithSubscription,
-        meta:{
-            total,
-            limit: queryParams.limit,
-            offset: queryParams.offset
-        }
+  async getPaginatedUsers(
+    queryParams: UserQueryParamsDTO
+  ): Promise<PaginatedResponse<UserResponseDTO>> {
+    const { items, total } = await this.userRepo.getPaginatedUsers(queryParams);
+    const usersWithSubscription = await Promise.all(
+      items.map((user) => this.attatchUserSubscription(user))
+    );
+    const panigatedData = buildPaginatedResponse({
+      items: usersWithSubscription,
+      meta: {
+        total,
+        limit: queryParams.limit,
+        offset: queryParams.offset,
+      },
     });
-        return PaginatedResponseSchema(UserResponseDTOSchema).parse(panigatedData);
-}
+    return PaginatedResponseSchema(UserResponseDTOSchema).parse(panigatedData);
+  }
 
-private async attatchUserSubscription(user: User): Promise<User & { userSubscription: UserSubscription }> {
+  private async attatchUserSubscription(
+    user: User
+  ): Promise<User & { userSubscription: UserSubscription }> {
     const userSubscription =
-    await this.userSubscriptionService.getActiveUserSubsription(user.id);
+      await this.userSubscriptionService.getActiveUserSubsription(user.id);
     if (!userSubscription) {
       throw new NotFoundResponseError("User subscription not found");
     }
     user.userSubscription = userSubscription;
     return user;
-}
+  }
   private async revokeUserTokens(userId: number): Promise<UpdateResult> {
-    return this.userSessionRepo.update({user: {id: userId}}, {isRevoked: true});
+    return this.userSessionRepo.update(
+      { user: { id: userId } },
+      { isRevoked: true }
+    );
   }
 }
