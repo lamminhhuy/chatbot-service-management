@@ -10,6 +10,7 @@ import { LoginResDTOSchema } from '../dtos/LoginResponse.dto';
 import { RegisterResponseDTOSchema } from '../dtos/RegisterReponse.dto';
 import { RequestResetPasswordDTO, VerifyResetPasswordDTO } from '../dtos/ResetPassword.dto';
 import { LoginGoogleDTO } from '../dtos/LoginGoogle.dto';
+import { BadRequestResponseError } from '@/shared/response/errors.response';
 
 const getRefreshTokenCookieName = (origin: string | undefined): string => {
   if (!origin) {
@@ -63,7 +64,7 @@ export class AuthController {
     const cookieName = getRefreshTokenCookieName(req.get('origin'));
     const refreshToken = req.cookies[cookieName];
     if (!refreshToken) {
-      throw new Error('Refresh token not found');
+      throw new BadRequestResponseError('Refresh token not found');
     }
     const { accessToken, refreshToken: newRefreshToken } = await this.authService.handleRefreshToken(refreshToken);
     res.cookie(cookieName, newRefreshToken, getCookieOptions(env.REFRESH_TOKEN_MAX_AGE));
