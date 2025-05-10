@@ -12,6 +12,7 @@ export const SubscriptionResponseDTOSchema = z.object({
     description: z.string(),
     metadata: z.record(z.string(), z.any()).nullable(),
     queryTokenLimit: z.number().nullable(),
+    canChatWithAgent: z.boolean(),
     createdAt: z.date(),
     updatedAt: z.date(),
     deletedAt: z.date().nullable(),
