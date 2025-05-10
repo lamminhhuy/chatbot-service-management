@@ -97,7 +97,6 @@ export class Subscription {
       this.queryTokenLimit = dto.queryTokenLimit;
       this.canChatWithAgent = dto.canChatWithAgent;
     }
-    
 
   }
   

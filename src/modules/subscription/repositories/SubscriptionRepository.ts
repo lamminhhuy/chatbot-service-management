@@ -4,6 +4,8 @@ import { injectable } from "tsyringe";
 import { AppDataSource } from "@/database/PostgresDB";
 import { ISubscriptionRepository } from "../interfaces/ISubscriptionRepository";
 import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
+import { BadRequestResponseError } from "@/shared/response/errors.response";
+import { DeleteResult } from "typeorm";
 
 @injectable()
 class SubscriptionRepository extends Repository<Subscription> implements ISubscriptionRepository {
@@ -29,6 +31,14 @@ class SubscriptionRepository extends Repository<Subscription> implements ISubscr
     async getAllActiveSubscription(): Promise<Subscription[]> {
         const subscriptions = await this.find({where: {isActive: true}});
         return subscriptions;
+    }
+    
+    async softDeleteSubscription(id: number): Promise<DeleteResult> {
+        const subscription = await this.findOneBy({id});
+        if (!subscription) {
+            throw new BadRequestResponseError("Subscription not found");
+        }
+        return this.softDelete(id);
     }
 }  
 

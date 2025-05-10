@@ -60,7 +60,7 @@ class SubscriptionService {
       throw new BadRequestResponseError("Basic subscription cannot be deleted");
     }
 
-    return this.subscriptionRepository.delete(id);
+    return this.subscriptionRepository.softDeleteSubscription(id);
   }
 
   async findAll() {
@@ -83,6 +83,8 @@ class SubscriptionService {
   async getAllActiveSubscription(): Promise<Subscription[]> {
     return this.subscriptionRepository.getAllActiveSubscription();
   }
+
 }
+
 
 export default SubscriptionService;
