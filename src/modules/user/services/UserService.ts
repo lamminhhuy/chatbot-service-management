@@ -33,6 +33,7 @@ import { UserSubscription } from "@/modules/subscription/models/UserSubscription
 import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
 import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
 import { UserDTO, UserDTOSchema } from "../dtos/User.dto";
+import { Transactional } from "typeorm-transactional";
 
 @injectable()
 export class UserService {
@@ -53,7 +54,7 @@ export class UserService {
     this.roleService = roleService;
     this.userSessionRepo = userSessionRepo;
   }
-
+ @Transactional()
   async createUserThroughGoogleLogin({
     password,
     email,
@@ -94,7 +95,7 @@ export class UserService {
       userSubscription,
     });
   }
-
+  @Transactional()
   async createUser({
     password,
     email,

@@ -12,12 +12,15 @@ class UserSubscriptionRepository extends Repository<UserSubscription> implements
     constructor() {
         super(UserSubscription, AppDataSource.manager);
     }
-
     async createUserSubscription(userSubscription: UserSubscription): Promise<UserSubscription> {
-        await this.update(
-            { user: { id: userSubscription.userId }, status: SubscriptionStatus.ACTIVE },
-            { status: SubscriptionStatus.CANCELLED }
-        );
+       
+        await this.createQueryBuilder("userSubscription")
+            .update(UserSubscription)
+            .set({ status: SubscriptionStatus.CANCELLED })
+            .where("userSubscription.userId = :userId", { userId: userSubscription.userId })
+            .andWhere("userSubscription.status = :status", { status: SubscriptionStatus.ACTIVE })
+            .execute();
+
         return await this.save(userSubscription);
     }
 
