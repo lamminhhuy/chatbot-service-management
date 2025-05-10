@@ -144,7 +144,7 @@ export class UserService {
     }
 
     const userSubscription = await this.userSubscriptionService.create({
-      userId: user.id,
+      userId: savedUser.id,
       subscriptionId: subscription.id,
     });
 

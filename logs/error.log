@@ -149,3 +149,6 @@
 {"duration":22490,"level":"error","message":"Server error","method":"GET","requestId":"eeeea664-35cd-4a5e-9266-17037f16bcad","service":"api-service","status":500,"timestamp":"2025-05-10 19:18:57","url":"/api/v1/users/paginated"}
 {"duration":12420,"level":"error","message":"Server error","method":"POST","requestId":"ad7cc5e9-5324-42ff-b7f2-8db6b3109fc5","service":"api-service","status":500,"timestamp":"2025-05-10 21:07:33","url":"/api/v1/auth/login/google"}
 {"duration":1379,"level":"error","message":"Server error","method":"POST","requestId":"d1f759dd-6130-4143-8dc3-5cc3bc57aab0","service":"api-service","status":500,"timestamp":"2025-05-10 21:09:38","url":"/api/v1/auth/login/google"}
+{"duration":1755,"level":"error","message":"Server error","method":"POST","requestId":"5055967a-1aae-4efd-aa23-ecff50f9a59d","service":"api-service","status":500,"timestamp":"2025-05-10 21:16:59","url":"/api/v1/auth/login/google"}
+{"duration":2266,"level":"error","message":"Server error","method":"DELETE","requestId":"30c2f2a4-ed72-497e-a07a-fd6c3c410439","service":"api-service","status":500,"timestamp":"2025-05-10 21:20:13","url":"/api/v1/users/84"}
+{"duration":1559,"level":"error","message":"Server error","method":"POST","requestId":"bdf76d76-a207-4eb4-a98f-110b9fa95617","service":"api-service","status":500,"timestamp":"2025-05-10 21:22:07","url":"/api/v1/users"}
