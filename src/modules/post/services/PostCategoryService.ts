@@ -58,11 +58,11 @@ class PostCategoryService {
     }
     if(input.name !== postCategory.name)
     {
-      await this.inputValidation(input);
+      await this.nameValidation(input.name);
     }
     if(input.friendlySlug !== postCategory.friendlySlug)
     {
-      await this.inputValidation(input);
+      await this.friendlySlugValidation(input.friendlySlug);
     }
    let parentCategories: PostCategory[] = []
     if (input.parentId) {
@@ -97,30 +97,22 @@ class PostCategoryService {
   async getAllPostCategory(): Promise<PostCategory[]> {
     return this.postCategoryRepo.findAll();
   }
-  private async inputValidation(
-    input: CreatePostCategoryDTOType | UpdatePostCategoryDTOType
-  ): Promise<void> {
-    const isExsitedByName = await this.postCategoryRepo.findByName(input.name);
+ private async nameValidation(name: string): Promise<boolean> {
+    const isExsitedByName = await this.postCategoryRepo.findByName(name);
     if (isExsitedByName) {
       throw new BadRequestResponseError("Post category name already exists");
     }
-    if (input.friendlySlug) {
-      const isExsitedByFriendlySlug =
-        await this.postCategoryRepo.findByFriendlySlug(input.friendlySlug);
-      if (isExsitedByFriendlySlug) {
-        throw new BadRequestResponseError(
-          "Post category friendly slug already exists"
-        );
-      }
+    return true;
+  }
+async  friendlySlugValidation(friendlySlug: string): Promise<boolean> {
+    const isExsitedByFriendlySlug =
+      await this.postCategoryRepo.findByFriendlySlug(friendlySlug);
+    if (isExsitedByFriendlySlug) {
+      throw new BadRequestResponseError(
+        "Post category friendly slug already exists"
+      );
     }
-
-    if (input.parentId) {
-      const parent = await this.findParent(input.parentId);
-      if (!parent) {
-        throw new BadRequestResponseError("Parent post category not found");
-      }
-      input.parentId = parent.id;
-    }
+    return true;
   }
   
 }

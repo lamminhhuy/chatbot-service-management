@@ -12,7 +12,6 @@ export class ConversationRepository extends Repository<Conversation> implements 
     async createConversation(data: Conversation): Promise<Conversation> {
         return this.save(data);
     }
-
     async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<{ items: Conversation[], total: number }> {
         const { limit, offset, search, sort } = queryParams;
         const queryBuilder = this.createQueryBuilder('conversation');
@@ -26,9 +25,9 @@ export class ConversationRepository extends Repository<Conversation> implements 
         }
         
         queryBuilder
-            .leftJoinAndSelect('conversation.users', 'user')
+            .leftJoinAndSelect('conversation.users', 'user', 'user.deletedAt IS NULL') // Exclude soft-deleted users
             .leftJoinAndSelect('conversation.messages', 'message')
-            .leftJoinAndSelect('message.sender', 'sender')
+            .leftJoinAndSelect('message.sender', 'sender', 'sender.deletedAt IS NULL') // Exclude soft-deleted senders
             .skip(offset)
             .take(limit);
 
