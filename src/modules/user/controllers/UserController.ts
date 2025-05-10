@@ -47,7 +47,7 @@ export class UserController {
         new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
       }
       async getAll(req: CustomRequest<{},{},{}>, res: Response, next: NextFunction): Promise<void> {
-        const result = await this.userService.getAll();
+        const result = await this.userService.getAll(req.user);
         new SuccessResponse({ data: UserResponseDTOSchemaArray.parse(result) }).send(res);
       }
       async updateUser(req: CustomRequest<{id:number},{},UpdateUserDTO>, res: Response, next: NextFunction): Promise<void> {
@@ -59,7 +59,7 @@ export class UserController {
         new SuccessResponse({ data: null }).send(res);
       }
       async getPaginatedUsers(req: CustomRequest<{},{},UserQueryParamsDTO>, res: Response, next: NextFunction): Promise<void> {
-        const result = await this.userService.getPaginatedUsers(req.query);
+        const result = await this.userService.getPaginatedUsers(req.user, req.query);
         new SuccessResponse({ data: result,
           message: "Get paginated users successfully",
          }).send(res);

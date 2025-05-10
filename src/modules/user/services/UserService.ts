@@ -74,7 +74,7 @@ export class UserService {
       avatarUrl: null,
       roles: [basicUserRole],
     });
-    
+
     const savedUser = await this.userRepo.restoreAndUpdateSoftDeletedUser(user);
 
     const subscription = await this.subscriptionService.findByCode(
@@ -327,13 +327,20 @@ export class UserService {
     }
   }
 
-  async getAll(): Promise<UserDTO[]> {
+  async getAll(requestedUser: User): Promise<UserDTO[]> {
     const users = await this.userRepo.findAll();
+  
     const usersWithSubscription = await Promise.all(
       users.map((user) => this.attatchUserSubscription(user))
     );
-    return usersWithSubscription.map((user) => UserDTOSchema.parse(user));
+  
+    const withoutRequestedUser = usersWithSubscription.filter(
+      (user) => user.id !== requestedUser.id
+    );
+  
+    return withoutRequestedUser.map((user) => UserDTOSchema.parse(user));
   }
+
   async updateUser(userId: number, input: UpdateUserDTO) {
     const user = await this.userRepo.findUserById(userId);
     if (!user) {
@@ -378,14 +385,16 @@ export class UserService {
     return this.userRepo.getUserCountWithMonthlyGrowth();
   }
   async getPaginatedUsers(
+    requestedUser: User,
     queryParams: UserQueryParamsDTO
   ): Promise<PaginatedResponse<UserResponseDTO>> {
     const { items, total } = await this.userRepo.getPaginatedUsers(queryParams);
     const usersWithSubscription = await Promise.all(
       items.map((user) => this.attatchUserSubscription(user))
     );
+    const withoutRequestedUser = usersWithSubscription.filter((user) => user.id !== requestedUser.id);
     const panigatedData = buildPaginatedResponse({
-      items: usersWithSubscription,
+      items: withoutRequestedUser,
       meta: {
         total,
         limit: queryParams.limit,
@@ -412,7 +421,5 @@ export class UserService {
       { isRevoked: true }
     );
   }
-  private removeDeletedUser(userId: number): Promise<void> {
-    return this.userRepo.softDeleteUser(userId);
-  }
+
 }
