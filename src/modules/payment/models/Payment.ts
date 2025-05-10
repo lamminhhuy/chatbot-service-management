@@ -21,7 +21,7 @@ class Payment {
   @PrimaryGeneratedColumn('uuid')
   public readonly id: string;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User,{cascade: true,eager: true ,nullable:false})
   @JoinColumn({
     name: 'user_id',
     referencedColumnName: 'id',

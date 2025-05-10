@@ -1,5 +1,5 @@
 import { User } from "@/modules/user/models/UserModel";
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Conversation } from "./Conversation";
 import { ChatRole } from "../enums/ChatRole";
 
@@ -38,7 +38,8 @@ export class Message {
         foreignKeyConstraintName: 'fk_message_conversation'
     })
     conversation: Conversation;
-
+    @DeleteDateColumn()
+    deletedAt: Date|null;
     public static createMessage(content: string, sender: User, role: ChatRole, conversation: Conversation) {
         const message = new Message();
         message.content = content;

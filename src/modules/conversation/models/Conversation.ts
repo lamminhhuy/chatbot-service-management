@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { Message } from "./Message";
 import { User } from "@/modules/user/models/UserModel";
 
@@ -35,4 +35,6 @@ export class Conversation {
     static createConversation(title: string, user: User[]): Conversation {
         return new Conversation(title, user)
     }
+    @DeleteDateColumn()
+    deletedAt: Date|null;
 }

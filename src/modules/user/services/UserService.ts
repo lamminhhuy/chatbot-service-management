@@ -9,7 +9,7 @@ import {
   NotFoundResponseError,
 } from "@/shared/response/errors.response";
 import { UserSession } from "../models/UserSessionModel";
-import { Repository } from "typeorm";
+import { Repository, UpdateResult } from "typeorm";
 import { inject, injectable } from "tsyringe";
 import UserFactory from "../factories/user.factory";
 import { CreateUserDTO } from "../dtos/CreateUser.dto";
@@ -40,7 +40,7 @@ export class UserService {
   constructor(
     @inject("IUserRepository") userRepo: IUserRepository,
     @inject(RoleService) roleService: RoleService,
-    @inject("UserSessionRepository") userSessionRepo: Repository<UserSession>,
+    @inject("IUserSessionRepository") userSessionRepo: Repository<UserSession>,
     @inject(UserSubscriptionService)
     private userSubscriptionService: UserSubscriptionService,
     @inject(SubscriptionService)
@@ -311,6 +311,7 @@ async createUser({
         throw new BadRequestResponseError("At least one admin user must exist");
       }
     }
+    await this.revokeUserTokens(user.id);
     return this.userRepo.softDeleteUser(user.id);
   }
   async getUserCountWithMonthlyGrowth(): Promise<{
@@ -344,4 +345,7 @@ private async attatchUserSubscription(user: User): Promise<User & { userSubscrip
     user.userSubscription = userSubscription;
     return user;
 }
+  private async revokeUserTokens(userId: number): Promise<UpdateResult> {
+    return this.userSessionRepo.update({user: {id: userId}}, {isRevoked: true});
+  }
 }
