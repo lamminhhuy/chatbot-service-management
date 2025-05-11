@@ -22,7 +22,15 @@ export function validateRequest<T extends ZodSchema>(schema: T) {
 export function validateRequestQueryParams<T extends ZodSchema>(schema: T) {
   return (req: Request, res: Response, next: NextFunction): void => {
     try {
+    if(req.query.offset && req.query.page){
+        return next(new BadRequestResponseError("Cannot provide both 'page' and 'offset' parameters simultaneously"));
+    }
     const parsedQuery = schema.parse(req.query);
+
+    if(parsedQuery.page){
+        parsedQuery.offset = Number(parsedQuery.page) * Number(parsedQuery.limit);
+    }
+    
     req.query = parsedQuery;
       next();
     } catch (error) {
