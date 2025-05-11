@@ -13,8 +13,7 @@ export const ConversationQueryParamsDTOSchema = z.object({
 
   search: z.string().optional(),
   sort: z.string().optional(),
-  userId: z.coerce.number().optional(), 
-  userName: z.string().optional()
+  userId: z.coerce.number().optional()
 });
 
 export type ConversationQueryParamsDTO = z.infer<typeof ConversationQueryParamsDTOSchema>;

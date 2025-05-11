@@ -13,16 +13,12 @@ export class ConversationRepository extends Repository<Conversation> implements 
         return this.save(data);
     }
     async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<{ items: Conversation[], total: number }> {
-        const { limit, offset, search, sort, userName } = queryParams;
+        const { limit, offset, search, sort } = queryParams;
         const queryBuilder = this.createQueryBuilder('conversation');
-        
-        if (userName) {
-            queryBuilder.andWhere('user.username = :userName', { userName });
-        }
         
         if (search) {
             queryBuilder.andWhere(
-                'conversation.title ILIKE :search OR sender.name ILIKE :search', 
+                'conversation.title ILIKE :search OR sender.username ILIKE :search', 
                 { search: `%${search}%` }
             );
         }
