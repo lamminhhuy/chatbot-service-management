@@ -1,4 +1,6 @@
-import { Role } from "@/modules/role/models/RoleModel";
+import { Role } from "@/modules/authorization/models/RoleModel";
+import { ResourceRegister } from "../enums/ResourceRegister";
+
 
 export interface UserCreationDTO {
   email: string;
@@ -7,4 +9,5 @@ export interface UserCreationDTO {
   password: string;
   avatarUrl: string | null;
   roles: Role[];
+  resourceRegister: ResourceRegister;
 }

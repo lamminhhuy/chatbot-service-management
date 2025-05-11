@@ -7,7 +7,6 @@ import { inject, injectable } from 'tsyringe';
 import * as argon2 from "argon2";
 import { LoginReqDTO } from '../dtos/LoginRequest.dto';
 import UserSubscriptionService from '@/modules/subscription/services/UserSubscriptionService';
-import { CreateUserDTO } from '@/modules/user/dtos/CreateUser.dto';
 import { Transactional } from 'typeorm-transactional';
 import { IOtpService } from '@/shared/services/otp/OtpService.type';
 import { RequestResetPasswordDTO, VerifyResetPasswordDTO } from '../dtos/ResetPassword.dto';
@@ -119,7 +118,7 @@ export class AuthService   {
     }
 
     const { accessToken: newAccessToken, refreshToken: newRefreshToken } = this.jwtService.generateTokenPair(userSession.user.id, userSession.user.email);
-
+    
     await this.userService.handleUpdateTokens(newAccessToken, newRefreshToken, refreshToken);
 
     return { accessToken: newAccessToken, refreshToken: newRefreshToken };

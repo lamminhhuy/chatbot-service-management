@@ -34,7 +34,7 @@ export class User {
 
   @Column({ type: 'varchar', length: 50, unique: false})
   username: string; 
-
+  
   @Column({ type: 'varchar', length: 15, unique: false, nullable: true, name:'phone_number' })
   phoneNumber: string| null; 
 
@@ -113,12 +113,15 @@ export class User {
     return this
   }
 
+  @Column({name: 'resource_register', type: 'enum', enum: ['GOOGLE', 'EMAIL'], default: 'EMAIL'})
+  public resourceRegister: 'GOOGLE' | 'EMAIL' = 'EMAIL';
+
   public removeRole(role: Role): User {
     this.roles = this.roles.filter(r => r.id !== role.id)
     return this
   }
   @DeleteDateColumn()
   deletedAt: Date | null;
-
+  
   userSubscription: UserSubscription;
 }

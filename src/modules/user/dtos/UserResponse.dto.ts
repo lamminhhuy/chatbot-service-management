@@ -3,6 +3,7 @@ import { RoleResonseDTOSchema } from "@/modules/authorization/dtos/RoleResponseD
 import { SubscriptionResponseDTOSchema } from "@/modules/subscription/dtos/SubscriptionReponse.dto";
 import { DateOrStringSchema } from "@/shared/schemas/DateOrStringSchema";
 import { z } from "zod";
+import { ResourceRegister } from "../enums/ResourceRegister";
 
 export const UserResponseDTOSchema = z.object({
   id: z.number(),
@@ -11,6 +12,7 @@ export const UserResponseDTOSchema = z.object({
   username: z.string(),
   phoneNumber: z.string().nullable(),
   createdAt: DateOrStringSchema,
+  resourceRegister: z.enum([ResourceRegister.EMAIL, ResourceRegister.GOOGLE]),
   userSubscription: z.object({
     id: z.number(),
     endDate: z.date().nullable(),

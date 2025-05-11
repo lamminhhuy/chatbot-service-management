@@ -34,6 +34,7 @@ import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode"
 import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
 import { UserDTO, UserDTOSchema } from "../dtos/User.dto";
 import { Transactional } from "typeorm-transactional";
+import { ResourceRegister } from "../enums/ResourceRegister";
 
 @injectable()
 export class UserService {
@@ -74,6 +75,7 @@ export class UserService {
       phoneNumber,
       avatarUrl: null,
       roles: [basicUserRole],
+      resourceRegister: ResourceRegister.GOOGLE
     });
 
     const savedUser = await this.userRepo.restoreAndUpdateSoftDeletedUser(user);
@@ -133,6 +135,7 @@ export class UserService {
       phoneNumber,
       avatarUrl: null,
       roles,
+      resourceRegister: ResourceRegister.EMAIL,
     });
     const savedUser = await this.userRepo.saveOrReplaceSoftDeletedUser(user);
 
