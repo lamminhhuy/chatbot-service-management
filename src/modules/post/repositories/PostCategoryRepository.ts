@@ -1,6 +1,6 @@
 import { AppDataSource } from "@/database/PostgresDB";
 import { PostCategory } from "../models/PostCategory";
-import { Like, Repository } from "typeorm";
+import { FindManyOptions, Like, Repository } from "typeorm";
 import { IPostCategoryRepository } from "../interfaces/IPostCategoryRepository";
 import { PostCategoryQueryParamsDTO } from "../dtos/PostCategoryQueryParams.dto";
 
@@ -61,9 +61,10 @@ export default class PostCategoryRepository extends Repository<PostCategory> imp
     async getPaginatedPostCategories(
         queryParams: PostCategoryQueryParamsDTO
       ): Promise<{ items: PostCategory[]; total: number }> {
+      
         const {
-          limit = 10,
-          offset = 0,
+          limit,
+          offset,
           search,
           sort,
           order = 'ASC',
@@ -71,26 +72,24 @@ export default class PostCategoryRepository extends Repository<PostCategory> imp
       
         const where = search
           ? [
-              { name: Like(`%${search}%`) },
-              { friendlySlug: Like(`%${search}%`) },
+              { name: Like(`%${search.trim()}%`) },
+              { friendlySlug: Like(`%${search.trim()}%`) },
             ]
-          : {};
+          : undefined;
       
-        const findOptions: any = {
+        const findOptions: FindManyOptions<PostCategory> = {
           where,
           take: limit,
           skip: offset,
+      
         };
-      
-        if (sort) {
-          findOptions.order = {
-            [sort]: order.toUpperCase() === 'DESC' ? 'DESC' : 'ASC',
-          };
-        }
-      
+      if(sort && order){
+        findOptions.order = {
+          [sort]: order,
+        };
+      }
         const [items, total] = await this.findAndCount(findOptions);
       
         return { items, total };
-      
-    }
+      }
 }

@@ -28,7 +28,7 @@ export function validateRequestQueryParams<T extends ZodSchema>(schema: T) {
     const parsedQuery = schema.parse(req.query);
 
     if(parsedQuery.page){
-        parsedQuery.offset = Number(parsedQuery.page) * Number(parsedQuery.limit);
+        parsedQuery.offset = Number(parsedQuery.page -1 ) * Number(parsedQuery.limit);
     }
     
     req.query = parsedQuery;

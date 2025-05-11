@@ -160,3 +160,4 @@
 {"duration":105,"level":"error","message":"Server error","method":"GET","requestId":"d066c14b-ea5a-4a94-b304-e64a8a6c31a9","service":"api-service","status":500,"timestamp":"2025-05-11 12:14:27","url":"/api/v1/post-categories/paginated"}
 {"duration":17429,"level":"error","message":"Server error","method":"GET","requestId":"73248325-8c08-49a5-99b5-51feacb2de95","service":"api-service","status":500,"timestamp":"2025-05-11 12:14:56","url":"/api/v1/post-categories/paginated"}
 {"duration":3866,"level":"error","message":"Server error","method":"GET","requestId":"64c9ea19-1bb2-4506-b703-7849292ddf20","service":"api-service","status":500,"timestamp":"2025-05-11 12:17:03","url":"/api/v1/post-categories/paginated"}
+{"duration":4761,"level":"error","message":"Server error","method":"GET","requestId":"326c9701-e677-4313-86ee-e1a334ab1f71","service":"api-service","status":500,"timestamp":"2025-05-11 15:03:54","url":"/api/v1/post-categories/paginated?page=1&limit=10"}
