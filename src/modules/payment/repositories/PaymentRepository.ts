@@ -22,22 +22,27 @@ class PaymentRepository extends Repository<Payment> implements IPaymentRepositor
         return this.findOne({ where: { id } });
     }
     async getWeeklyRevenue(startDate: Date, endDate: Date): Promise<RevenueAggrerateDTO[]> {
+     
+      const adjustedEndDate = new Date(endDate);
+      adjustedEndDate.setHours(23, 59, 59, 999);
+    
       return this.createQueryBuilder('payment')
         .select("DATE_TRUNC('day', payment.completed_at) as period")
         .addSelect('SUM(payment.amount)', 'amount')
         .where('payment.status = :status', { status: PaymentStatus.COMPLETED })
         .andWhere('payment.completed_at BETWEEN :start AND :end', {
           start: startDate,
-          end: endDate,
+          end: adjustedEndDate,
         })
         .groupBy('period')
         .orderBy('period', 'ASC')
         .getRawMany();
     }
+   
     async getMonthlyRevenue(startDate: Date, endDate: Date): Promise<RevenueAggrerateDTO[]> {
       return this.createQueryBuilder('payment')
         .select("DATE_TRUNC('week', payment.completed_at) as period")
-        .addSelect('SUM(payment.amount)', 'amount')
+        .addSelect('SUM(payment.amount)::numeric', 'amount')
         .where('payment.status = :status', { status: PaymentStatus.COMPLETED })
         .andWhere('payment.completed_at BETWEEN :start AND :end', {
           start: startDate,
