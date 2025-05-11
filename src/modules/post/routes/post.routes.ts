@@ -62,6 +62,6 @@ export const postModule: ModuleConfig = {
       handler: { controller: 'post',
                   action:  postController.handleGetBySlug.bind(postController)}
     },
-  
+    
   ]
 }

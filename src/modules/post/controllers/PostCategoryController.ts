@@ -5,6 +5,9 @@ import { SuccessResponse } from "@/shared/response/success.response";
 import { Request, Response } from "express";
 import { CreatePostCategoryDTOType } from "../dtos/CreatePostCategory.dto";
 import { UpdatePostCategoryDTOType } from "../dtos/UpdatePostCategory.dto";
+import { PostCategoryQueryParamsDTO } from "../dtos/PostCategoryQueryParams.dto";
+import { PostCategoryResponseDTOSchema } from "../dtos/PostCategory.dto";
+import { PaginatedResponseSchema } from "@/shared/dtos/PaginatedResponse.dto";
 
 @injectable()
 export default class PostCategoryController {
@@ -37,6 +40,13 @@ export default class PostCategoryController {
         new SuccessResponse({
             message: 'Post category fetched successfully',
             data: postCategory
+        }).send(res);
+    }
+    async getPaginatedPostCategory(req: Request<{},{},{},PostCategoryQueryParamsDTO>, res: Response) {
+        const postCategory = await this.postCategoryService.getPaginatedPostCategories(req.query);
+        new SuccessResponse({
+            message: 'Post category fetched successfully',
+            data: PaginatedResponseSchema(PostCategoryResponseDTOSchema).parse(postCategory)
         }).send(res);
     }
 }

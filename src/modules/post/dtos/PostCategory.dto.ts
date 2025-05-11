@@ -9,4 +9,4 @@ export const PostCategoryResponseDTOSchema = z.object({
     updatedAt: z.date()
 });
 
-export type PostCategoryDTO = z.infer<typeof PostCategoryResponseDTOSchema>;
+export type PostCategoryResponseDTO = z.infer<typeof PostCategoryResponseDTOSchema>;

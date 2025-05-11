@@ -5,6 +5,10 @@ import { PostCategory } from "../models/PostCategory";
 import { BadRequestResponseError } from "@/shared/response/errors.response";
 import { UpdatePostCategoryDTOType } from "../dtos/UpdatePostCategory.dto";
 import { transformToSlug } from "../utils/transformToSlug";
+import { PostCategoryQueryParamsDTO } from "../dtos/PostCategoryQueryParams.dto";
+import { PaginatedResponse, PaginatedResponseSchema } from "@/shared/dtos/PaginatedResponse.dto";
+import { buildPaginatedResponse } from "@/shared/utils/buildPaginatedResponse";
+import { PostCategoryResponseDTO, PostCategoryResponseDTOSchema } from "../dtos/PostCategory.dto";
 
 @injectable()
 class PostCategoryService {
@@ -114,7 +118,18 @@ async  friendlySlugValidation(friendlySlug: string): Promise<boolean> {
     }
     return true;
   }
-  
+  async getPaginatedPostCategories(queryParams: PostCategoryQueryParamsDTO): Promise<PaginatedResponse<PostCategoryResponseDTO>> {
+    const { items, total } = await this.postCategoryRepo.getPaginatedPostCategories(queryParams);
+    const paginatedPostCategories = buildPaginatedResponse({
+      items: items,
+      meta: {
+        total,
+        limit: queryParams.limit,
+        offset: queryParams.offset
+      }
+    });
+    return paginatedPostCategories;
+  }
 }
 
 export default PostCategoryService;

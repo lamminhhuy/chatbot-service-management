@@ -1,9 +1,10 @@
 import { ModuleConfig } from "@/modules/auth/interfaces/ModuleConfig";
-import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
+import { validateRequest, validateRequestQueryParams } from "@/shared/middlewares/validateRequest/validateRequest";
 import PostCategoryController from "../controllers/PostCategoryController";
 import { CreatePostCategoryDTOSchema } from "../dtos/CreatePostCategory.dto";
 import { UpdatePostCategoryDTOSchema } from "../dtos/UpdatePostCategory.dto";
 import { container } from "tsyringe";
+import { PostCategoryQueryParamsDTOSchema } from "../dtos/PostCategoryQueryParams.dto";
 
 const postCategoryController = container.resolve(PostCategoryController);
 export const postCategoryModule: ModuleConfig = {
@@ -34,5 +35,11 @@ export const postCategoryModule: ModuleConfig = {
     path: '/:id',
     handler: { controller: 'postCategory',
                 action:  postCategoryController.deletePostCategory.bind(postCategoryController)}
+},{
+    method: 'GET',
+    path: '/paginated',
+    handler: { controller: 'postCategory',
+                action:  postCategoryController.getPaginatedPostCategory.bind(postCategoryController)},
+    middlewares: [validateRequestQueryParams(PostCategoryQueryParamsDTOSchema)]
 }]
 }

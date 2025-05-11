@@ -1,4 +1,5 @@
 import { PostCategory } from "../models/PostCategory";
+import { PostCategoryQueryParamsDTO } from "../dtos/PostCategoryQueryParams.dto";
 
 export interface IPostCategoryRepository {
     findAll(): Promise<PostCategory[]>;
@@ -9,4 +10,5 @@ export interface IPostCategoryRepository {
     findByName(name: string): Promise<PostCategory| null>;
     findByFriendlySlug(friendlySlug: string): Promise<PostCategory| null>;
     findAllParentsRecursive(childParentId: number): Promise<PostCategory[]>;
+    getPaginatedPostCategories(queryParams: PostCategoryQueryParamsDTO): Promise<{ items: PostCategory[]; total: number }>;
 }
