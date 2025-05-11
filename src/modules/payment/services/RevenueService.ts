@@ -45,7 +45,7 @@ class RevenueService {
     const payments = await this.paymentRepository.getMonthlyRevenue(startDate, endDate);
 
     const breakdown = payments.map((p) => ({
-      period: format(new Date(p.period), 'yyyy-MM'),
+      period: format(new Date(p.period), 'yyyy-MM-dd'),
       amount: parseFloat(p.amount),
     }));
 

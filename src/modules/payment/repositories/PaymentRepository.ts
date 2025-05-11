@@ -4,7 +4,7 @@ import { AppDataSource } from "@/database/PostgresDB";
 import Payment from "../models/Payment";
 import { PaymentStatus } from "../enums/PaymentStatus";
 import { Equal } from "typeorm";
-import { RevenueAggrerateDTO } from "../dtos/RevenueAggrerate.dto";
+import { RevenueAggregateDTO } from "../dtos/RevenueAggrerate.dto";
 @EntityRepository(Payment)
 class PaymentRepository extends Repository<Payment> implements IPaymentRepository {
     constructor() {
@@ -21,7 +21,7 @@ class PaymentRepository extends Repository<Payment> implements IPaymentRepositor
     async findById(id: string): Promise<Payment | null> {
         return this.findOne({ where: { id } });
     }
-    async getWeeklyRevenue(startDate: Date, endDate: Date): Promise<RevenueAggrerateDTO[]> {
+    async getWeeklyRevenue(startDate: Date, endDate: Date): Promise<RevenueAggregateDTO[]> {
      
       const adjustedEndDate = new Date(endDate);
       adjustedEndDate.setHours(23, 59, 59, 999);
@@ -39,9 +39,9 @@ class PaymentRepository extends Repository<Payment> implements IPaymentRepositor
         .getRawMany();
     }
    
-    async getMonthlyRevenue(startDate: Date, endDate: Date): Promise<RevenueAggrerateDTO[]> {
-      return this.createQueryBuilder('payment')
-        .select("DATE_TRUNC('week', payment.completed_at) as period")
+    async getMonthlyRevenue(startDate: Date, endDate: Date): Promise<RevenueAggregateDTO[]> {
+      return  await this.createQueryBuilder('payment')
+        .select("DATE_TRUNC('week', payment.completed_at)::date", 'period')
         .addSelect('SUM(payment.amount)::numeric', 'amount')
         .where('payment.status = :status', { status: PaymentStatus.COMPLETED })
         .andWhere('payment.completed_at BETWEEN :start AND :end', {
@@ -51,6 +51,7 @@ class PaymentRepository extends Repository<Payment> implements IPaymentRepositor
         .groupBy('period')
         .orderBy('period', 'ASC')
         .getRawMany();
+    
     }
       async getMonthlyRevenueWithGrowth(): Promise<{
         total: number;

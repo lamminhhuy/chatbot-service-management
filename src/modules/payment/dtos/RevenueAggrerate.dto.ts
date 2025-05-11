@@ -1,4 +1,4 @@
-export interface RevenueAggrerateDTO {
+export interface RevenueAggregateDTO {
     period: Date;
     amount: string;
 }
