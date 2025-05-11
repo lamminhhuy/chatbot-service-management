@@ -109,6 +109,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
     };
   }
   async getPaginatedUsers(queryParams: UserQueryParamsDTO): Promise<{items: User[], total: number}> {
+    
     const queryBuilder = this.createQueryBuilder("user")
         .leftJoinAndSelect("user.roles", "role")
         .where("user.email != :email", { email: "chatbot@gmail.com" })

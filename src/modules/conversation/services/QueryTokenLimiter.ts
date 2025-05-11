@@ -31,6 +31,9 @@ export class UserTokenLimiter implements ITokenLimiter {
         }
   
         const userMaxTokens = userSubscription.subscription.queryTokenLimit;
+        if(!userMaxTokens) {
+          throw new Error('User max tokens not found');
+        }
         await this.redisClient.set(tokenKey, userMaxTokens - 1);
         await this.redisClient.expire(tokenKey, this.config.tokenExpireTime);
         return true;
