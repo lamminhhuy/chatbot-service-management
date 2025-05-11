@@ -12,13 +12,19 @@ export class ConversationRepository extends Repository<Conversation> implements 
     async createConversation(data: Conversation): Promise<Conversation> {
         return this.save(data);
     }
-
     async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<{ items: Conversation[], total: number }> {
-        const { limit, offset, search, sort } = queryParams;
+        const { limit, offset, search, sort, userName } = queryParams;
         const queryBuilder = this.createQueryBuilder('conversation');
         
+        if (userName) {
+            queryBuilder.andWhere('user.username = :userName', { userName });
+        }
+        
         if (search) {
-            queryBuilder.andWhere('conversation.title ILIKE :search', { search: `%${search}%` });
+            queryBuilder.andWhere(
+                'conversation.title ILIKE :search OR sender.name ILIKE :search', 
+                { search: `%${search}%` }
+            );
         }
         
         if (sort) {
@@ -31,7 +37,7 @@ export class ConversationRepository extends Repository<Conversation> implements 
             .leftJoinAndSelect('message.sender', 'sender')
             .skip(offset)
             .take(limit);
-
+    
         const [items, total] = await queryBuilder.getManyAndCount();
         
         return { items, total };
