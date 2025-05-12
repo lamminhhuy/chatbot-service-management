@@ -29,7 +29,12 @@ class UserSubscriptionRepository extends Repository<UserSubscription> implements
     }
 
     async findActiveUserSubscription(userId: number): Promise<UserSubscription | null> {
-        return await this.findOne({ where: { user: { id: userId }, status: SubscriptionStatus.ACTIVE } });
+        return  this.createQueryBuilder("user_subscriptions")
+            .leftJoinAndSelect("user_subscriptions.subscription", "subscription")
+            .leftJoinAndSelect("user_subscriptions.user", "user")
+            .where("user_subscriptions.user_id = :userId", { userId })
+            .andWhere("user_subscriptions.status = :status", { status: SubscriptionStatus.ACTIVE })
+            .getOne();
     }
 
     async hasActiveUsersForSubscription(subscriptionId: number): Promise<boolean> {
