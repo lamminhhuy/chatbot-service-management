@@ -19,7 +19,6 @@ export class UserRepository extends Repository<User> implements IUserRepository 
   async findByEmail(email: string): Promise<User | null> {
     return this.findOne({
       where: { email },
-      withDeleted: true,
       relations: ["roles"],
     });
   }
