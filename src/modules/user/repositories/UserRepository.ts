@@ -156,8 +156,7 @@ async restoreAndUpdateSoftDeletedUser(data: User): Promise<User> {
 
   if (existingSoftDeleted) {
     await this.restore(existingSoftDeleted.id);
-    Object.assign(existingSoftDeleted, data);
-    return await this.save(existingSoftDeleted);
+    return this.findOneBy({ id: existingSoftDeleted.id });
   }
   const newUser = this.create(data);
   return await this.save(newUser);
