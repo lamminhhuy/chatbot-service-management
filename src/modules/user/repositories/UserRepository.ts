@@ -148,11 +148,13 @@ async saveOrReplaceSoftDeletedUser(newUser: User): Promise<User> {
 }
 
 async restoreAndUpdateSoftDeletedUser(data: User): Promise<User> {
-  const record = await this.findOne({ where: { id: data.id }, withDeleted: true });
+  const record = await this.findOne({ where: { email: data.email }, withDeleted: true });
 
   if (record) {
-    await this.restore(record.id);
-    return this.save({ ...record, ...data });
+   await this.restore(record.id);
+  const updatedData: Partial<User> = {password: data.password, username: data.username, phoneNumber: data.phoneNumber, 
+  deletedAt: null};
+  return this.save({ ...record, ...updatedData });
   }
   const newUser = this.create(data);
   return await this.save(newUser);
