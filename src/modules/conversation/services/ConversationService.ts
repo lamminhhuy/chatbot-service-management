@@ -98,7 +98,7 @@ export class ConversationService {
     async createMessage(conversationId: number, message: CreateMessageDTO, user: User): Promise<Message[]> {
         const conversation = await this.conversationRepository.findOneBy({id:conversationId});
         if (!conversation) throw new BadRequestResponseError('Conversation not found');
-        const newUserMessage = Message.createMessage(message.content, user, isUserRole(user.roles) ? ChatRole.User : ChatRole.Assistant, conversation);
+        const newUserMessage = Message.createMessage(message.content, user, ChatRole.User , conversation);
       
         const chatBotMessageContent = await this.chatBotService.handleAuthenticatedUserQuery([newUserMessage]);
         const chatbot =await  this.chatBotService.getChatbot();

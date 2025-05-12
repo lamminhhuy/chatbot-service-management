@@ -53,6 +53,7 @@ class PaymentRepository extends Repository<Payment> implements IPaymentRepositor
         .getRawMany();
     
     }
+    
       async getMonthlyRevenueWithGrowth(): Promise<{
         total: number;
         currentMonth: number;
