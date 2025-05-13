@@ -33,7 +33,8 @@ export class ConversationRepository extends Repository<Conversation> implements 
     .innerJoinAndSelect('message.sender', 'sender') 
     .where('sender.deletedAt IS NULL') 
     .skip(offset)
-    .take(limit);
+    .take(limit)
+    .orderBy('conversation.createdAt', 'DESC');
     
         const [items, total] = await queryBuilder.getManyAndCount();
         
