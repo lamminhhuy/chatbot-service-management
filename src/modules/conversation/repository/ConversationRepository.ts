@@ -13,31 +13,44 @@ export class ConversationRepository extends Repository<Conversation> implements 
         return this.save(data);
     }
     async getPaginatedConversations(queryParams: ConversationQueryParamsDTO): Promise<{ items: Conversation[], total: number }> {
-        const { limit, offset, search, sort } = queryParams;
-        const queryBuilder = this.createQueryBuilder('conversation');
+        const { limit, offset, search, sort, startDate, endDate } = queryParams;
         
+    
+        const queryBuilder = this.createQueryBuilder('conversation')
+            .where('conversation.deletedAt IS NULL');
+    
+        if (startDate && endDate) {
+            queryBuilder.andWhere(
+                'conversation.createdAt BETWEEN :startDate AND :endDate',
+                { startDate, endDate }
+            );
+        }
+    
         if (search) {
             queryBuilder.andWhere(
-                'conversation.title ILIKE :search OR sender.username ILIKE :search', 
+                'sender.email ILIKE :search OR sender.username ILIKE :search',
                 { search: `%${search}%` }
             );
         }
-        
-        if (sort) {
-            queryBuilder.orderBy('conversation.createdAt', sort as 'ASC' | 'DESC');
-        }
-        
-        queryBuilder
-    .leftJoinAndSelect('conversation.users', 'user')
-    .leftJoinAndSelect('conversation.messages', 'message')
-    .innerJoinAndSelect('message.sender', 'sender') 
-    .where('sender.deletedAt IS NULL') 
-    .skip(offset)
-    .take(limit)
-    .orderBy('conversation.createdAt', 'DESC');
     
-        const [items, total] = await queryBuilder.getManyAndCount();
-        
-        return { items, total };
+        if (sort) {
+            if (!['ASC', 'DESC'].includes(sort)) {
+                throw new Error('Sort must be either ASC or DESC');
+            }
+            queryBuilder.orderBy('conversation.createdAt', sort as 'ASC' | 'DESC');
+        } else {
+            queryBuilder.orderBy('conversation.createdAt', 'DESC');
+        }
+    
+        queryBuilder
+            .leftJoinAndSelect('conversation.users', 'user', 'user.deletedAt IS NULL')
+            .leftJoinAndSelect('conversation.messages', 'message', 'message.deletedAt IS NULL')
+            .innerJoinAndSelect('message.sender', 'sender')
+            .andWhere('sender.deletedAt IS NULL')
+            .skip(offset)
+            .take(limit);
+            const [items, total] = await queryBuilder.getManyAndCount();
+            return { items, total };
+      
     }
 }
