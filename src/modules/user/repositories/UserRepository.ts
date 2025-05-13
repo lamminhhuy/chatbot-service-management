@@ -148,13 +148,15 @@ async saveOrReplaceSoftDeletedUser(newUser: User): Promise<User> {
 }
 
 async restoreAndUpdateSoftDeletedUser(data: User): Promise<User> {
-  const record = await this.findOne({ where: { email: data.email }, withDeleted: true });
+  const existingSoftDeleted = await this.createQueryBuilder("user")
+    .withDeleted()
+    .where("user.email = :email", { email: data.email })
+    .andWhere("user.deletedAt IS NOT NULL")
+    .getOne();
 
-  if (record) {
-   await this.restore(record.id);
-  const updatedData: Partial<User> = { username: data.username, phoneNumber: data.phoneNumber, 
-  deletedAt: null};
-  return this.save({ ...record, ...updatedData });
+  if (existingSoftDeleted) {
+    await this.restore(existingSoftDeleted.id);
+    return this.findOneBy({ id: existingSoftDeleted.id });
   }
   const newUser = this.create(data);
   return await this.save(newUser);
