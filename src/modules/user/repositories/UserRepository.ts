@@ -152,7 +152,7 @@ async restoreAndUpdateSoftDeletedUser(data: User): Promise<User> {
 
   if (record) {
    await this.restore(record.id);
-  const updatedData: Partial<User> = {password: data.password, username: data.username, phoneNumber: data.phoneNumber, 
+  const updatedData: Partial<User> = { username: data.username, phoneNumber: data.phoneNumber, 
   deletedAt: null};
   return this.save({ ...record, ...updatedData });
   }

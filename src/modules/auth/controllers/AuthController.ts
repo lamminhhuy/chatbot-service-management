@@ -104,7 +104,7 @@ export class AuthController {
   }
 
   async loginWithGoogle(req: Request<{}, {}, LoginGoogleDTO>, res: Response): Promise<void> {
-    const loginResult = await this.authService.loginWithGoogle(req.body.token);
+  const loginResult = await this.authService.loginWithGoogle(req.body.token);
     const { user, accessToken, refreshToken } = loginResult;
     const cookieName = getRefreshTokenCookieName(req.get('origin'));
     res.cookie(cookieName, refreshToken, getCookieOptions(env.REFRESH_TOKEN_MAX_AGE));

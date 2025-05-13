@@ -28,11 +28,12 @@ export class ConversationRepository extends Repository<Conversation> implements 
         }
         
         queryBuilder
-            .leftJoinAndSelect('conversation.users', 'user')
-            .leftJoinAndSelect('conversation.messages', 'message')
-            .leftJoinAndSelect('message.sender', 'sender')
-            .skip(offset)
-            .take(limit);
+    .leftJoinAndSelect('conversation.users', 'user')
+    .leftJoinAndSelect('conversation.messages', 'message')
+    .innerJoinAndSelect('message.sender', 'sender') 
+    .where('sender.deletedAt IS NULL') 
+    .skip(offset)
+    .take(limit);
     
         const [items, total] = await queryBuilder.getManyAndCount();
         

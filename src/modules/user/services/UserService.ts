@@ -402,7 +402,7 @@ export class UserService {
       meta: {
         total,
         limit: queryParams.limit,
-        offset: queryParams.offset,
+        offset: queryParams.offset!,
       },
     });
     return PaginatedResponseSchema(UserResponseDTOSchema).parse(panigatedData);
