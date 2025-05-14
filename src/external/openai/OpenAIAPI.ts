@@ -68,7 +68,7 @@ private openai: OpenAI;
         {
         chatMessages.push({
           role: "system",
-          content: `Kết quả tìm kiếm web:\n${webSearchResults}. Vui lòng hãy format lại response của bạn thật đẹp, chuyên nghiệp và dễ đọc. Loại bỏ các ký tự dư thừa.`,
+          content: `Kết quả tìm kiếm web:\n${webSearchResults}`,
         });
         }
       }
