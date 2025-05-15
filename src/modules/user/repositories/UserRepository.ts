@@ -136,7 +136,7 @@ async saveOrReplaceSoftDeletedUser(newUser: User): Promise<User> {
   const existingSoftDeleted = await this.createQueryBuilder("user")
     .withDeleted()
     .where("user.email = :email", { email: newUser.email })
-    .andWhere("user.deletedAt IS NOT NULL")
+    .andWhere("user.deleted_at IS NOT NULL")
     .getOne();
 
   if (existingSoftDeleted) {
@@ -151,7 +151,7 @@ async restoreAndUpdateSoftDeletedUser(data: User): Promise<User> {
   const existingSoftDeleted = await this.createQueryBuilder("user")
     .withDeleted()
     .where("user.email = :email", { email: data.email })
-    .andWhere("user.deletedAt IS NOT NULL")
+    .andWhere("user.deleted_at IS NOT NULL")
     .getOne();
 
   if (existingSoftDeleted) {

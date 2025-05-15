@@ -133,7 +133,7 @@ export class ConversationService {
             meta:{
                 total,
                 limit: queryParams.limit,
-                offset: queryParams.offset
+                offset: queryParams.offset!
             }
         });
         return PaginatedResponseSchema(ConversationReponseDTOSchema).parse(panigatedData);

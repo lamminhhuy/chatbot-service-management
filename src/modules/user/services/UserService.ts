@@ -78,7 +78,7 @@ export class UserService {
       resourceRegister: ResourceRegister.GOOGLE
     });
 
-    const savedUser = await this.userRepo.restoreAndUpdateSoftDeletedUser(user);
+    const savedUser = await this.userRepo.save(user);
 
     const subscription = await this.subscriptionService.findByCode(
       SubscriptionCode.BASIC
@@ -137,7 +137,7 @@ export class UserService {
       roles,
       resourceRegister: ResourceRegister.EMAIL,
     });
-    const savedUser = await this.userRepo.saveOrReplaceSoftDeletedUser(user);
+    const savedUser = await this.userRepo.save(user);
 
     const subscription = await this.subscriptionService.findByCode(
       SubscriptionCode.BASIC
@@ -272,7 +272,7 @@ export class UserService {
     if (isRoleExists) {
       throw new BadRequestResponseError("Role already exists");
     }
-    user.assginRole(role);
+    user.assignRole(role);
     return this.userRepo.save(user);
   }
   async removeRole(input: RemoveRoleDTO) {
@@ -372,7 +372,7 @@ export class UserService {
     const isAdminUser = user.roles.some((r) => r.code === RoleCode.ADMIN);
     if (isAdminUser) {
       const adminUsers = await this.userRepo.findUsersByRoles([RoleCode.ADMIN]);
-      if (!adminUsers.length) {
+      if (adminUsers.length < 2) {
         throw new BadRequestResponseError("At least one admin user must exist");
       }
     }
