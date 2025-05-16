@@ -10,6 +10,7 @@ import { UpdatePasswordDTO, UpdateUserDTO, UpdateUserResponseDTOSchema } from ".
 import { AssignRoleDTO } from "../dtos/AssignRole.dto";
 import { RemoveRoleDTO } from "../dtos/RemoveRole.dto";
 import { UserQueryParamsDTO } from "../dtos/UserQueryParamss.dto";
+import { ChangeUserSubscriptionDTO } from "../dtos/ChangeUserSubscription.dto";
 
 @injectable()
 export class UserController {
@@ -63,5 +64,9 @@ export class UserController {
         new SuccessResponse({ data: result,
           message: "Get paginated users successfully",
          }).send(res);
+      }
+      async changeSubscription(req: CustomRequest<{id:number},{},ChangeUserSubscriptionDTO>, res: Response, next: NextFunction): Promise<void> {
+       await this.userService.changeSubscription(req.params.id, req.body.subscriptionId);
+        new SuccessResponse({ data: null }).send(res);
       }
 }

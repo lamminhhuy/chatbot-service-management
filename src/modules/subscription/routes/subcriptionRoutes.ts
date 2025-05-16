@@ -41,6 +41,20 @@ export const subscriptionModule: ModuleConfig = {
     },
     {
       path: '/:id',
+      method: 'PUT',
+      middlewares: [validateRequest(UpdateSubscriptionDTOSchema)],
+      handler: { controller: 'subscription',
+                action:  subscriptionController.handleUpdate.bind(subscriptionController)}
+    },
+    {
+      path: '/:id',
+      method: 'PUT',
+      middlewares: [validateRequest(UpdateSubscriptionDTOSchema)],
+      handler: { controller: 'subscription',
+                action:  subscriptionController.handleUpdate.bind(subscriptionController)}
+    },
+    {
+      path: '/:id',
       method: 'DELETE',
       handler: { controller: 'subscription',
                 action:  subscriptionController.handleDelete.bind(subscriptionController)}

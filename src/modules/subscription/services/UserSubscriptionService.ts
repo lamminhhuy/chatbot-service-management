@@ -6,6 +6,7 @@ import UserSubscriptionFactory from "../factories/userSubscription.factory";
 import { CreateUserSubscriptionDTO } from "../interfaces/CreateUserSubscription.dto";
 import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
 import { ErrorsResponse } from "@/shared/response/errors.response";
+import { IUserRepository } from "@/modules/user/interfaces/IUserRepository";
 
 @injectable()
 class UserSubscriptionService {
@@ -15,7 +16,9 @@ class UserSubscriptionService {
     @inject(UserSubscriptionFactory)
     private userSubscriptionFactory: UserSubscriptionFactory,
     @inject(SubscriptionService)
-    private subscriptionService: SubscriptionService
+    private subscriptionService: SubscriptionService,
+    @inject("IUserRepository")
+    private userRepository: IUserRepository
   ) {}
 
   async create(payload: CreateUserSubscriptionDTO): Promise<UserSubscription> {
@@ -46,6 +49,22 @@ class UserSubscriptionService {
   }
   async hasActiveUsersForSubscription(subscriptionId: number): Promise<boolean> {
     return this.userSubscriptionRepository.hasActiveUsersForSubscription(subscriptionId);
+  }
+  async changeSubscription(userId: number, subscriptionId: number): Promise<UserSubscription> {
+    const user = await this.userRepository.findUserById(userId);
+    if (!user) {
+      throw new ErrorsResponse("User not found", 408);
+    }
+    const subscription = await this.subscriptionService.findById(subscriptionId);
+    if (!subscription) {
+      throw new ErrorsResponse("Subscription not found", 408);
+    }
+    const userSubscription = this.userSubscriptionFactory.create({
+      userId: user.id,
+      subscription,
+    });
+    await this.userSubscriptionRepository.createUserSubscription(userSubscription);
+    return userSubscription;
   }
 }
 

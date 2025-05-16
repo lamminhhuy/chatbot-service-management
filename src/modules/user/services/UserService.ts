@@ -425,5 +425,8 @@ export class UserService {
       { isRevoked: true }
     );
   }
+  async changeSubscription(userId: number, subscriptionId: number): Promise<UserSubscription> {
+    return this.userSubscriptionService.changeSubscription(userId, subscriptionId);
+  }
 
 }

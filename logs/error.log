@@ -222,3 +222,4 @@
 {"duration":702,"level":"error","message":"Server error","method":"GET","requestId":"0b84e852-2d87-407c-a35a-1c122f25287f","service":"api-service","status":500,"timestamp":"2025-05-13 09:45:10","url":"/api/v1/conversations/paginated"}
 {"duration":231737,"level":"error","message":"Server error","method":"GET","requestId":"b47b2d9c-ad4d-43a0-a8d8-c7c088dad72a","service":"api-service","status":500,"timestamp":"2025-05-13 09:49:11","url":"/api/v1/conversations/paginated"}
 {"duration":2646,"level":"error","message":"Server error","method":"GET","requestId":"986ce208-e015-45d2-b567-d1117f45e9d5","service":"api-service","status":500,"timestamp":"2025-05-13 09:51:23","url":"/api/v1/conversations/paginated"}
+{"duration":651,"level":"error","message":"Server error","method":"PUT","requestId":"82684d0b-5637-462d-8456-cbdd28d67186","service":"api-service","status":500,"timestamp":"2025-05-15 22:24:27","url":"/api/v1/users/87/change-subscription"}

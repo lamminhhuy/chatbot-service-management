@@ -39,6 +39,13 @@ export const userModule: ModuleConfig = {
             middlewares: [validateRequest(UpdateUserDTOSchema)]
         },
         {
+            method: "PUT",
+            path: '/:id/change-subscription',
+            handler: { controller: 'user',
+                action:  userController.changeSubscription.bind(userController)},
+            middlewares: []
+        },
+        {
             method: "POST",
             path: "/",
             handler: { controller: 'user',
