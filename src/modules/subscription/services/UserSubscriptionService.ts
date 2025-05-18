@@ -53,7 +53,8 @@ class UserSubscriptionService {
       userId: userId,
       subscription: basicSubscription,
     });
-    return userSubscription;
+   const createdUserSubscription = await this.userSubscriptionRepository.createUserSubscription(userSubscription);
+    return createdUserSubscription;
   }
   return result;
   }
