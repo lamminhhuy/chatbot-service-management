@@ -3,20 +3,15 @@ import { UserSubscription } from "../models/UserSubscription";
 import { UserSubscriptionCreation } from "../interfaces/UserSubscriptionCreation";
 import { SubscriptionType } from "@/modules/subscription/enums/SubscriptionType";
 import dayjs from "dayjs";
+import { SubscriptionCode } from "../enums/SubscriptionCode";
 
 @injectable()
 class UserSubscriptionFactory {
-  
-  private readonly subscriptionTypeMapper = new Map<SubscriptionType, { endDate: Date | null; renewalDate: Date | null }>(
-    [
-      [SubscriptionType.STANDARD, { endDate: dayjs().add(1, "month").toDate(), renewalDate: dayjs().add(1, "month").toDate() }],
-      [SubscriptionType.PREMIUM, { endDate: dayjs().add(1, "year").toDate(), renewalDate: dayjs().add(1, "year").toDate() }],
-    ]
-  );
+
 
   public create(data: UserSubscriptionCreation): UserSubscription {
 
-    const { endDate, renewalDate } = this.subscriptionTypeMapper.get(data.subscription.type) ?? { endDate: null, renewalDate: null };
+    const { endDate, renewalDate } = data.subscription.code === SubscriptionCode.BASIC ? { endDate: null, renewalDate: null } : { endDate: dayjs().add(1, "month").toDate(), renewalDate: dayjs().add(1, "month").toDate() };
     
     const subscription = new UserSubscription();
     subscription.userId = data.userId;

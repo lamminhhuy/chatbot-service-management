@@ -117,7 +117,7 @@ export class UserRepository extends Repository<User> implements IUserRepository 
         .take(queryParams.limit);
 
     if (queryParams.search) {
-        queryBuilder.andWhere("user.username ILIKE :search", { search: `%${queryParams.search}%` });
+        queryBuilder.andWhere("user.email ILIKE :email or user.username ILIKE :search", { email: `${queryParams.search}%`, search: `%${queryParams.search}%` });
     }
 
     const [items, total] = await queryBuilder.getManyAndCount();
@@ -156,7 +156,11 @@ async restoreAndUpdateSoftDeletedUser(data: User): Promise<User> {
 
   if (existingSoftDeleted) {
     await this.restore(existingSoftDeleted.id);
-    return this.findOneBy({ id: existingSoftDeleted.id });
+    const restoredUser = await this.findOneBy({ id: existingSoftDeleted.id });
+    if (!restoredUser) {
+      throw new Error("User not found");
+    }
+    return restoredUser;
   }
   const newUser = this.create(data);
   return await this.save(newUser);

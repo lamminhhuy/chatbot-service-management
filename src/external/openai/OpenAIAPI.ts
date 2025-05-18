@@ -68,7 +68,7 @@ private openai: OpenAI;
         {
         chatMessages.push({
           role: "system",
-          content: `Kết quả tìm kiếm web:\n${webSearchResults}`,
+          content: `Kết quả tìm kiếm web:\n${webSearchResults}. Lưu ý: trả lời rõ chi tiết.`,
         });
         }
       }

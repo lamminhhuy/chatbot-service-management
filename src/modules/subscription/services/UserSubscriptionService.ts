@@ -7,6 +7,7 @@ import { CreateUserSubscriptionDTO } from "../interfaces/CreateUserSubscription.
 import SubscriptionService from "@/modules/subscription/services/SubscriptionService";
 import { ErrorsResponse } from "@/shared/response/errors.response";
 import { IUserRepository } from "@/modules/user/interfaces/IUserRepository";
+import { SubscriptionCode } from "../enums/SubscriptionCode";
 
 @injectable()
 class UserSubscriptionService {
@@ -42,7 +43,19 @@ class UserSubscriptionService {
   async getActiveUserSubsription(
     userId: number
   ): Promise<UserSubscription | null> {
-    return this.userSubscriptionRepository.findActiveUserSubscription(userId);
+    const result =await this.userSubscriptionRepository.findActiveUserSubscription(userId);
+    if(!result){
+      const basicSubscription = await this.subscriptionService.findByCode(SubscriptionCode.BASIC);
+      if(!basicSubscription){
+        throw new ErrorsResponse("Basic subscription not found", 408);
+      }
+    const userSubscription = this.userSubscriptionFactory.create({
+      userId: userId,
+      subscription: basicSubscription,
+    });
+    return userSubscription;
+  }
+  return result;
   }
   async getTotalUserSubscriptionWithGrowthFromLastMonth(): Promise<{total: number, currentMonth: number, previousMonth: number, growthRate: number}> {
     return this.userSubscriptionRepository.getTotalUserSubscriptionWithGrowthFromLastMonth();

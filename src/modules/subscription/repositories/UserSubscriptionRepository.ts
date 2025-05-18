@@ -6,6 +6,7 @@ import { IUserSubscriptionRepository } from "../interfaces/IUserSubscriptionRepo
 import { UserSubscription } from "../models/UserSubscription";
 import { SubscriptionCode } from "../enums/SubscriptionCode";
 import { SubscriptionStatus } from "../enums/SubscriptionStatus";
+import { isBefore } from "date-fns";
 
 @injectable()
 class UserSubscriptionRepository extends Repository<UserSubscription> implements IUserSubscriptionRepository {
@@ -34,6 +35,7 @@ class UserSubscriptionRepository extends Repository<UserSubscription> implements
             .leftJoinAndSelect("user_subscriptions.user", "user")
             .where("user_subscriptions.user_id = :userId", { userId })
             .andWhere("user_subscriptions.status = :status", { status: SubscriptionStatus.ACTIVE })
+            .andWhere("user_subscriptions.endDate > :now", { now: new Date() })
             .getOne();
     }
 
