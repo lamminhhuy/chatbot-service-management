@@ -6,9 +6,12 @@ import UserSubscriptionService from "./services/UserSubscriptionService"
 import { UserTokenLimiter } from "../conversation/services/QueryTokenLimiter"
 import RedisClient from "@/database/redisClient"
 import { ITokenConfig } from "@/modules/conversation/interfaces/ITokenConfig";
+import { getSecondsUntilEndOfDay } from "./utils/getSecondsUntilEndOfDay"
+
+
 const defaultTokenConfig: ITokenConfig = {
-    tokenExpireTime: 3600,
-    tokenKeyPrefix: 'chatbot:token'
+  tokenExpireTime: getSecondsUntilEndOfDay(),
+  tokenKeyPrefix: 'chatbot:token'
 };
 export const registerSubscriptionDependencies = () => {
   container.register('ISubscriptionRepository', { useClass: SubscriptionRepository })
