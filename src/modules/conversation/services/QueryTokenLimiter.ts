@@ -21,19 +21,20 @@ export class UserTokenLimiter implements ITokenLimiter {
 }
   
     async checkToken(userId: number): Promise<boolean> {
+      const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(userId);
+      if(!userSubscription) {
+        throw new Error('User subscription not found');
+      }
+
+      const userMaxTokens = userSubscription.subscription.queryTokenLimit;
+      if(!userMaxTokens) {
+        return true;
+      }
+
       const tokenKey = this.getTokenKey(userId);
       const currentTokens = await this.getCurrentTokenCount(tokenKey);
   
       if (currentTokens === null) {
-        const userSubscription = await this.userSubscriptionService.getActiveUserSubsription(userId);
-        if(!userSubscription) {
-          throw new Error('User subscription not found');
-        }
-  
-        const userMaxTokens = userSubscription.subscription.queryTokenLimit || 9999999;
-        if(!userMaxTokens) {
-          throw new Error('User max tokens not found');
-        }
         await this.redisClient.set(tokenKey, userMaxTokens);
         await this.redisClient.expire(tokenKey, this.config.tokenExpireTime);
         return true;
