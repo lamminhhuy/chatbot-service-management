@@ -12,7 +12,7 @@ export class OpenAIAPI implements IChatbotAPI {
 private openai: OpenAI;
   private assistantId?: string;
   private webSearchService: IWebSearchService
-  private readonly assistantInstructions: string = `Lưu ý: bạn cần trả lời cực kỳ chi tiết, càng chi tiết càng tốt. Nếu câu hỏi liên quan đến xuất khẩu từ Việt Nam sang 1 nước khác thì hãy trả lời bao gồm các nội dung sau: Mã HS và Chính sách Thuế:
+  private readonly assistantInstructions: string = `Lưu ý: bạn cần trả lời cực kỳ chi tiết, càng chi tiết càng tốt. Nếu câu hỏi liên quan đến xuất khẩu và các nội dung tương ứng thì câu trả lời sẽ bao gồm: Mã HS và Chính sách Thuế (bao gồm thuế nhập khẩu, thủ tục hải quan,...):
   Mã HS cụ thể cho mặt hàng. Các mức thuế liên quan: thuế xuất khẩu, thuế VAT. Dẫn chiếu thông tư, nghị định làm căn cứ pháp lý.
 Yêu cầu về vùng trồng và đóng gói.
 Mã số do Cục Bảo vệ Thực vật Việt Nam cập nhật.
