@@ -12,7 +12,19 @@ export class OpenAIAPI implements IChatbotAPI {
 private openai: OpenAI;
   private assistantId?: string;
   private webSearchService: IWebSearchService
-
+  private readonly assistantInstructions: string = `Lưu ý: trả lời rõ siêu chi tiết, càng chi tiết càng tốt. Nếu câu hỏi liên quan đến xuất khẩu từ Việt Nam sang 1 nước khác thì hãy trả lời bao gồm các nội dung sau: Mã HS và Chính sách Thuế:
+  Mã HS cụ thể cho mặt hàng. Các mức thuế liên quan: thuế xuất khẩu, thuế VAT. Dẫn chiếu thông tư, nghị định làm căn cứ pháp lý.
+Yêu cầu về vùng trồng và đóng gói.
+Mã số do Cục Bảo vệ Thực vật Việt Nam cập nhật.
+Tiêu chuẩn chất lượng:
+Về hình thức, trọng lượng, độ chín, màu sắc, trạng thái ruột...
+Phân loại size (S, M, L) theo gram.
+Hồ sơ hải quan cần thiết:
+Tờ khai, hợp đồng, hóa đơn, vận đơn, packing list...
+Giấy tờ kiểm dịch, C/O, hun trùng nếu cần.
+Thủ tục kiểm dịch thực vật:
+Đăng ký và cung cấp mẫu để kiểm tra.
+Nhận giấy chứng nhận nếu đạt yêu cầu`
 
   constructor(apiKey: string, assistantId: string, webSearchService: IWebSearchService ) {
     this.openai = new OpenAI({
@@ -52,7 +64,7 @@ private openai: OpenAI;
         if (assistant.instructions) {
           chatMessages.push({
             role: "system",
-            content: assistant.instructions,
+            content: assistant.instructions + this.assistantInstructions
           });
         }
       }
@@ -68,35 +80,7 @@ private openai: OpenAI;
         {
         chatMessages.push({
           role: "system",
-          content: `Kết quả tìm kiếm web:\n${webSearchResults}. Lưu ý: trả lời rõ chi tiết, nếu câu hỏi liên quan đến xuất khẩu từ Việt Nam sang 1 nước khác thì hãy trả lời bao gồm các nội dung sau: Mã HS và Chính sách Thuế:
-
-Mã HS cụ thể cho mặt hàng.
-
-Các mức thuế liên quan: thuế xuất khẩu, thuế VAT.
-
-Dẫn chiếu thông tư, nghị định làm căn cứ pháp lý.
-
-Yêu cầu về vùng trồng và đóng gói.
-
-Mã số do Cục Bảo vệ Thực vật Việt Nam cập nhật.
-
-Tiêu chuẩn chất lượng:
-
-Về hình thức, trọng lượng, độ chín, màu sắc, trạng thái ruột...
-
-Phân loại size (S, M, L) theo gram.
-
-Hồ sơ hải quan cần thiết:
-
-Tờ khai, hợp đồng, hóa đơn, vận đơn, packing list...
-
-Giấy tờ kiểm dịch, C/O, hun trùng nếu cần.
-
-Thủ tục kiểm dịch thực vật:
-
-Đăng ký và cung cấp mẫu để kiểm tra.
-
-Nhận giấy chứng nhận nếu đạt yêu cầu.`,
+          content: `Kết quả tìm kiếm web:\n${webSearchResults}. `,
         });
         }
       }
