@@ -16,6 +16,7 @@ import { ModuleLoader } from "@/shared/utils/ModuleLoader";
 import { asyncHandler } from "@/shared/utils/asyncHandler";
 import { initializePermission } from "@/shared/utils/initializePermission";
 import { initializeTransactionalContext } from "typeorm-transactional";
+import { errorLoggerMiddleware } from "@/shared/middlewares/logging/requestLogger";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -59,7 +60,7 @@ async function initializeApp() {
   app.use("/ping", (req, res) => {
     return res.status(200).send("server pinged!");
   }); 
-
+  app.use(errorLoggerMiddleware);
   app.use(errorHandler);
 }
 initializeTransactionalContext();

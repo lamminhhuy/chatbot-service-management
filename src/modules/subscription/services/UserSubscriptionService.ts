@@ -77,6 +77,7 @@ class UserSubscriptionService {
       userId: user.id,
       subscription,
     });
+    
     await this.userSubscriptionRepository.createUserSubscription(userSubscription);
     return userSubscription;
   }
