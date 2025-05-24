@@ -5,8 +5,8 @@ import { AuthFailureResponseError } from '@/shared/response/errors.response';
 import { env } from '@/configs/envConfig';
 
 export class JwtService implements IJwtService {
-  private accessTokenSecret = process.env.JWT_ACCESS_SECRET || 'mysecretToken123' ;
-  private refreshTokenSecret = process.env.JWT_REFRESH_SECRET ||  'mysecretToken123' ;
+  private accessTokenSecret = env.JWT_ACCESS_SECRET  ;
+  private refreshTokenSecret = env.JWT_REFRESH_SECRET  ;
   
   generateAccessToken(userId: number, email: string): string {
     if (!userId || !email) throw new AuthFailureResponseError('Invalid user data!');

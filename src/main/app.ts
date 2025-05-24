@@ -3,7 +3,7 @@ import cors from "cors";
 import express, { type Express } from "express";
 import helmet from "helmet";
 import { pino } from "pino";
-import { errorHandler } from "@/shared/middlewares/error/errorHanlder";
+import { errorHandler } from "@/shared/middlewares/error/errorHandler";
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import { mongoDBInstance } from "@/database/MongoDB";
@@ -17,6 +17,7 @@ import { asyncHandler } from "@/shared/utils/asyncHandler";
 import { initializePermission } from "@/shared/utils/initializePermission";
 import { initializeTransactionalContext } from "typeorm-transactional";
 import { errorLoggerMiddleware } from "@/shared/middlewares/logging/requestLogger";
+import { staticMiddleware } from "@/shared/middlewares/media/media.middleware";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -57,10 +58,14 @@ async function initializeApp() {
 
   initializePermission(moduleLoader.getAllModules())
 
+  app.use('/uploads', staticMiddleware('uploads'));
+
   app.use("/ping", (req, res) => {
     return res.status(200).send("server pinged!");
   }); 
+
   app.use(errorLoggerMiddleware);
+  
   app.use(errorHandler);
 }
 initializeTransactionalContext();
