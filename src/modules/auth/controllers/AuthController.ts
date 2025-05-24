@@ -11,18 +11,8 @@ import { RegisterResponseDTOSchema } from '../dtos/RegisterReponse.dto';
 import { RequestResetPasswordDTO, VerifyResetPasswordDTO } from '../dtos/ResetPassword.dto';
 import { LoginGoogleDTO } from '../dtos/LoginGoogle.dto';
 import { BadRequestResponseError } from '@/shared/response/errors.response';
+import { getRefreshTokenCookieName } from '../utils/getRefreshTokenCookieName';
 
-const getRefreshTokenCookieName = (origin: string | undefined): string => {
-  if (!origin) {
-    return 'refreshToken'; 
-  }
-  try {
-    const url = new URL(origin);
-    return `refreshToken_${url.hostname.replace(/\./g, '_')}`;
-  } catch {
-    return 'refreshToken';
-  }
-};
 
 @singleton()
 export class AuthController {

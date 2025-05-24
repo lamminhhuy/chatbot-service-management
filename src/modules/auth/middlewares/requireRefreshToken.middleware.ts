@@ -1,5 +1,6 @@
 import { BadRequestResponseError } from "@/shared/response/errors.response";
 import { NextFunction, Request, Response } from "express";
+import { getRefreshTokenCookieName } from "../utils/getRefreshTokenCookieName";
 
 declare global {
   namespace Express {
@@ -10,7 +11,8 @@ declare global {
 }
 
 export const verifyRefreshToken = (req: Request, res: Response, next: NextFunction) => {
-    const refreshToken = req.cookies?.refreshToken;
+  const cookieName = getRefreshTokenCookieName(req.get('origin'));
+  const refreshToken = req.cookies[cookieName];
     
     if (!refreshToken) {
       throw new BadRequestResponseError('Refresh token required!')

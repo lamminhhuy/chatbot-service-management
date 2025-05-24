@@ -13,7 +13,7 @@ export class PermissionRepository extends Repository<Permission> implements IPer
         return this.findOne({ where: { id } });
     }
     getAllPermissionByRoles(roleIds: number[]): Promise<Permission[] | null> {
-        return this.find({ where: { roles: In(roleIds) } });
+        return this.find({ where: { roles: { id: In(roleIds) } } });
     }
   async  findPermissionByIds(ids: number[]): Promise<Permission[]> {
         const permissions = await this.find({ where: { id: In(ids) } });
