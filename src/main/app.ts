@@ -42,7 +42,7 @@ app.use(helmet());
 
 async function initializeApp() {
   await initializeDatabase(); 
-  await mongoDBInstance.connect(); 
+  // await mongoDBInstance.connect(); 
   await RedisClient.getInstance(); 
   setUpContainers();                      
 
