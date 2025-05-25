@@ -28,7 +28,7 @@ export const AppDataSource = new DataSource({
     ],
     synchronize: false, 
     logging: env.NODE_ENV === 'dev',
-    migrations: env.NODE_ENV === 'dev' ? ['src/database/migration/*.ts']: ['dist/database/migration/*.js'],
+    migrations: env.NODE_ENV === 'dev' ? ['src/database/migration/*.ts']: ['dist/database/migration/*.cjs'],
     poolSize: env.POSTGRES_MAX_POOL_SIZE || 10,
     ssl:  false
 });

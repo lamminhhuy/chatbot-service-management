@@ -1,6 +1,8 @@
 services:
   postgres:
     image: postgres
+    env_file:
+      - .env
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -9,7 +11,13 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
   app:
     build: .
     ports:
@@ -24,11 +32,13 @@ services:
       BANK_ACC: ${BANK_ACC}
       BANK_NAME: ${BANK_NAME}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
-      REDIS_URL: ${REDIS_URL}
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: ${REDIS_PORT}
     volumes:
-      - .:/app
       - /app/node_modules
     depends_on:
       - postgres
+      - redis
 volumes:
   postgres_data:
+  redis_data:

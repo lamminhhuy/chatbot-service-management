@@ -91,6 +91,15 @@ export const env = cleanEnv(process.env, {
   CHATBOT_USER_ID: num({
     default: 999999
   }),
+  REDIS_HOST: str({
+    default: 'redis'
+}),
+  REDIS_PORT: num({
+  default: 6379
+  }),
+  REDIS_PASSWORD: str({
+    default: 'redis'
+  }),
   BANK_ACC: str(),
   BANK_NAME: str(),
   AWS_ACCESS_KEY_ID: str(),

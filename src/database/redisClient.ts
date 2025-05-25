@@ -5,11 +5,12 @@ class RedisClient {
   private static instance: Redis | null = null;
   private static isConnecting: boolean = false;
 
-  private constructor() {
-  }
+  private constructor() {}
 
   private static initializeConnection(): Redis {
-    const redis = new Redis(env.REDIS_URL, {
+    const redis = new Redis({
+      host: env.REDIS_HOST ,
+      port: env.REDIS_PORT,    
       reconnectOnError: (err) => {
         console.error("Redis error:", err);
         return true;
@@ -24,7 +25,7 @@ class RedisClient {
     });
 
     redis.on("error", (err) => {
-      console.error("Redis connection error:", err);
+      console.error("Redis connection error vcl:", err);
     });
 
     return redis;
@@ -36,7 +37,7 @@ class RedisClient {
       RedisClient.instance = RedisClient.initializeConnection();
       RedisClient.isConnecting = false;
     }
-    
+
     if (!RedisClient.instance) {
       throw new Error("Redis instance not initialized");
     }
