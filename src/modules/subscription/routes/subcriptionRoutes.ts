@@ -4,6 +4,8 @@ import { container } from "tsyringe";
 import { CreateSubscriptionDTOSchema } from "../dtos/CreateSubscription.dto";
 import { validateRequest } from "@/shared/middlewares/validateRequest/validateRequest";
 import { UpdateSubscriptionDTOSchema } from "../dtos/UpdateSubscription.dto";
+import { requireAuthorization } from "@/shared/middlewares/authorization/authorization.middleware";
+import { RoleCode } from "@/modules/user/enums/Role";
 
 
 const subscriptionController = container.resolve(SubscriptionController);
@@ -23,41 +25,29 @@ export const subscriptionModule: ModuleConfig = {
       path: '/:id',
       method: 'GET',
       handler: { controller: 'subscription',
-                action:  subscriptionController.handleGetOne.bind(subscriptionController)}
+                action:  subscriptionController.handleGetOne.bind(subscriptionController)},
+      middlewares: [requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
     },
     {
       path: '/',
       method: 'POST',
-      middlewares: [validateRequest(CreateSubscriptionDTOSchema)],
       handler: { controller: 'subscription',
-                action:  subscriptionController.handleCreate.bind(subscriptionController)}
+                action:  subscriptionController.handleCreate.bind(subscriptionController)},
+      middlewares: [ requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER]), validateRequest(CreateSubscriptionDTOSchema)],
     },
     {
       path: '/:id',
       method: 'PUT',
-      middlewares: [validateRequest(UpdateSubscriptionDTOSchema)],
       handler: { controller: 'subscription',
-                action:  subscriptionController.handleUpdate.bind(subscriptionController)}
-    },
-    {
-      path: '/:id',
-      method: 'PUT',
-      middlewares: [validateRequest(UpdateSubscriptionDTOSchema)],
-      handler: { controller: 'subscription',
-                action:  subscriptionController.handleUpdate.bind(subscriptionController)}
-    },
-    {
-      path: '/:id',
-      method: 'PUT',
-      middlewares: [validateRequest(UpdateSubscriptionDTOSchema)],
-      handler: { controller: 'subscription',
-                action:  subscriptionController.handleUpdate.bind(subscriptionController)}
+                action:  subscriptionController.handleUpdate.bind(subscriptionController)},
+      middlewares: [ requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER]), validateRequest(UpdateSubscriptionDTOSchema)],
     },
     {
       path: '/:id',
       method: 'DELETE',
       handler: { controller: 'subscription',
-                action:  subscriptionController.handleDelete.bind(subscriptionController)}
+                action:  subscriptionController.handleDelete.bind(subscriptionController)},
+      middlewares: [requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
     }
   ]
 }

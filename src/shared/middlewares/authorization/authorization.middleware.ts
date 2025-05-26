@@ -1,10 +1,11 @@
 import { CustomRoute } from "@/modules/auth/interfaces/CustomRoute";
 import { AuthorizationService } from "@/modules/authorization/services/AuthorziationService";
+import { RoleCode } from "@/modules/user/enums/Role";
 import { CustomRequest } from "@/shared/interfaces/CustomRequest";
 import { BadRequestResponseError } from "@/shared/response/errors.response";
 import { ModuleLoader } from "@/shared/utils/ModuleLoader";
 import { PermissionFormatter } from "@/shared/utils/PermissionFormatter";
-import { NextFunction } from "express";
+import { NextFunction, Response } from "express";
 import { container } from "tsyringe";
 
 function getEndpointPath(url: string): string {
@@ -30,4 +31,12 @@ if (!isAllowed) {
 }
 
 next();
+}
+
+export const requireAuthorization = (roleCodes: RoleCode[]) => (req: CustomRequest, res: Response, next: NextFunction) => {
+    const isAllowed = req.user.roles.some((role)=> roleCodes.includes(role.code))
+    if (!isAllowed) {
+        return next(new BadRequestResponseError("Unauthorized"));
+    }
+    next();
 }

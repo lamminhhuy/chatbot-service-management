@@ -8,6 +8,8 @@ import { CreateUserDTOSchema } from "../dtos/CreateUser.dto";
 import { AssignRoleDTOSchema } from "../dtos/AssignRole.dto";
 import { RemoveRoleDTOSchema } from "../dtos/RemoveRole.dto";
 import { UserQueryParamsDTOSchema } from "../dtos/UserQueryParamss.dto";
+import { requireAuthorization } from "@/shared/middlewares/authorization/authorization.middleware";
+import { RoleCode } from "../enums/Role";
 
 export const userRouter = Router()
 
@@ -29,7 +31,7 @@ export const userModule: ModuleConfig = {
             path: '/:id',
             handler: { controller: 'user',
                 action:  userController.updateUser.bind(userController)},
-            middlewares: [validateRequest(UpdateUserDTOSchema)]
+            middlewares: [validateRequest(UpdateUserDTOSchema), requireAuthorization([RoleCode.ADMIN])]
         },
         {
             method: "PUT",
@@ -50,7 +52,7 @@ export const userModule: ModuleConfig = {
             path: "/",
             handler: { controller: 'user',
                 action:  userController.create.bind(userController)},
-            middlewares: [validateRequest(CreateUserDTOSchema)]
+            middlewares: [validateRequest(CreateUserDTOSchema), requireAuthorization([RoleCode.ADMIN])]
         },
         {
             method: "POST",
@@ -64,21 +66,14 @@ export const userModule: ModuleConfig = {
             path: "/assign-role",
             handler: { controller: 'user',
                 action:  userController.assignRole.bind(userController)},
-            middlewares: [validateRequest(AssignRoleDTOSchema)]
+            middlewares: [ requireAuthorization([RoleCode.ADMIN]), validateRequest(AssignRoleDTOSchema)]
         },
         {
             method: "POST",
             path: "/revoke-role",
             handler: { controller: 'user',
                 action:  userController.removeRole.bind(userController)},
-            middlewares: [validateRequest(RemoveRoleDTOSchema)]
-        },
-        {
-            method: "POST",
-            path: "/",
-            handler: { controller: 'user',
-                action:  userController.create.bind(userController)},
-            middlewares: [validateRequest(CreateUserDTOSchema)]
+            middlewares: [ requireAuthorization([RoleCode.ADMIN]), validateRequest(RemoveRoleDTOSchema)]
         },
         {
             method: 'GET',
@@ -90,14 +85,15 @@ export const userModule: ModuleConfig = {
             method: 'DELETE',
             path: '/:id',
             handler: { controller: 'user',
-                action:  userController.deleteUser.bind(userController)}
+                action:  userController.deleteUser.bind(userController)},
+            middlewares: [ requireAuthorization([RoleCode.ADMIN])]
         },
         {
             method: 'GET',
             path: '/paginated',
             handler: { controller: 'user',
                 action:  userController.getPaginatedUsers.bind(userController)},
-            middlewares: [validateRequestQueryParams(UserQueryParamsDTOSchema)]
+            middlewares: [ requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER]), validateRequestQueryParams(UserQueryParamsDTOSchema)]
         }
     ]
 }

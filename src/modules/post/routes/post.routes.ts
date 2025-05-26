@@ -5,6 +5,8 @@ import { container } from "tsyringe";
 import { CreatePostDTOSchema } from "../dtos/CreatePost.dto";
 import { PostQueryParamsDTOSchema } from "../dtos/PostQueryParams.dto";
 import { UpdatePostDTOSchema } from "../dtos/UpdatePost.dto";
+import {  requireAuthorization } from "@/shared/middlewares/authorization/authorization.middleware";
+import { RoleCode } from "@/modules/user/enums/Role";
 
 
 const postController = container.resolve(PostController);
@@ -17,7 +19,7 @@ export const postModule: ModuleConfig = {
       path: '/',
       handler: { controller: 'post',
                   action:  postController.handleCreate.bind(postController)},
-      middlewares: [validateRequest(CreatePostDTOSchema)]
+      middlewares: [validateRequest(CreatePostDTOSchema), requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
     },
     {
       method: 'GET',
@@ -32,13 +34,14 @@ export const postModule: ModuleConfig = {
       
       handler: { controller: 'post',
                   action:  postController.handleUpdate.bind(postController)},
-      middlewares: [validateRequest(UpdatePostDTOSchema)]
+      middlewares: [validateRequest(UpdatePostDTOSchema), requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
     },
     {
       method: 'DELETE',
       path: '/:id',
       handler: { controller: 'post',
-                  action:  postController.handleDelete.bind(postController)}
+                  action:  postController.handleDelete.bind(postController)},
+      middlewares: [requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
     },
     {
       method: 'GET',
@@ -61,7 +64,6 @@ export const postModule: ModuleConfig = {
       isPublic: true,
       handler: { controller: 'post',
                   action:  postController.handleGetBySlug.bind(postController)}
-    },
-    
+    },  
   ]
 }
