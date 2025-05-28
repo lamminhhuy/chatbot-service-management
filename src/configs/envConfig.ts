@@ -6,7 +6,7 @@ dotenv.config();
 const isPro = process.env.NODE_ENV === 'pro';
 
 export const env = cleanEnv(process.env, {
-  BASE_URL: str({ default: 'http://localhost:5001' }),
+  BASE_URL:  str(),
   JWT_REFRESH_SECRET: str({ default: 'mysecretToken123' }),
   JWT_ACCESS_SECRET: str({ default: 'mysecretToken123' }),
   NODE_ENV: str({
