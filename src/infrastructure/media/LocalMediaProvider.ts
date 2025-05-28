@@ -7,11 +7,13 @@ export class LocalMediaProvider implements IMediaProvider {
   private readonly uploadDir: string;
   private readonly uploadPath: string;
   private readonly baseUrl: string;
+  private readonly localBaseUrl: string;
 
-  constructor(uploadDir: string, baseUrl: string) {
+  constructor(uploadDir: string, baseUrl: string, localBaseUrl: string ) {
     this.uploadDir = uploadDir;
     this.uploadPath = path.join(process.cwd(), uploadDir);
     this.baseUrl = baseUrl;
+    this.localBaseUrl = localBaseUrl;
     this.ensureUploadDir();
   }
 
