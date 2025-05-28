@@ -5,8 +5,6 @@ import helmet from "helmet";
 import { pino } from "pino";
 import { errorHandler } from "@/shared/middlewares/error/errorHandler";
 import cookieParser from "cookie-parser";
-import morgan from "morgan";
-import { mongoDBInstance } from "@/database/MongoDB";
 import { initializeDatabase } from "@/database/PostgresDB";
 import RedisClient from "@/database/redisClient";
 import "reflect-metadata";

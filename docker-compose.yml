@@ -1,3 +1,4 @@
+version: '3.8'
 services:
   postgres:
     image: postgres
@@ -11,17 +12,22 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      
+    networks:
+      - app-network
+
   redis:
     image: redis:7
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    networks:
+      - app-network
+
   app:
     build: .
     ports:
-      - "5001:5001"
+      - "5001:5001" # Giữ port này để debug, nhưng không cần mở công khai nếu dùng Nginx
     environment:
       POSTGRES_HOST: postgres
       POSTGRES_USER: ${POSTGRES_USER}
@@ -39,6 +45,26 @@ services:
     depends_on:
       - postgres
       - redis
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./certs:/etc/nginx/certs 
+    depends_on:
+      - app
+    networks:
+      - app-network
+
 volumes:
   postgres_data:
   redis_data:
+
+networks:
+  app-network:
+    driver: bridge
