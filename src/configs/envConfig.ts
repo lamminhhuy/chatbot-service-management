@@ -102,9 +102,5 @@ export const env = cleanEnv(process.env, {
   }),
   BANK_ACC: str(),
   BANK_NAME: str(),
-  AWS_ACCESS_KEY_ID: str(),
-  AWS_SECRET_ACCESS_KEY: str(),
-  S3_BUCKET_NAME: str(),
-  S3_REGION: str(),
   GOOGLE_CLIENT_ID: str()
 });
