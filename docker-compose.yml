@@ -35,6 +35,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB}
       DB_PORT: 5432
       DB_SSL: "false"
+      NODE_ENV: ${NODE_ENV}
       BANK_ACC: ${BANK_ACC}
       BANK_NAME: ${BANK_NAME}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
