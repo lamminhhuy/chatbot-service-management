@@ -52,6 +52,7 @@ services:
       OPENAI_ASSISTANT_ID: ${OPENAI_ASSISTANT_ID}
     volumes:
       - /app/node_modules
+      - ./uploads:/app/uploads
     depends_on:
       - postgres
       - redis
