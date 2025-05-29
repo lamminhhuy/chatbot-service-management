@@ -20,15 +20,13 @@ const logger = pino({ name: 'server start' });
 const app: Express = express();
 const allowedOrigins = env.CORS_ORIGIN?.split(',') || [];
 
-console.log('Allowed Origins:', allowedOrigins); // Debug
-
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: function (origin, callback) {
-      console.log('Request Origin:', origin); // Debug
+      console.log('Request Origin:', origin);
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -39,7 +37,9 @@ app.use(
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
   })
 );
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: false,
+}));
 
 app.use('/uploads', staticMiddleware('uploads'));
 
