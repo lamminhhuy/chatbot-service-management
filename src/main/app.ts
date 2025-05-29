@@ -26,15 +26,13 @@ app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
     origin: function (origin, callback) {
-      console.log('Request Origin:', origin);
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
         callback(new Error(`${origin} Not allowed by CORS`));
       }
     },
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
   })
 );
 app.use(helmet({
