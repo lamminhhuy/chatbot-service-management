@@ -1,24 +1,25 @@
-import express, { type Express } from 'express';
-import cors from 'cors';
-import helmet from 'helmet';
-import { pino } from 'pino';
-import { errorHandler } from '@/shared/middlewares/error/errorHandler';
-import cookieParser from 'cookie-parser';
-import { initializeDatabase } from '@/database/PostgresDB';
-import RedisClient from '@/database/redisClient';
-import 'reflect-metadata';
-import { setUpContainers } from '@/container';
-import { env } from '@/configs/envConfig';
-import { ModuleLoader } from '@/shared/utils/ModuleLoader';
-import { asyncHandler } from '@/shared/utils/asyncHandler';
-import { initializePermission } from '@/shared/utils/initializePermission';
-import { initializeTransactionalContext } from 'typeorm-transactional';
-import { errorLoggerMiddleware } from '@/shared/middlewares/logging/requestLogger';
-import { staticMiddleware } from '@/shared/middlewares/media/media.middleware';
+import rateLimiter from "@/shared/middlewares/rateLimiter";
+import cors from "cors";
+import express, { type Express } from "express";
+import helmet from "helmet";
+import { pino } from "pino";
+import { errorHandler } from "@/shared/middlewares/error/errorHandler";
+import cookieParser from "cookie-parser";
+import { initializeDatabase } from "@/database/PostgresDB";
+import RedisClient from "@/database/redisClient";
+import "reflect-metadata";
+import { setUpContainers } from "@/container";
+import { env } from "@/configs/envConfig";
+import { ModuleLoader } from "@/shared/utils/ModuleLoader";
+import { asyncHandler } from "@/shared/utils/asyncHandler";
+import { initializePermission } from "@/shared/utils/initializePermission";
+import { initializeTransactionalContext } from "typeorm-transactional";
+import { errorLoggerMiddleware } from "@/shared/middlewares/logging/requestLogger";
+import { staticMiddleware } from "@/shared/middlewares/media/media.middleware";
 
-const logger = pino({ name: 'server start' });
+const logger = pino({ name: "server start" });
 const app: Express = express();
-const allowedOrigins = env.CORS_ORIGIN?.split(',') || [];
+const allowedOrigins = env.CORS_ORIGIN?.split(",") || [];
 
 app.use(cookieParser());
 app.use(express.json());
@@ -30,48 +31,54 @@ app.use(
         callback(null, true);
       } else {
         callback(new Error(`${origin} Not allowed by CORS`));
-      }
-    },
+      }},
     credentials: true
   })
 );
+
 app.use(helmet({
   crossOriginResourcePolicy: false,
 }));
 
-app.use('/uploads', staticMiddleware('uploads'));
 
 async function initializeApp() {
-  await initializeDatabase();
-  await RedisClient.getInstance();
-  setUpContainers();
+  await initializeDatabase(); 
+  // await mongoDBInstance.connect(); 
+  await RedisClient.getInstance(); 
+  setUpContainers();                      
 
-  const modules = (await import('@/modules')).default;
-  const middlewares = (await import('@/shared/middlewares')).default;
-
+  const modules = (await import("@/modules")).default;
+ 
+  const middlewares = (await import("@/shared/middlewares")).default;
+ 
   app.use(...middlewares.appLevelMiddleware);
 
-  const moduleLoader = ModuleLoader.getInstance(modules, middlewares.routerLevelMiddleware, asyncHandler);
+  const moduleLoader =  ModuleLoader.getInstance(modules, middlewares.routerLevelMiddleware, asyncHandler);
+
   app.use(moduleLoader.loadAllModules());
 
-  initializePermission(moduleLoader.getAllModules());
+  initializePermission(moduleLoader.getAllModules())
 
-  app.use('/ping', (req, res) => {
-    return res.status(200).send('server pinged!');
-  });
+  app.use('/uploads', staticMiddleware('uploads'));
+
+  app.use("/ping", (req, res) => {
+    return res.status(200).send("server pinged!");
+  }); 
 
   app.use(errorLoggerMiddleware);
+  
   app.use(errorHandler);
 }
-
 initializeTransactionalContext();
+
 
 initializeApp()
   .then(() => {
-    logger.info('Application initialized successfully');
+    logger.info("Application initialized successfully");
   })
   .catch((err) => {
-    logger.error('Failed to initialize application:', err);
-  });
+ logger.error("Failed to initialize application:", err);});
+
+
 
 export { app, logger };
