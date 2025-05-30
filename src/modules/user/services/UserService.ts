@@ -396,9 +396,8 @@ export class UserService {
     const usersWithSubscription = await Promise.all(
       items.map((user) => this.attatchUserSubscription(user))
     );
-    const withoutRequestedUser = usersWithSubscription.filter((user) => user.id !== requestedUser.id);
     const panigatedData = buildPaginatedResponse({
-      items: withoutRequestedUser,
+      items: usersWithSubscription,
       meta: {
         total,
         limit: queryParams.limit,
