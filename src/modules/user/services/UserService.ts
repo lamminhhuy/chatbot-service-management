@@ -389,7 +389,6 @@ export class UserService {
     return this.userRepo.getUserCountWithMonthlyGrowth();
   }
   async getPaginatedUsers(
-    requestedUser: User,
     queryParams: UserQueryParamsDTO
   ): Promise<PaginatedResponse<UserResponseDTO>> {
     const { items, total } = await this.userRepo.getPaginatedUsers(queryParams);

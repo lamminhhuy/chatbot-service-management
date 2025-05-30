@@ -60,7 +60,7 @@ export class UserController {
         new SuccessResponse({ data: null }).send(res);
       }
       async getPaginatedUsers(req: CustomRequest<{},{},UserQueryParamsDTO>, res: Response, next: NextFunction): Promise<void> {
-        const result = await this.userService.getPaginatedUsers(req.user, req.query);
+        const result = await this.userService.getPaginatedUsers(req.query);
         new SuccessResponse({ data: result,
           message: "Get paginated users successfully",
          }).send(res);
