@@ -331,18 +331,14 @@ export class UserService {
     }
   }
 
-  async getAll(requestedUser: User): Promise<UserDTO[]> {
+  async getAll(): Promise<UserDTO[]> {
     const users = await this.userRepo.findAll();
   
     const usersWithSubscription = await Promise.all(
       users.map((user) => this.attatchUserSubscription(user))
     );
   
-    const withoutRequestedUser = usersWithSubscription.filter(
-      (user) => user.id !== requestedUser.id
-    );
-  
-    return withoutRequestedUser.map((user) => UserDTOSchema.parse(user));
+    return usersWithSubscription.map((user) => UserDTOSchema.parse(user));
   }
 
   async updateUser(userId: number, input: UpdateUserDTO) {
