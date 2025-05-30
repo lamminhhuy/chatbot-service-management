@@ -355,11 +355,15 @@ export class UserService {
     Object.assign(user, input);
     return this.userRepo.save(user);
   }
-  async deleteUser(userId: number) {
+  async deleteUser(userId: number,requestedUserId: number) {
     const user = await this.userRepo.findUserById(userId);
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
+    if(user.id === requestedUserId){
+      throw new BadRequestResponseError("You can not delete yourself");
+    }
+  
    
     const isChatbot = user.roles.every(r => r.code === RoleCode.ASSISTANT);
     if (isChatbot) {

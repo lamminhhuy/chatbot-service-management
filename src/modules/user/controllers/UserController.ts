@@ -48,7 +48,7 @@ export class UserController {
         new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
       }
       async getAll(req: CustomRequest<{},{},{}>, res: Response, next: NextFunction): Promise<void> {
-        const result = await this.userService.getAll(req.user);
+        const result = await this.userService.getAll();
         new SuccessResponse({ data: UserResponseDTOSchemaArray.parse(result) }).send(res);
       }
       async updateUser(req: CustomRequest<{id:number},{},UpdateUserDTO>, res: Response, next: NextFunction): Promise<void> {
@@ -56,7 +56,7 @@ export class UserController {
         new SuccessResponse({ data: UpdateUserResponseDTOSchema.parse(result) }).send(res);
       }
       async deleteUser(req: CustomRequest<{id:number},{},{}>, res: Response, next: NextFunction): Promise<void> {
-        await this.userService.deleteUser(req.params.id);
+        await this.userService.deleteUser(req.params.id,req.user.id);
         new SuccessResponse({ data: null }).send(res);
       }
       async getPaginatedUsers(req: CustomRequest<{},{},UserQueryParamsDTO>, res: Response, next: NextFunction): Promise<void> {
