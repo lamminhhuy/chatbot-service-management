@@ -31,7 +31,7 @@ export const userModule: ModuleConfig = {
             path: '/:id',
             handler: { controller: 'user',
                 action:  userController.updateUser.bind(userController)},
-            middlewares: [validateRequest(UpdateUserDTOSchema), requireAuthorization([RoleCode.ADMIN])]
+            middlewares: [validateRequest(UpdateUserDTOSchema), requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
         },
         {
             method: "PUT",
