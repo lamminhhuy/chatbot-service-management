@@ -268,10 +268,15 @@ export class UserService {
     if (!user) {
       throw new NotFoundResponseError("User not found");
     }
+    const isAdminUser = user.roles.some((r) => r.code === RoleCode.ADMIN);
+    if (isAdminUser) {
+      await this.checkIfOnlyOneAdminUserLeft();
+    }
     const isRoleExists = user.roles.some((r) => r.id === role.id);
     if (isRoleExists) {
       throw new BadRequestResponseError("Role already exists");
     }
+   
     user.assignRole(role);
     return this.userRepo.save(user);
   }
@@ -371,12 +376,9 @@ export class UserService {
     }
     const isAdminUser = user.roles.some((r) => r.code === RoleCode.ADMIN);
     if (isAdminUser) {
-      const adminUsers = await this.userRepo.findUsersByRoles([RoleCode.ADMIN]);
-      if (adminUsers.length < 2) {
-        throw new BadRequestResponseError("At least one admin user must exist");
-      }
+    await this.checkIfOnlyOneAdminUserLeft();
     }
-
+    
     await this.revokeUserTokens(user.id);
     return this.userRepo.softDeleteUser(user.id);
   }
@@ -426,5 +428,10 @@ export class UserService {
   async changeSubscription(userId: number, subscriptionId: number): Promise<UserSubscription> {
     return this.userSubscriptionService.changeSubscription(userId, subscriptionId);
   }
-
+private async checkIfOnlyOneAdminUserLeft():Promise<void>{
+  const adminUsers = await this.userRepo.findUsersByRoles([RoleCode.ADMIN]);
+  if (adminUsers.length < 2) {
+    throw new BadRequestResponseError("At least one admin user must exist");
+  }
+}
 }
