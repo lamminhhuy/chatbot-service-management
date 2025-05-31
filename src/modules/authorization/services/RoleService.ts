@@ -98,6 +98,10 @@ export class RoleService {
     if (!role) throw new BadRequestResponseError("Role not found");
     if(role.code  === RoleCode.ASSISTANT) throw new BadRequestResponseError("Role Assistant cannot be deleted");
     if(role.code  === RoleCode.BASIC_USER) throw new BadRequestResponseError("Role Basic User cannot be deleted");
+    const isManager = role.code === RoleCode.MANAGER;
+    if(!isManager) throw new BadRequestResponseError("Role Manager cannot be deleted");
+    const isAdmin = role.code === RoleCode.ADMIN;
+    if(!isAdmin) throw new BadRequestResponseError("Role Admin cannot be deleted");
     await this.roleRepository.delete(roleId);
   }
 }

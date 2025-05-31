@@ -45,14 +45,14 @@ export const userModule: ModuleConfig = {
             path: '/:id/change-subscription',
             handler: { controller: 'user',
                 action:  userController.changeSubscription.bind(userController)},
-            middlewares: []
+            middlewares: [requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
         },
         {
             method: "POST",
             path: "/",
             handler: { controller: 'user',
                 action:  userController.create.bind(userController)},
-            middlewares: [validateRequest(CreateUserDTOSchema), requireAuthorization([RoleCode.ADMIN])]
+            middlewares: [validateRequest(CreateUserDTOSchema), requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
         },
         {
             method: "POST",
@@ -66,14 +66,14 @@ export const userModule: ModuleConfig = {
             path: "/assign-role",
             handler: { controller: 'user',
                 action:  userController.assignRole.bind(userController)},
-            middlewares: [ requireAuthorization([RoleCode.ADMIN]), validateRequest(AssignRoleDTOSchema)]
+            middlewares: [ requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER]), validateRequest(AssignRoleDTOSchema)]
         },
         {
             method: "POST",
             path: "/revoke-role",
             handler: { controller: 'user',
                 action:  userController.removeRole.bind(userController)},
-            middlewares: [ requireAuthorization([RoleCode.ADMIN]), validateRequest(RemoveRoleDTOSchema)]
+            middlewares: [ requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER]), validateRequest(RemoveRoleDTOSchema)]
         },
         {
             method: 'GET',
@@ -86,7 +86,7 @@ export const userModule: ModuleConfig = {
             path: '/:id',
             handler: { controller: 'user',
                 action:  userController.deleteUser.bind(userController)},
-            middlewares: [ requireAuthorization([RoleCode.ADMIN])]
+            middlewares: [ requireAuthorization([RoleCode.ADMIN,RoleCode.MANAGER])]
         },
         {
             method: 'GET',
