@@ -50,6 +50,8 @@ services:
       JWT_REFRESH_TOKEN_EXPIRATION_TIME: ${JWT_REFRESH_TOKEN_EXPIRATION_TIME}
       REFRESH_TOKEN_MAX_AGE: ${REFRESH_TOKEN_MAX_AGE}
       OPENAI_ASSISTANT_ID: ${OPENAI_ASSISTANT_ID}
+      EMAIL_USER: ${EMAIL_USER}
+      EMAIL_PASSWORD: ${EMAIL_PASSWORD}
     volumes:
       - /app/node_modules
       - ./uploads:/app/uploads
