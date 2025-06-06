@@ -28,6 +28,7 @@ services:
     build: .
     ports:
       - "5001:5001" 
+    image: logistic-chatbot-app:${APP_VERSION}
     volumes:
       - /app/node_modules
       - ./uploads:/app/uploads
