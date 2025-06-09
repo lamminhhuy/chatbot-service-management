@@ -49,10 +49,10 @@ export class EmailService implements IEmailService {
           console.log('Email sent successfully after reinitializing transporter:', mailOptions.to);
         } catch (retryError) {
           console.error('Retry failed:', retryError);
-          throw new Error(`Failed to send email after retry: ${retryError.message}`);
+          throw new Error(`Failed to send email after retry: ${retryError}`);
         }
       } else {
-        throw new Error(`Failed to send email: ${error.message}`);
+        throw new Error(`Failed to send email: ${error}`);
       }
     }
   }
