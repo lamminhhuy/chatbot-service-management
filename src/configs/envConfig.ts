@@ -3,7 +3,7 @@ import { cleanEnv, host, num, port, str } from "envalid";
 
 dotenv.config();
 
-const isPro = process.env.NODE_ENV === 'pro';
+const isPro = process.env.NODE_ENV === 'production';
 
 export const env = cleanEnv(process.env, {
   BASE_URL:  str(),
@@ -11,7 +11,7 @@ export const env = cleanEnv(process.env, {
   JWT_ACCESS_SECRET: str({ default: 'mysecretToken123' }),
   NODE_ENV: str({
     default: "dev",
-    choices: ["dev", "pro", "test"],
+    choices: ["dev", "production", "test"],
   }),
   COOKIE_MAX_AGE: num({ default: 30 * 24 * 60 * 60 * 1000 }),
   REFRESH_TOKEN_MAX_AGE: num({ default: 30 * 24 * 60 * 60 * 1000 }),
