@@ -1,4 +1,4 @@
-import { env } from '@/configs/envConfig';
+import { env } from '@/shared/infrastructure/configs/envConfig';
 import mongoose  from 'mongoose' 
 
 class MongoDB {

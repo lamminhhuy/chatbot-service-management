@@ -1,5 +1,5 @@
-import { env } from "@/configs/envConfig";
-import { redisInstance } from "@/database/redisClient";
+import { env } from "@/shared/infrastructure/configs/envConfig";
+import { redisInstance } from "@/shared/infrastructure/database/redisClient";
 import { Router } from "express";
 import { ChatbotService } from "../services/ChatbotService";
 import { ChatController } from "../controllers/ChatbotController";

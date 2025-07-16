@@ -1,4 +1,4 @@
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { PostCategory } from "../models/PostCategory";
 import { FindManyOptions, Like, Repository } from "typeorm";
 import { IPostCategoryRepository } from "../interfaces/IPostCategoryRepository";

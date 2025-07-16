@@ -3,7 +3,7 @@ import { Transactional } from 'typeorm-transactional';
 import { PaymentCreationDTO } from '../dtos/PaymentCreation.dto';
 import { SePayPaymentRequestDTO } from '../dtos/CreatePaymentRequest.dto';
 import { BadRequestResponseError } from '@/shared/response/errors.response';
-import { env } from '@/configs/envConfig';
+import { env } from '@/shared/infrastructure/configs/envConfig';
 import Payment from '../models/Payment';
 import PaymentRepository from '../repositories/PaymentRepository';
 import SubscriptionService from '@/modules/subscription/services/SubscriptionService';

@@ -1,6 +1,6 @@
 import { Repository, In } from "typeorm";
 import { User } from "../models/UserModel";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { IUserRepository } from "../interfaces/IUserRepository";
 import { RoleCode } from "../enums/Role";
 import { UserQueryParamsDTO } from "../dtos/UserQueryParamss.dto";

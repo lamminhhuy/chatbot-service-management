@@ -1,4 +1,4 @@
-import { env } from "@/configs/envConfig";
+import { env } from "@/shared/infrastructure/configs/envConfig";
 
 export const s3Config = {
     accessKeyId: env.AWS_ACCESS_KEY_ID,

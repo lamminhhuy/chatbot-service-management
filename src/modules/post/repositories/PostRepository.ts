@@ -1,4 +1,4 @@
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { IPostRepository } from "../interfaces/IPostRepository";
 import { Post } from "../models/Post";
 import { Not, Repository } from "typeorm";

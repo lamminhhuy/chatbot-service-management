@@ -1,6 +1,6 @@
 import { Media } from "../models/MediaModel";
 import { Repository, DataSource, In, UpdateResult, DeleteResult } from "typeorm";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { IMediaRepository } from "../interfaces/IMediaRepository";
 class MediaRepository extends Repository<Media> implements IMediaRepository {
     constructor(dataSource: DataSource = AppDataSource) {

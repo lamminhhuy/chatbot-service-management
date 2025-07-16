@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { ChatbotService } from "../services/ChatbotService";
 import { IChatRequest } from "../dtos/ChatDTOs";
 import { getCookieOptions } from "@/shared/utils/getCookieOptions";
-import { env } from "@/configs/envConfig";
+import { env } from "@/shared/infrastructure/configs/envConfig";
 import { inject, injectable } from "tsyringe";
 
 @injectable()

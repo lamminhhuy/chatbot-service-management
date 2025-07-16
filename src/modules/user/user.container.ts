@@ -1,7 +1,7 @@
 import { container } from "tsyringe";
 import { UserService } from "./services/UserService";
 import { UserSession } from "./models/UserSessionModel";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { UserRepository } from "./repositories/UserRepository";
 import { UserSessionRepository } from "./repositories/UserSessionRepository";
 

@@ -4,7 +4,7 @@ import SubscriptionService from "./services/SubscriptionService"
 import UserSubscriptionRepository from "./repositories/UserSubscriptionRepository"
 import UserSubscriptionService from "./services/UserSubscriptionService"
 import { UserTokenLimiter } from "../conversation/services/QueryTokenLimiter"
-import RedisClient from "@/database/redisClient"
+import RedisClient from "@/shared/infrastructure/database/redisClient"
 import { ITokenConfig } from "@/modules/conversation/interfaces/ITokenConfig";
 import { getSecondsUntilEndOfDay } from "./utils/getSecondsUntilEndOfDay"
 

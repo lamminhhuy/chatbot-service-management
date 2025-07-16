@@ -1,7 +1,7 @@
 import { Repository } from "typeorm";
 import { Conversation } from "../models/Conversation";
 import { IConversationRepository } from "../interfaces/IConversationRepository";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { ConversationQueryParamsDTO } from "../dtos/ConsersationQueryParams";
 
 export class ConversationRepository extends Repository<Conversation> implements IConversationRepository {

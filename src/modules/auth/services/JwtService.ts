@@ -2,7 +2,7 @@
 import jwt from 'jsonwebtoken';
 import { IJwtService } from '@/modules/auth/interfaces/JwtService';
 import { AuthFailureResponseError } from '@/shared/response/errors.response';
-import { env } from '@/configs/envConfig';
+import { env } from '@/shared/infrastructure/configs/envConfig';
 
 export class JwtService implements IJwtService {
   private accessTokenSecret = env.JWT_ACCESS_SECRET  ;

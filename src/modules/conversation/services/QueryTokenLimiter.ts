@@ -1,4 +1,4 @@
-import RedisClient from "@/database/redisClient";
+import RedisClient from "@/shared/infrastructure/database/redisClient";
 import { inject, injectable } from "tsyringe";
 import { ITokenConfig } from "../interfaces/ITokenConfig";
 import Redis from "ioredis";

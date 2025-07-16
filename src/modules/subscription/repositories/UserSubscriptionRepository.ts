@@ -1,7 +1,7 @@
 import { DataSource, IsNull, Repository } from "typeorm";
 import { Subscription } from "@/modules/subscription/models/Subscription";
 import { injectable } from "tsyringe";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { IUserSubscriptionRepository } from "../interfaces/IUserSubscriptionRepository";
 import { UserSubscription } from "../models/UserSubscription";
 import { SubscriptionCode } from "../enums/SubscriptionCode";

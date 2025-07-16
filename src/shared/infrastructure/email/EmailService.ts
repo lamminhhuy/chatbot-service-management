@@ -1,4 +1,4 @@
-import { env } from '@/configs/envConfig';
+import { env } from '@/shared/infrastructure/configs/envConfig';
 import { IEmailService } from '@/infrastructure/email/interfaces/IEmailService';
 import nodemailer, { SendMailOptions } from 'nodemailer';
 import { injectable } from 'tsyringe';

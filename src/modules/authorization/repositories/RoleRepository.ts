@@ -1,5 +1,5 @@
 import { Repository } from "typeorm";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { Role } from "../models/RoleModel";
 import { IRoleRepository } from "../../user/interfaces/IRoleRepository";
 import { RoleCode } from "../../user/enums/Role";

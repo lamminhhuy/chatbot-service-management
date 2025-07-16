@@ -4,7 +4,7 @@ import { SuccessResponse } from '@/shared/response/success.response';
 import { RegisterRequestDTO } from '../dtos/RegisterRequest.dto';
 import { inject, singleton } from 'tsyringe';
 import { LoginReqDTO } from '../dtos/LoginRequest.dto';
-import { env } from '@/configs/envConfig';
+import { env } from '@/shared/infrastructure/configs/envConfig';
 import { getCookieOptions } from '@/shared/utils/getCookieOptions';
 import { LoginResDTOSchema } from '../dtos/LoginResponse.dto';
 import { RegisterResponseDTOSchema } from '../dtos/RegisterReponse.dto';

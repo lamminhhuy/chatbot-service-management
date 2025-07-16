@@ -1,4 +1,4 @@
-import { env } from "@/configs/envConfig";
+import { env } from "@/shared/infrastructure/configs/envConfig";
 import { generateOTP } from "../../utils/generateOTP";
 import { IEmailService } from "@/infrastructure/email/interfaces/IEmailService";
 import  OtpProvider from "@/infrastructure/cache/CacheProvider";

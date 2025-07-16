@@ -1,4 +1,4 @@
-import { env } from "@/configs/envConfig";
+import { env } from "@/shared/infrastructure/configs/envConfig";
 import Redis from "ioredis";
 
 class RedisClient {

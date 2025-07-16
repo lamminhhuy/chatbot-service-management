@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { UserSession } from "../models/UserSessionModel";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { IUserSessionRepository } from "../interfaces/IUserSessionRepository";
 export class UserSessionRepository extends Repository<UserSession> implements IUserSessionRepository {
     constructor() {

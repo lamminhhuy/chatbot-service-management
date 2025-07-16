@@ -1,6 +1,6 @@
 // src/database/index.ts
 import { DataSource } from 'typeorm';
-import { env } from '@/configs/envConfig';
+import { env } from '@/shared/infrastructure/configs/envConfig';
 import { Role } from '@/modules/authorization/models/RoleModel';
 import { User } from '@/modules/user/models/UserModel';
 import { UserSession } from '@/modules/user/models/UserSessionModel';

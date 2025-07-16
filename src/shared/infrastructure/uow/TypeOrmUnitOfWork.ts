@@ -1,4 +1,4 @@
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { IUnitOfWorkService } from "@/modules/user/interfaces/IUnitOfWorkService";
 import { EntityManager, DataSource } from "typeorm";
 import { injectable } from 'tsyringe';

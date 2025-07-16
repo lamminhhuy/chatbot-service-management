@@ -17,13 +17,13 @@ export class WebSearchService  {
     
 
     private getConfig(query: string){
-        let data = JSON.stringify({
+        const data = JSON.stringify({
             "q": query
           });
 
         return {
             method: 'POST',
-            maxBodyLength: Infinity,
+            maxBodyLength: Number.POSITIVE_INFINITY,
             url: WebSearchService.webSearchUrl,
             headers: { 
               'X-API-KEY': this.webSearchApiKey, 

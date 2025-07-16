@@ -1,7 +1,7 @@
 import { container } from "tsyringe";
 import { MediaService } from "./services/MediaService";
 import MediaRepository from "./repositories/MediaRepository";
-import { env } from "@/configs/envConfig";
+import { env } from "@/shared/infrastructure/configs/envConfig";
 import { LocalMediaProvider } from "@/infrastructure/media/LocalMediaProvider";
 
 

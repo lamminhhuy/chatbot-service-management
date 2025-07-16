@@ -1,4 +1,4 @@
-import { env } from "@/configs/envConfig";
+import { env } from "@/shared/infrastructure/configs/envConfig";
 import { IOAuth2Provider } from "@/modules/auth/interfaces/IOAuth2Provider";
 import { OAuth2Client } from "google-auth-library";
 import { injectable } from "tsyringe";

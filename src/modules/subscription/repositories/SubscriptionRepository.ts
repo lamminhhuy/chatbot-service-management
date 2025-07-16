@@ -1,7 +1,7 @@
 import { DataSource, Repository } from "typeorm";
 import { Subscription } from "@/modules/subscription/models/Subscription";
 import { injectable } from "tsyringe";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { ISubscriptionRepository } from "../interfaces/ISubscriptionRepository";
 import { SubscriptionCode } from "@/modules/subscription/enums/SubscriptionCode";
 import { BadRequestResponseError } from "@/shared/response/errors.response";

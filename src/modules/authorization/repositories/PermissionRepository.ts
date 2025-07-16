@@ -1,7 +1,7 @@
 import { In, Repository } from "typeorm";
 import { IPermissionRepository } from "../interfaces/IPermissionRepository";
 import { Permission } from "../models/PermissionModel";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import { BadRequestResponseError } from "@/shared/response/errors.response";
 
 export class PermissionRepository extends Repository<Permission> implements IPermissionRepository {

@@ -2,7 +2,7 @@ import { container } from "tsyringe";
 import { ConversationService } from "./services/ConversationService";
 import { ConversationRepository } from "./repository/ConversationRepository";
 import { Message } from "./models/Message";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 
 
 export function registerConversationDependencies () {

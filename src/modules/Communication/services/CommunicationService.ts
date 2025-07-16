@@ -1,7 +1,8 @@
-import { IEmailService } from "@/infrastructure/email/interfaces/IEmailService";
+
 import { inject, injectable } from "tsyringe";
 import { ContactDTO } from "../dtos/Contact.dto";
-import { env } from "@/configs/envConfig";
+import { env } from "@/shared/infrastructure/configs/envConfig";
+import { IEmailService } from "@/shared/infrastructure/email/interfaces/IEmailService";
 
 @injectable()
 class CommunicationService {

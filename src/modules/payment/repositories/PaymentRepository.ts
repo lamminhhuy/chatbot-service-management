@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from "typeorm";
 import { IPaymentRepository } from "../interfaces/IPaymentRepository";
-import { AppDataSource } from "@/database/PostgresDB";
+import { AppDataSource } from "@/shared/infrastructure/database/PostgresDB";
 import Payment from "../models/Payment";
 import { PaymentStatus } from "../enums/PaymentStatus";
 import { Equal } from "typeorm";

@@ -2,7 +2,7 @@ import { JwtService } from '@/modules/auth/services/JwtService';
 import { container } from 'tsyringe';
 import { AuthService } from './services/AuthService';
 import { AuthController } from './controllers/AuthController';
-import { EmailService } from '@/infrastructure/email/EmailService';
+import { EmailService } from '@/shared/infrastructure/email/EmailService';
 import TokenAuthenticator from './services/TokenAuthenticator';
 
 export function registerAuthDependencies() {
