@@ -24,21 +24,21 @@ services:
     networks:
       - app-network
 
-  app:
-    build: .
-    ports:
-      - "5001:5001" 
-    image: logistic-chatbot-app:${APP_VERSION}
-    volumes:
-      - /app/node_modules
-      - ./uploads:/app/uploads
-    depends_on:
-      - postgres
-      - redis
-    networks:
-      - app-network
-    env_file:
-      - .env
+  # app:
+  #   build: .
+  #   ports:
+  #     - "5001:5001" 
+  #   image: logistic-chatbot-app:${APP_VERSION}
+  #   volumes:
+  #     - /app/node_modules
+  #     - ./uploads:/app/uploads
+  #   depends_on:
+  #     - postgres
+  #     - redis
+  #   networks:
+  #     - app-network
+  #   env_file:
+  #     - .env
 
   nginx:
     image: nginx:latest

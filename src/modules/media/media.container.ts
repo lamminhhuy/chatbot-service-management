@@ -2,7 +2,7 @@ import { container } from "tsyringe";
 import { MediaService } from "./services/MediaService";
 import MediaRepository from "./repositories/MediaRepository";
 import { env } from "@/shared/infrastructure/configs/envConfig";
-import { LocalMediaProvider } from "@/infrastructure/media/LocalMediaProvider";
+import { LocalMediaProvider } from "@/shared/infrastructure/media/LocalMediaProvider";
 
 
 export function registerMediaContainer(){

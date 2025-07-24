@@ -1,6 +1,6 @@
 import Redis from "ioredis";
-import { redisInstance } from "../../database/redisClient";
 import { ICacheProvider } from "./CacheProvider.type";
+import { redisInstance } from "../database/redisClient";
 
  class CacheProvider<T> implements ICacheProvider<T> {
     private redisClient: Redis;
