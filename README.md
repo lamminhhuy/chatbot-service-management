@@ -1,4 +1,4 @@
-A chatbot service management system with features including Google and OTP login, chat, subscription, payment, user management, authorization, and revenue statistics, built using a modular monolith architecture.
+A chatbot service management system featuring Google and OTP login, chat, subscription, post management, payment processing, user management, authorization, and revenue analytics, built with a modular monolith architecture.
 
 Contact me for the full source code:
 
