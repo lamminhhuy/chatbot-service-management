@@ -12,19 +12,7 @@ export class OpenAIAPI implements IChatbotAPI {
 private openai: OpenAI;
   private assistantId?: string;
   private webSearchService: IWebSearchService
-  private readonly assistantInstructions: string = `Lưu ý: bạn cần trả lời cực kỳ chi tiết, càng chi tiết càng tốt. Nếu câu hỏi liên quan đến xuất khẩu và các nội dung tương ứng thì câu trả lời sẽ bao gồm: Mã HS và Chính sách Thuế (bao gồm thuế nhập khẩu, thủ tục hải quan,...):
-  Mã HS cụ thể cho mặt hàng. Các mức thuế liên quan: thuế xuất khẩu, thuế VAT. Dẫn chiếu thông tư, nghị định làm căn cứ pháp lý.
-Yêu cầu về vùng trồng và đóng gói.
-Mã số do Cục Bảo vệ Thực vật Việt Nam cập nhật.
-Tiêu chuẩn chất lượng:
-Về hình thức, trọng lượng, độ chín, màu sắc, trạng thái ruột...
-Phân loại size (S, M, L) theo gram.
-Hồ sơ hải quan cần thiết:
-Tờ khai, hợp đồng, hóa đơn, vận đơn, packing list...
-Giấy tờ kiểm dịch, C/O, hun trùng nếu cần.
-Thủ tục kiểm dịch thực vật:
-Đăng ký và cung cấp mẫu để kiểm tra.
-Nhận giấy chứng nhận nếu đạt yêu cầu`
+  private readonly assistantInstructions: string = ``
 
   constructor(apiKey: string, assistantId: string, webSearchService: IWebSearchService ) {
     this.openai = new OpenAI({
